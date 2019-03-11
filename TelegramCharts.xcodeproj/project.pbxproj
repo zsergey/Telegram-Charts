@@ -13,6 +13,9 @@
 		ADE577112236E8920006200D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE577082236E8920006200D /* Main.storyboard */; };
 		ADE577132236E8920006200D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE5770C2236E8920006200D /* ViewController.swift */; };
 		ADE577142236E8920006200D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE5770D2236E8920006200D /* AppDelegate.swift */; };
+		ADE577212236EDB20006200D /* ChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577202236EDB20006200D /* ChartModelFactory.swift */; };
+		ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577242236FE620006200D /* UIColor+Initializer.swift */; };
+		ADE57727223702C50006200D /* ChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE57726223702C50006200D /* ChartModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +27,9 @@
 		ADE5770A2236E8920006200D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADE5770C2236E8920006200D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		ADE5770D2236E8920006200D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		ADE577202236EDB20006200D /* ChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartModelFactory.swift; sourceTree = "<group>"; };
+		ADE577242236FE620006200D /* UIColor+Initializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Initializer.swift"; sourceTree = "<group>"; };
+		ADE57726223702C50006200D /* ChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,10 +83,29 @@
 		ADE5770B2236E8920006200D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				ADE577232236FE500006200D /* Extensions */,
+				ADE577222236FE450006200D /* Model */,
 				ADE5770C2236E8920006200D /* ViewController.swift */,
 				ADE5770D2236E8920006200D /* AppDelegate.swift */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		ADE577222236FE450006200D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				ADE577202236EDB20006200D /* ChartModelFactory.swift */,
+				ADE57726223702C50006200D /* ChartModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		ADE577232236FE500006200D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				ADE577242236FE620006200D /* UIColor+Initializer.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,6 +182,9 @@
 			files = (
 				ADE577142236E8920006200D /* AppDelegate.swift in Sources */,
 				ADE577132236E8920006200D /* ViewController.swift in Sources */,
+				ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */,
+				ADE577212236EDB20006200D /* ChartModelFactory.swift in Sources */,
+				ADE57727223702C50006200D /* ChartModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
