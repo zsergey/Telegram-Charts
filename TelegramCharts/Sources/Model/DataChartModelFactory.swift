@@ -1,5 +1,5 @@
 //
-//  ChartModelFactory.swift
+//  DataChartModelFactory.swift
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/11/19.
@@ -8,15 +8,15 @@
 
 import UIKit
 
-struct ChartModelFactory {
+struct DataChartModelFactory {
     
     @discardableResult
-    static func readChartData() -> [ChartModel]? {
-        return readData(fromResource: "chart_data")
+    static func fetchCharts() -> [DataChartModel]? {
+        return fetchCharts(fromResource: "chart_data")
     }
     
     @discardableResult
-    static func readData(fromResource name: String) -> [ChartModel]? {
+    static func fetchCharts(fromResource name: String) -> [DataChartModel]? {
         guard let path = Bundle.main.path(forResource: name, ofType: "json") else {
             return nil
         }
@@ -32,8 +32,8 @@ struct ChartModelFactory {
         return readArray(array)
     }
     
-    private static func readArray(_ array: [[String : Any]]) -> [ChartModel]? {
-        var chartModels = [ChartModel]()
+    private static func readArray(_ array: [[String : Any]]) -> [DataChartModel]? {
+        var chartModels = [DataChartModel]()
         
         for dictionary in array {
             guard let columns = dictionary["columns"] as? [[Any]],
@@ -43,7 +43,7 @@ struct ChartModelFactory {
                     continue
             }
             
-            var chartModel = ChartModel()
+            var chartModel = DataChartModel()
             for column in columns {
                 readColumn(column, to: &chartModel, types, names, colors)
             }
@@ -53,7 +53,7 @@ struct ChartModelFactory {
         return chartModels
     }
     
-    private static func readColumn(_ column: [Any], to chartModel: inout ChartModel,
+    private static func readColumn(_ column: [Any], to chartModel: inout DataChartModel,
                                    _ types: [String : Any],
                                    _ names: [String : Any],
                                    _ colors: [String : Any]) {

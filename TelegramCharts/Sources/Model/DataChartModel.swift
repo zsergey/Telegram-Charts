@@ -1,5 +1,5 @@
 //
-//  ChartModel.swift
+//  DataChartModel.swift
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/11/19.
@@ -13,7 +13,7 @@ enum ColumnType: String {
     case line
 }
 
-struct ChartModel {
+struct DataChartModel {
     var labels = [String]()
     var types = [String: ColumnType]()
     var names = [String: String]()

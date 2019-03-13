@@ -7,18 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD9226CA2238BEEF00A5B7D6 /* CurveAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C72238BEEF00A5B7D6 /* CurveAlgorithm.swift */; };
+		AD9226CB2238BEEF00A5B7D6 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* LineChart.swift */; };
+		AD9226CC2238BEEF00A5B7D6 /* DotCALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */; };
+		AD9226CE2238C76E00A5B7D6 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CD2238C76E00A5B7D6 /* ColorScheme.swift */; };
+		AD9226D02238CBA800A5B7D6 /* PointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CF2238CBA800A5B7D6 /* PointModel.swift */; };
 		ADE5770E2236E8920006200D /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = ADE577042236E8920006200D /* chart_data.json */; };
 		ADE5770F2236E8920006200D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADE577052236E8920006200D /* Assets.xcassets */; };
 		ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE577062236E8920006200D /* LaunchScreen.storyboard */; };
 		ADE577112236E8920006200D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE577082236E8920006200D /* Main.storyboard */; };
 		ADE577132236E8920006200D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE5770C2236E8920006200D /* ViewController.swift */; };
 		ADE577142236E8920006200D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE5770D2236E8920006200D /* AppDelegate.swift */; };
-		ADE577212236EDB20006200D /* ChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577202236EDB20006200D /* ChartModelFactory.swift */; };
+		ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577202236EDB20006200D /* DataChartModelFactory.swift */; };
 		ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577242236FE620006200D /* UIColor+Initializer.swift */; };
-		ADE57727223702C50006200D /* ChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE57726223702C50006200D /* ChartModel.swift */; };
+		ADE57727223702C50006200D /* DataChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE57726223702C50006200D /* DataChartModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AD9226C72238BEEF00A5B7D6 /* CurveAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurveAlgorithm.swift; sourceTree = "<group>"; };
+		AD9226C82238BEEF00A5B7D6 /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
+		AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotCALayer.swift; sourceTree = "<group>"; };
+		AD9226CD2238C76E00A5B7D6 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
+		AD9226CF2238CBA800A5B7D6 /* PointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointModel.swift; sourceTree = "<group>"; };
 		ADE576EC2236E59B0006200D /* TelegramCharts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramCharts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADE577042236E8920006200D /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		ADE577052236E8920006200D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -27,9 +37,9 @@
 		ADE5770A2236E8920006200D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ADE5770C2236E8920006200D /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		ADE5770D2236E8920006200D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		ADE577202236EDB20006200D /* ChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartModelFactory.swift; sourceTree = "<group>"; };
+		ADE577202236EDB20006200D /* DataChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataChartModelFactory.swift; sourceTree = "<group>"; };
 		ADE577242236FE620006200D /* UIColor+Initializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Initializer.swift"; sourceTree = "<group>"; };
-		ADE57726223702C50006200D /* ChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartModel.swift; sourceTree = "<group>"; };
+		ADE57726223702C50006200D /* DataChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChartModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +53,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AD9226C62238BEC100A5B7D6 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				AD9226CD2238C76E00A5B7D6 /* ColorScheme.swift */,
+				AD9226C72238BEEF00A5B7D6 /* CurveAlgorithm.swift */,
+				AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */,
+				AD9226C82238BEEF00A5B7D6 /* LineChart.swift */,
+				AD9226CF2238CBA800A5B7D6 /* PointModel.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		ADE576E32236E59B0006200D = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +105,7 @@
 		ADE5770B2236E8920006200D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				AD9226C62238BEC100A5B7D6 /* UI */,
 				ADE577232236FE500006200D /* Extensions */,
 				ADE577222236FE450006200D /* Model */,
 				ADE5770C2236E8920006200D /* ViewController.swift */,
@@ -94,8 +117,8 @@
 		ADE577222236FE450006200D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				ADE577202236EDB20006200D /* ChartModelFactory.swift */,
-				ADE57726223702C50006200D /* ChartModel.swift */,
+				ADE577202236EDB20006200D /* DataChartModelFactory.swift */,
+				ADE57726223702C50006200D /* DataChartModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -182,9 +205,14 @@
 			files = (
 				ADE577142236E8920006200D /* AppDelegate.swift in Sources */,
 				ADE577132236E8920006200D /* ViewController.swift in Sources */,
+				AD9226CE2238C76E00A5B7D6 /* ColorScheme.swift in Sources */,
 				ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */,
-				ADE577212236EDB20006200D /* ChartModelFactory.swift in Sources */,
-				ADE57727223702C50006200D /* ChartModel.swift in Sources */,
+				AD9226D02238CBA800A5B7D6 /* PointModel.swift in Sources */,
+				AD9226CC2238BEEF00A5B7D6 /* DotCALayer.swift in Sources */,
+				ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */,
+				AD9226CB2238BEEF00A5B7D6 /* LineChart.swift in Sources */,
+				ADE57727223702C50006200D /* DataChartModel.swift in Sources */,
+				AD9226CA2238BEEF00A5B7D6 /* CurveAlgorithm.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
