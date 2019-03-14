@@ -7,11 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AD9226CA2238BEEF00A5B7D6 /* CurveAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C72238BEEF00A5B7D6 /* CurveAlgorithm.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* LineChart.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotCALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */; };
-		AD9226CE2238C76E00A5B7D6 /* ColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CD2238C76E00A5B7D6 /* ColorScheme.swift */; };
+		AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */; };
 		AD9226D02238CBA800A5B7D6 /* PointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CF2238CBA800A5B7D6 /* PointModel.swift */; };
+		AD9226D2223A122B00A5B7D6 /* DrawingStyleProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D1223A122B00A5B7D6 /* DrawingStyleProtocol.swift */; };
+		AD9226D5223A12A900A5B7D6 /* DayScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D4223A12A900A5B7D6 /* DayScheme.swift */; };
+		AD9226D7223A12B800A5B7D6 /* NightScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D6223A12B800A5B7D6 /* NightScheme.swift */; };
+		AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */; };
+		AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */; };
+		AD9226DE223A286E00A5B7D6 /* Int+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DD223A286E00A5B7D6 /* Int+Format.swift */; };
 		ADE5770E2236E8920006200D /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = ADE577042236E8920006200D /* chart_data.json */; };
 		ADE5770F2236E8920006200D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADE577052236E8920006200D /* Assets.xcassets */; };
 		ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE577062236E8920006200D /* LaunchScreen.storyboard */; };
@@ -24,11 +29,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AD9226C72238BEEF00A5B7D6 /* CurveAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurveAlgorithm.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotCALayer.swift; sourceTree = "<group>"; };
-		AD9226CD2238C76E00A5B7D6 /* ColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorScheme.swift; sourceTree = "<group>"; };
+		AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeProtocol.swift; sourceTree = "<group>"; };
 		AD9226CF2238CBA800A5B7D6 /* PointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointModel.swift; sourceTree = "<group>"; };
+		AD9226D1223A122B00A5B7D6 /* DrawingStyleProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingStyleProtocol.swift; sourceTree = "<group>"; };
+		AD9226D4223A12A900A5B7D6 /* DayScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayScheme.swift; sourceTree = "<group>"; };
+		AD9226D6223A12B800A5B7D6 /* NightScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightScheme.swift; sourceTree = "<group>"; };
+		AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardDrawingStyle.swift; sourceTree = "<group>"; };
+		AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurveDrawingStyle.swift; sourceTree = "<group>"; };
+		AD9226DD223A286E00A5B7D6 /* Int+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Format.swift"; sourceTree = "<group>"; };
 		ADE576EC2236E59B0006200D /* TelegramCharts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramCharts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADE577042236E8920006200D /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		ADE577052236E8920006200D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -56,13 +66,33 @@
 		AD9226C62238BEC100A5B7D6 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				AD9226CD2238C76E00A5B7D6 /* ColorScheme.swift */,
-				AD9226C72238BEEF00A5B7D6 /* CurveAlgorithm.swift */,
+				AD9226D8223A12D300A5B7D6 /* DrawingStyle */,
+				AD9226D3223A129600A5B7D6 /* ColorScheme */,
 				AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */,
 				AD9226C82238BEEF00A5B7D6 /* LineChart.swift */,
 				AD9226CF2238CBA800A5B7D6 /* PointModel.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		AD9226D3223A129600A5B7D6 /* ColorScheme */ = {
+			isa = PBXGroup;
+			children = (
+				AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */,
+				AD9226D4223A12A900A5B7D6 /* DayScheme.swift */,
+				AD9226D6223A12B800A5B7D6 /* NightScheme.swift */,
+			);
+			path = ColorScheme;
+			sourceTree = "<group>";
+		};
+		AD9226D8223A12D300A5B7D6 /* DrawingStyle */ = {
+			isa = PBXGroup;
+			children = (
+				AD9226D1223A122B00A5B7D6 /* DrawingStyleProtocol.swift */,
+				AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */,
+				AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */,
+			);
+			path = DrawingStyle;
 			sourceTree = "<group>";
 		};
 		ADE576E32236E59B0006200D = {
@@ -127,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				ADE577242236FE620006200D /* UIColor+Initializer.swift */,
+				AD9226DD223A286E00A5B7D6 /* Int+Format.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -204,15 +235,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADE577142236E8920006200D /* AppDelegate.swift in Sources */,
+				AD9226D7223A12B800A5B7D6 /* NightScheme.swift in Sources */,
 				ADE577132236E8920006200D /* ViewController.swift in Sources */,
-				AD9226CE2238C76E00A5B7D6 /* ColorScheme.swift in Sources */,
+				AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */,
+				AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */,
 				ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */,
 				AD9226D02238CBA800A5B7D6 /* PointModel.swift in Sources */,
 				AD9226CC2238BEEF00A5B7D6 /* DotCALayer.swift in Sources */,
 				ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */,
 				AD9226CB2238BEEF00A5B7D6 /* LineChart.swift in Sources */,
 				ADE57727223702C50006200D /* DataChartModel.swift in Sources */,
-				AD9226CA2238BEEF00A5B7D6 /* CurveAlgorithm.swift in Sources */,
+				AD9226D5223A12A900A5B7D6 /* DayScheme.swift in Sources */,
+				AD9226DE223A286E00A5B7D6 /* Int+Format.swift in Sources */,
+				AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */,
+				AD9226D2223A122B00A5B7D6 /* DrawingStyleProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

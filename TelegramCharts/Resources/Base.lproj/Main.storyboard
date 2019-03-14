@@ -19,10 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEy-i1-zpB" customClass="LineChart" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="30" width="375" height="300"/>
+                                <rect key="frame" x="0.0" y="30" width="375" height="480"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="300" id="esq-LX-gN4"/>
+                                    <constraint firstAttribute="height" constant="480" id="esq-LX-gN4"/>
                                 </constraints>
                             </view>
                         </subviews>

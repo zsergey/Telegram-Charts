@@ -16,9 +16,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let dataEntries = generateEntries()
-        
         lineChart.dataEntries = dataEntries
-        lineChart.isCurved = false
     }
     
     private func generateEntries() -> [ChartModel] {
@@ -29,7 +27,7 @@ class ViewController: UIViewController {
 
         if let data = DataChartModelFactory.fetchCharts() {
             // пока заполним первым массивом.
-            let firstChart = data[0]
+            let firstChart = data[4]
             
             var xlabel = ""
             var ylabels = [String]()
