@@ -17,6 +17,7 @@
 		AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */; };
 		AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */; };
 		AD9226DE223A286E00A5B7D6 /* Int+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DD223A286E00A5B7D6 /* Int+Format.swift */; };
+		AD9226E0223B6EF000A5B7D6 /* chart_data_copy.json in Resources */ = {isa = PBXBuildFile; fileRef = AD9226DF223B6EF000A5B7D6 /* chart_data_copy.json */; };
 		ADE5770E2236E8920006200D /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = ADE577042236E8920006200D /* chart_data.json */; };
 		ADE5770F2236E8920006200D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADE577052236E8920006200D /* Assets.xcassets */; };
 		ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE577062236E8920006200D /* LaunchScreen.storyboard */; };
@@ -39,6 +40,7 @@
 		AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardDrawingStyle.swift; sourceTree = "<group>"; };
 		AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurveDrawingStyle.swift; sourceTree = "<group>"; };
 		AD9226DD223A286E00A5B7D6 /* Int+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Format.swift"; sourceTree = "<group>"; };
+		AD9226DF223B6EF000A5B7D6 /* chart_data_copy.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_copy.json; sourceTree = "<group>"; };
 		ADE576EC2236E59B0006200D /* TelegramCharts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramCharts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADE577042236E8920006200D /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		ADE577052236E8920006200D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				ADE577042236E8920006200D /* chart_data.json */,
+				AD9226DF223B6EF000A5B7D6 /* chart_data_copy.json */,
 				ADE577052236E8920006200D /* Assets.xcassets */,
 				ADE577062236E8920006200D /* LaunchScreen.storyboard */,
 				ADE577082236E8920006200D /* Main.storyboard */,
@@ -224,6 +227,7 @@
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,
 				ADE5770E2236E8920006200D /* chart_data.json in Resources */,
 				ADE577112236E8920006200D /* Main.storyboard in Resources */,
+				AD9226E0223B6EF000A5B7D6 /* chart_data_copy.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

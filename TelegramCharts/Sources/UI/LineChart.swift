@@ -33,7 +33,7 @@ class LineChart: UIView {
     let bottomSpace: CGFloat = 40.0
     
     /// The top most horizontal line in the chart will be 10% higher than the highest value in the chart
-    let topHorizontalLine: CGFloat = 110.0 / 100.0
+    let topHorizontalLine: CGFloat = 95.0 / 100.0
     
     /// Active or desactive animation on dots
     var animateDots: Bool = false
@@ -57,12 +57,12 @@ class LineChart: UIView {
         return dataEntries?.map { $0.data.count }.max() ?? 0
     }
 
-    var maxValue: Int {
-        return dataEntries?.map { $0.data.max()?.value ?? Int.min }.max() ?? 0
+    var maxValue: Int? {
+        return dataEntries?.map { $0.data.max()?.value }.compactMap { $0 }.max()
     }
 
-    var minValue: Int {
-        return dataEntries?.map { $0.data.min()?.value ?? Int.max }.min() ?? 0
+    var minValue: Int? {
+        return 0 // dataEntries?.map { $0.data.min()?.value }.compactMap { $0 }.min()
     }
         
     /// Contains the main line which represents the data
@@ -126,8 +126,8 @@ class LineChart: UIView {
     }
     
     private func convertDataEntriesToPoints(entries: [PointModel]) -> [CGPoint] {
-        if let max = entries.max()?.value,
-            let min = entries.min()?.value {
+        if let max = maxValue,
+            let min = minValue {
             
             var result: [CGPoint] = []
             let minMaxRange: CGFloat = CGFloat(max - min) * topHorizontalLine
@@ -192,41 +192,39 @@ class LineChart: UIView {
             return
         }
 
-        var gridValues: [CGFloat]?
-        if countPoints < 4 && countPoints > 0 {
-            gridValues = [0, 1]
-        } else if countPoints >= 4 {
-            gridValues = [0, 0.2, 0.4, 0.6, 0.8, 1]
-        }
-        if let gridValues = gridValues {
-            for value in gridValues {
-                let height = value * gridLayer.frame.size.height
-
-                let path = UIBezierPath()
-                path.move(to: CGPoint(x: 0, y: height))
-                path.addLine(to: CGPoint(x: gridLayer.frame.size.width, y: height))
-
-                let lineLayer = CAShapeLayer()
-                lineLayer.path = path.cgPath
-                lineLayer.fillColor = UIColor.clear.cgColor
-                lineLayer.strokeColor = colorScheme.gridColor.cgColor
-                lineLayer.lineWidth = 0.5
-                gridLayer.addSublayer(lineLayer)
-
-                let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
-                let lineValue = Int((1 - value) * minMaxGap) + Int(minValue)
-
-                let textLayer = CATextLayer()
-                textLayer.frame = CGRect(x: 4, y: height, width: 50, height: 16)
-                textLayer.foregroundColor = colorScheme.textColor.cgColor
-                textLayer.backgroundColor = UIColor.clear.cgColor
-                textLayer.contentsScale = UIScreen.main.scale
-                textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
-                textLayer.fontSize = 12
-                textLayer.string = lineValue.format
-
-                gridLayer.addSublayer(textLayer)
+        let gridValues: [CGFloat] = [0, 0.2, 0.4, 0.6, 0.8, 1]
+        for value in gridValues {
+            let height = value * gridLayer.frame.size.height
+            
+            let path = UIBezierPath()
+            path.move(to: CGPoint(x: 0, y: height))
+            path.addLine(to: CGPoint(x: gridLayer.frame.size.width, y: height))
+            
+            let lineLayer = CAShapeLayer()
+            lineLayer.path = path.cgPath
+            lineLayer.fillColor = UIColor.clear.cgColor
+            lineLayer.strokeColor = colorScheme.gridColor.cgColor
+            lineLayer.lineWidth = 0.5
+            gridLayer.addSublayer(lineLayer)
+            
+            var minMaxGap: CGFloat = 0
+            var lineValue: Int = 0
+            if let max = maxValue,
+                let min = minValue {
+                minMaxGap = CGFloat(max - min) * topHorizontalLine
+                lineValue = Int((1 - value) * minMaxGap) + Int(min)
             }
+
+            let textLayer = CATextLayer()
+            textLayer.frame = CGRect(x: 4, y: height - 16, width: 50, height: 16)
+            textLayer.foregroundColor = colorScheme.textColor.cgColor
+            textLayer.backgroundColor = UIColor.clear.cgColor
+            textLayer.contentsScale = UIScreen.main.scale
+            textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
+            textLayer.fontSize = 12
+            textLayer.string = lineValue.format
+            
+            gridLayer.addSublayer(textLayer)
         }
     }
     

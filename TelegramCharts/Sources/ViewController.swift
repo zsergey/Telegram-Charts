@@ -25,9 +25,9 @@ class ViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM"
 
-        if let data = DataChartModelFactory.fetchCharts() {
+        if let data = DataChartModelFactory.fetchCharts(fromResource: "chart_data_copy") {
             // пока заполним первым массивом.
-            let firstChart = data[4]
+            let firstChart = data[0]
             
             var xlabel = ""
             var ylabels = [String]()
