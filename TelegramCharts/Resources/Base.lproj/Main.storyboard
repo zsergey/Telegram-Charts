@@ -18,28 +18,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEy-i1-zpB" customClass="LineChart" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="30" width="375" height="480"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEy-i1-zpB" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
+                                <rect key="frame" x="16" y="30" width="343" height="480"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="480" id="esq-LX-gN4"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dId-La-Sua" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
+                                <rect key="frame" x="16" y="518" width="343" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="ULm-Cc-B2C"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zEy-i1-zpB" secondAttribute="trailing" id="Lnp-jU-OTS"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dId-La-Sua" secondAttribute="trailing" constant="16" id="GSk-R5-fah"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zEy-i1-zpB" secondAttribute="trailing" constant="16" id="Lnp-jU-OTS"/>
                             <constraint firstItem="zEy-i1-zpB" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="P6s-wW-mk5"/>
-                            <constraint firstItem="zEy-i1-zpB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="te2-ym-oQX"/>
+                            <constraint firstItem="dId-La-Sua" firstAttribute="top" secondItem="zEy-i1-zpB" secondAttribute="bottom" constant="8" id="tcx-vT-X0y"/>
+                            <constraint firstItem="zEy-i1-zpB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="te2-ym-oQX"/>
+                            <constraint firstItem="dId-La-Sua" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="zgV-4X-lde"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="lineChart" destination="zEy-i1-zpB" id="4Wx-uE-1Ip"/>
+                        <outlet property="shortChart" destination="dId-La-Sua" id="WNN-Dh-LuT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="53.600000000000001" y="26.53673163418291"/>
         </scene>
     </scenes>
 </document>

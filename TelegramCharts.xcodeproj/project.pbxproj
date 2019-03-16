@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AD9226CB2238BEEF00A5B7D6 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* LineChart.swift */; };
+		AD9226CB2238BEEF00A5B7D6 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotCALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */; };
 		AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */; };
 		AD9226D02238CBA800A5B7D6 /* PointModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CF2238CBA800A5B7D6 /* PointModel.swift */; };
@@ -30,7 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AD9226C82238BEEF00A5B7D6 /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
+		AD9226C82238BEEF00A5B7D6 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotCALayer.swift; sourceTree = "<group>"; };
 		AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeProtocol.swift; sourceTree = "<group>"; };
 		AD9226CF2238CBA800A5B7D6 /* PointModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointModel.swift; sourceTree = "<group>"; };
@@ -70,9 +70,9 @@
 			children = (
 				AD9226D8223A12D300A5B7D6 /* DrawingStyle */,
 				AD9226D3223A129600A5B7D6 /* ColorScheme */,
-				AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */,
-				AD9226C82238BEEF00A5B7D6 /* LineChart.swift */,
+				AD9226C82238BEEF00A5B7D6 /* ChartView.swift */,
 				AD9226CF2238CBA800A5B7D6 /* PointModel.swift */,
+				AD9226C92238BEEF00A5B7D6 /* DotCALayer.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -247,7 +247,7 @@
 				AD9226D02238CBA800A5B7D6 /* PointModel.swift in Sources */,
 				AD9226CC2238BEEF00A5B7D6 /* DotCALayer.swift in Sources */,
 				ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */,
-				AD9226CB2238BEEF00A5B7D6 /* LineChart.swift in Sources */,
+				AD9226CB2238BEEF00A5B7D6 /* ChartView.swift in Sources */,
 				ADE57727223702C50006200D /* DataChartModel.swift in Sources */,
 				AD9226D5223A12A900A5B7D6 /* DayScheme.swift in Sources */,
 				AD9226DE223A286E00A5B7D6 /* Int+Format.swift in Sources */,

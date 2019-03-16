@@ -10,22 +10,27 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet var lineChart: LineChart!
+    @IBOutlet var lineChart: ChartView!
+    @IBOutlet var shortChart: ChartView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let dataEntries = generateEntries()
-        lineChart.dataEntries = dataEntries
+        let chartModels = generateChartModels()
+        lineChart.chartModels = chartModels
+        lineChart.range = 10..<15
+        
+        shortChart.chartModels = chartModels
+        shortChart.isShortView = true
     }
     
-    private func generateEntries() -> [ChartModel] {
+    private func generateChartModels() -> [ChartModel] {
         var result: [ChartModel] = []
 
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM"
 
-        if let data = DataChartModelFactory.fetchCharts(fromResource: "chart_data_copy") {
+        if let data = DataChartModelFactory.fetchCharts() {
             // пока заполним первым массивом.
             let firstChart = data[0]
             

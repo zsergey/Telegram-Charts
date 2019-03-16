@@ -12,4 +12,6 @@ protocol ColorSchemeProtocol {
     var backgroundColor: UIColor { get }
     var gridColor: UIColor { get }
     var textColor: UIColor { get }
+
+    var shortBackgroundColor: UIColor { get } // zsergey - временная
 }

@@ -12,4 +12,6 @@ struct NightScheme: ColorSchemeProtocol {
     var backgroundColor: UIColor { return UIColor(hex: "#242F3E")! }
     var gridColor: UIColor { return UIColor(hex: "#141B22")! }
     var textColor: UIColor { return UIColor(hex: "#606D7C")! }
+    
+    var shortBackgroundColor: UIColor { return UIColor(hex: "#212A37")! }
 }

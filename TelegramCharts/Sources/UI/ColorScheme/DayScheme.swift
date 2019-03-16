@@ -12,4 +12,6 @@ struct DayScheme: ColorSchemeProtocol {
     var backgroundColor: UIColor { return UIColor(hex: "#FEFEFE")! }
     var gridColor: UIColor { return UIColor(hex: "#E1E2E3")! } 
     var textColor: UIColor { return UIColor(hex: "#999EA2")! }
+    
+    var shortBackgroundColor: UIColor { return UIColor(hex: "#F6F8FA")! }
 }

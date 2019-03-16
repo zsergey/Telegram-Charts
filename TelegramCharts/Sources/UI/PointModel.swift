@@ -25,5 +25,6 @@ extension PointModel: Comparable {
 struct ChartModel {
     let name: String
     let color: UIColor
+    let isHidden: Bool = false
     let data: [PointModel]
 }
