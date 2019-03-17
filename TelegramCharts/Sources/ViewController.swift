@@ -3,7 +3,7 @@
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/11/19.
-//  Copyright © 2019 Sergey Zapuhlyak. All rights reserved.
+//  Copyright © 2019 @zsergey. All rights reserved.
 //
 
 import UIKit
@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet var lineChart: ChartView!
     @IBOutlet var shortChart: ChartView!
+    @IBOutlet var sliderView: SliderView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +20,11 @@ class ViewController: UIViewController {
         let chartModels = generateChartModels()
         lineChart.chartModels = chartModels
         lineChart.range = 10..<15
+        
+        sliderView.chartModels = chartModels
+        sliderView.onChangeRange = { [weak self] range in
+            self?.lineChart.range = range
+        }
         
         shortChart.chartModels = chartModels
         shortChart.isShortView = true

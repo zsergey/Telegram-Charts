@@ -25,11 +25,21 @@
                                     <constraint firstAttribute="height" constant="480" id="esq-LX-gN4"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dId-La-Sua" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="16" y="518" width="343" height="60"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dId-La-Sua" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
+                                <rect key="frame" x="16" y="518" width="343" height="40"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YVW-AO-FUd" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="1" width="343" height="38"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="ULm-Cc-B2C"/>
+                                    <constraint firstItem="YVW-AO-FUd" firstAttribute="top" secondItem="dId-La-Sua" secondAttribute="top" constant="1" id="4tj-u1-rgr"/>
+                                    <constraint firstItem="YVW-AO-FUd" firstAttribute="leading" secondItem="dId-La-Sua" secondAttribute="leading" id="NxI-Kq-MRY"/>
+                                    <constraint firstAttribute="bottom" secondItem="YVW-AO-FUd" secondAttribute="bottom" constant="1" id="TE8-ed-8Ta"/>
+                                    <constraint firstAttribute="height" constant="40" id="ULm-Cc-B2C"/>
+                                    <constraint firstAttribute="trailing" secondItem="YVW-AO-FUd" secondAttribute="trailing" id="o5v-Yi-sCL"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -46,7 +56,8 @@
                     </view>
                     <connections>
                         <outlet property="lineChart" destination="zEy-i1-zpB" id="4Wx-uE-1Ip"/>
-                        <outlet property="shortChart" destination="dId-La-Sua" id="WNN-Dh-LuT"/>
+                        <outlet property="shortChart" destination="YVW-AO-FUd" id="aum-GM-nir"/>
+                        <outlet property="sliderView" destination="dId-La-Sua" id="eg3-YX-lel"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

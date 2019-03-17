@@ -3,7 +3,7 @@
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/14/19.
-//  Copyright © 2019 Sergey Zapuhlyak. All rights reserved.
+//  Copyright © 2019 @zsergey. All rights reserved.
 //
 
 import Foundation

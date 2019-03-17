@@ -3,13 +3,19 @@
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/11/19.
-//  Copyright © 2019 Sergey Zapuhlyak. All rights reserved.
+//  Copyright © 2019 @zsergey. All rights reserved.
 //
 
 import UIKit
 
 class ChartView: UIView {
     
+    var chartModels: [ChartModel]? {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+
     var range: Range<Int> = 0..<1 {
         didSet {
             setNeedsLayout()
@@ -22,16 +28,15 @@ class ChartView: UIView {
         }
     }
 
-    var colorScheme: ColorSchemeProtocol = NightScheme(){
+    var colorScheme: ColorSchemeProtocol = DayScheme() {
         didSet {
-            backgroundColor = colorScheme.backgroundColor
+            backgroundColor = colorScheme.background
             setNeedsLayout()
         }
     }
     
     var isShortView: Bool = false {
         didSet {
-            backgroundColor = isShortView ? colorScheme.shortBackgroundColor : colorScheme.backgroundColor
             setNeedsLayout()
         }
     }
@@ -59,30 +64,13 @@ class ChartView: UIView {
 
     /// Dot outer Radius
     var outerRadius: CGFloat = 10
-    
-    var chartModels: [ChartModel]? {
-        didSet {
-            setNeedsLayout()
-        }
-    }
-    
-    var countPoints: Int {
-        if isShortView {
-            return chartModels?.map { $0.data.count }.max() ?? 0
-        }
-        return range.count
-    }
 
-    var maxValue: Int? {
-        return chartModels?.map { chart in
-            let data = isShortView ? chart.data : Array(chart.data[range])
-            return data.max()?.value }.compactMap { $0 }.max()
-    }
-
-    var minValue: Int? {
-        return 0 // dataEntries?.map { $0.data.min()?.value }.compactMap { $0 }.min()
-    }
-        
+    private var countPoints: Int = 0
+    
+    private var maxValue: Int?
+    
+    private var minValue: Int?
+    
     /// Contains the main line which represents the data
     private let dataLayer: CALayer = CALayer()
     
@@ -120,7 +108,7 @@ class ChartView: UIView {
         //scrollView.layer.addSublayer(mainLayer)
         
         //addSubview(scrollView)
-        backgroundColor = colorScheme.backgroundColor
+        backgroundColor = colorScheme.background
         clipsToBounds = true
     }
     
@@ -155,13 +143,24 @@ class ChartView: UIView {
     }
     
     private func calcProperties() {
+        
+        countPoints = range.count
         if isShortView {
-            lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
+            countPoints = chartModels?.map { $0.data.count }.max() ?? 0
+        }
+
+        minValue = 0
+        maxValue = chartModels?.map { chart in
+            let data = isShortView ? chart.data : Array(chart.data[range])
+            return data.max()?.value }.compactMap { $0 }.max()
+
+        lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
+        
+        if isShortView {
             topSpace = 0.0
             bottomSpace = 0.0
             topHorizontalLine = 110.0 / 100.0
         } else {
-            lineGap = self.frame.size.width / (CGFloat(range.count) - 1)
             topSpace = 40.0
             bottomSpace = 40.0
             topHorizontalLine = 95.0 / 100.0
@@ -174,7 +173,7 @@ class ChartView: UIView {
         }
         var result: [CGPoint] = []
         let minMaxRange: CGFloat = CGFloat(max - min) * topHorizontalLine
-        let startFrom: CGFloat = 0 //isShortView ? 0 : 20 // zsergey + 40
+        let startFrom: CGFloat = 0 //isShortView ? 0 : 20 // TODO: + 40
         
         for i in 0..<entries.count {
             let height = dataLayer.frame.height * (1 - ((CGFloat(entries[i].value) - CGFloat(min)) / minMaxRange))
@@ -224,14 +223,14 @@ class ChartView: UIView {
                 points = Array(points[range])
             }
 
-            let startFrom: CGFloat = 0 //isShortView ? 0 : 20 // zsergey + 40
+            let startFrom: CGFloat = 0 //isShortView ? 0 : 20 // TODO: + 40
             for i in 0..<points.count {
                 let textLayer = CATextLayer()
                 textLayer.frame = CGRect(x: CGFloat(i) * lineGap - lineGap / 2 + startFrom,
                                          y: mainLayer.frame.size.height - bottomSpace / 2 - 8,
                                          width: lineGap,
                                          height: 16)
-                textLayer.foregroundColor = colorScheme.textColor.cgColor
+                textLayer.foregroundColor = colorScheme.text.cgColor
                 textLayer.backgroundColor = UIColor.clear.cgColor
                 textLayer.alignmentMode = .center
                 textLayer.contentsScale = UIScreen.main.scale
@@ -259,7 +258,7 @@ class ChartView: UIView {
             let lineLayer = CAShapeLayer()
             lineLayer.path = path.cgPath
             lineLayer.fillColor = UIColor.clear.cgColor
-            lineLayer.strokeColor = colorScheme.gridColor.cgColor
+            lineLayer.strokeColor = colorScheme.grid.cgColor
             lineLayer.lineWidth = 0.5
             gridLayer.addSublayer(lineLayer)
             
@@ -273,7 +272,7 @@ class ChartView: UIView {
 
             let textLayer = CATextLayer()
             textLayer.frame = CGRect(x: 4, y: height - 16, width: 50, height: 16)
-            textLayer.foregroundColor = colorScheme.textColor.cgColor
+            textLayer.foregroundColor = colorScheme.text.cgColor
             textLayer.backgroundColor = UIColor.clear.cgColor
             textLayer.contentsScale = UIScreen.main.scale
             textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
@@ -285,13 +284,13 @@ class ChartView: UIView {
     }
     
     private func clean() {
-        mainLayer.sublayers?.forEach({
+        mainLayer.sublayers?.forEach {
             if $0 is CATextLayer {
                 $0.removeFromSuperlayer()
             }
-        })
-        dataLayer.sublayers?.forEach({ $0.removeFromSuperlayer() })
-        gridLayer.sublayers?.forEach({ $0.removeFromSuperlayer() })
+        }
+        dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
     }
 
     private func drawDots() {
@@ -299,6 +298,7 @@ class ChartView: UIView {
             let chartModels = chartModels else {
             return
         }
+        
         
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
@@ -314,7 +314,7 @@ class ChartView: UIView {
                 let xValue = CGFloat(i) * lineGap - outerRadius / 2
                 let yValue = dataPoint.y + bottomSpace - outerRadius / 2
                 let dotLayer = DotCALayer()
-                dotLayer.dotInnerColor = colorScheme.backgroundColor
+                dotLayer.dotInnerColor = colorScheme.background
                 dotLayer.innerRadius = innerRadius
                 dotLayer.backgroundColor = chartModel.color.cgColor
                 dotLayer.cornerRadius = outerRadius / 2

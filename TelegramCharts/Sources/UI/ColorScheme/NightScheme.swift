@@ -3,15 +3,20 @@
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/14/19.
-//  Copyright © 2019 Sergey Zapuhlyak. All rights reserved.
+//  Copyright © 2019 @zsergey. All rights reserved.
 //
 
 import UIKit
 
 struct NightScheme: ColorSchemeProtocol {
-    var backgroundColor: UIColor { return UIColor(hex: "#242F3E")! }
-    var gridColor: UIColor { return UIColor(hex: "#141B22")! }
-    var textColor: UIColor { return UIColor(hex: "#606D7C")! }
+    var background: UIColor { return UIColor(hex: "#242F3E")! }
+    var grid: UIColor { return UIColor(hex: "#141B22")! }
+    var text: UIColor { return UIColor(hex: "#606D7C")! }
     
-    var shortBackgroundColor: UIColor { return UIColor(hex: "#212A37")! }
+    var slider: SliderColor {
+        return SliderColor(thumb: UIColor(hex: "#384657", alpha: 0.5)!,
+                           line: UIColor(hex: "#303A4A")!,
+                           background: UIColor(hex: "#1F2A39", alpha: 0.5)!,
+                           arrow: UIColor(hex: "#FFFFFF")!)
+    }
 }

@@ -3,15 +3,22 @@
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/13/19.
-//  Copyright © 2019 Sergey Zapuhlyak. All rights reserved.
+//  Copyright © 2019 @zsergey. All rights reserved.
 //
 
 import UIKit
 
-protocol ColorSchemeProtocol {
-    var backgroundColor: UIColor { get }
-    var gridColor: UIColor { get }
-    var textColor: UIColor { get }
+struct SliderColor {
+    let thumb: UIColor
+    let line: UIColor
+    let background: UIColor
+    let arrow: UIColor
+}
 
-    var shortBackgroundColor: UIColor { get } // zsergey - временная
+protocol ColorSchemeProtocol {
+    var background: UIColor { get }
+    var grid: UIColor { get }
+    var text: UIColor { get }
+    
+    var slider: SliderColor { get }
 }
