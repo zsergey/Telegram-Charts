@@ -11,14 +11,13 @@ import UIKit
 class SliderView: UIView {
     
     var onChangeRange: ((Range<Int>) ->())?
-    
+    var currentRange: Range<Int> = 0..<1
+
     var chartModels: [ChartModel]? {
         didSet {
             countPoints = chartModels?.map { $0.data.count }.max() ?? 0
-            lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
+            indexGap = (self.frame.size.width - trailingSpace - leadingSpace) / (CGFloat(countPoints) - 1)
             sliderWidth = minValueSliderWidth
-            // let maxValue = countPoints * 25 / 100
-            // currentRange = maxValue > 0 ? 0..<maxValue : 0..<1
             setNeedsLayout()
         }
     }
@@ -31,14 +30,14 @@ class SliderView: UIView {
 
     private var startX: CGFloat = 0 {
         didSet {
-            // высчитать новый range
+            calcCurrentRange()
             setNeedsLayout()
         }
     }
     
     private var sliderWidth: CGFloat = 0 {
         didSet {
-            // высчитать новый range
+            calcCurrentRange()
             setNeedsLayout()
         }
     }
@@ -53,14 +52,7 @@ class SliderView: UIView {
     
     private var countPoints: Int = 0
 
-    private var lineGap: CGFloat = 0.0
-
-    private var currentRange: Range<Int> = 0..<1 {
-        didSet {
-            startX = CGFloat(Int(CGFloat(currentRange.startIndex) * lineGap))
-            sliderWidth = CGFloat(Int(CGFloat(currentRange.endIndex - currentRange.startIndex) * lineGap))
-        }
-    }
+    private var indexGap: CGFloat = 0.0
 
     private let mainLayer: CALayer = CALayer()
     
@@ -195,6 +187,13 @@ class SliderView: UIView {
             point.x < x + sliderWidth - thumbWidth - halfTapSize {
             sliderTap = .center
         }
+    }
+    
+    private func calcCurrentRange() {
+        let startIndex = startX / indexGap
+        let endIndex = startIndex + sliderWidth / indexGap + 1.0
+        currentRange = Int(startIndex)..<Int(endIndex)
+        onChangeRange?(currentRange)
     }
     
     private func clean() {

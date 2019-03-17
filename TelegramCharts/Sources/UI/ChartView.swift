@@ -57,7 +57,7 @@ class ChartView: UIView {
     var animateDots: Bool = false
 
     /// Active or desactive dots
-    var showDots: Bool = true
+    var showDots: Bool = false
 
     /// Dot inner Radius
     var innerRadius: CGFloat = 6
@@ -285,7 +285,7 @@ class ChartView: UIView {
     
     private func clean() {
         mainLayer.sublayers?.forEach {
-            if $0 is CATextLayer {
+            if $0 is CATextLayer || $0 is DotCALayer{
                 $0.removeFromSuperlayer()
             }
         }
@@ -298,7 +298,6 @@ class ChartView: UIView {
             let chartModels = chartModels else {
             return
         }
-        
         
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]

@@ -18,13 +18,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         let chartModels = generateChartModels()
-        lineChart.chartModels = chartModels
-        lineChart.range = 10..<15
-        
         sliderView.chartModels = chartModels
         sliderView.onChangeRange = { [weak self] range in
             self?.lineChart.range = range
         }
+        
+        lineChart.chartModels = chartModels
+        lineChart.range = sliderView.currentRange
         
         shortChart.chartModels = chartModels
         shortChart.isShortView = true
