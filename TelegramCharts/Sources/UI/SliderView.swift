@@ -16,8 +16,6 @@ class SliderView: UIView {
     var chartModels: [ChartModel]? {
         didSet {
             countPoints = chartModels?.map { $0.data.count }.max() ?? 0
-            indexGap = (self.frame.size.width - trailingSpace - leadingSpace) / (CGFloat(countPoints) - 1)
-            sliderWidth = minValueSliderWidth
             setNeedsLayout()
         }
     }
@@ -103,13 +101,16 @@ class SliderView: UIView {
     }
     
     override func layoutSubviews() {
+        calcProperties()
         clean()
         drawSlider()
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        detectSliderTap(from: touches)
+    private func calcProperties() {
+        indexGap = (self.frame.size.width - trailingSpace - leadingSpace) / (CGFloat(countPoints) - 1)
+        if sliderWidth == 0 {
+            sliderWidth = minValueSliderWidth
+        }
     }
     
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
@@ -117,6 +118,8 @@ class SliderView: UIView {
         case .began:
             tapStartX = startX
             tapSliderWidth = sliderWidth
+            let point = recognizer.location(in: self)
+            detectSliderTap(from: point)
         case .changed:
             let translation = recognizer.translation(in: self)
             switch sliderTap {
@@ -170,11 +173,8 @@ class SliderView: UIView {
         sliderWidth = valueWidth
     }
 
-    private func detectSliderTap(from touches: Set<UITouch>) {
+    private func detectSliderTap(from point: CGPoint) {
         sliderTap = .none
-        guard let point = touches.first?.location(in: self) else {
-            return
-        }
         let halfTapSize = tapSize / 2
         let x = startX + trailingSpace
         if point.x >= x - halfTapSize,
@@ -190,9 +190,12 @@ class SliderView: UIView {
     }
     
     private func calcCurrentRange() {
+        guard indexGap != 0 else {
+            return
+        }
         let startIndex = startX / indexGap
         let endIndex = startIndex + sliderWidth / indexGap + 1.0
-        currentRange = Int(startIndex)..<Int(endIndex)
+        currentRange = Int(startIndex)..<min(Int(endIndex), countPoints)
         onChangeRange?(currentRange)
     }
     
