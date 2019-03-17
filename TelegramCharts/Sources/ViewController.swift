@@ -10,8 +10,8 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet var lineChart: ChartView!
-    @IBOutlet var shortChart: ChartView!
+    @IBOutlet var chartView: ChartView!
+    @IBOutlet var previewChartView: ChartView!
     @IBOutlet var sliderView: SliderView!
     
     override func viewDidLoad() {
@@ -20,14 +20,22 @@ class ViewController: UIViewController {
         let chartModels = generateChartModels()
         sliderView.chartModels = chartModels
         sliderView.onChangeRange = { [weak self] range in
-            self?.lineChart.range = range
+            self?.chartView.range = range
         }
         
-        lineChart.chartModels = chartModels
-        lineChart.range = sliderView.currentRange
+        chartView.chartModels = chartModels
+        chartView.range = sliderView.currentRange
         
-        shortChart.chartModels = chartModels
-        shortChart.isShortView = true
+        previewChartView.chartModels = chartModels
+        previewChartView.isPreviewMode = true
+        
+        let displayLink = CADisplayLink(target: self, selector: #selector(update))
+        displayLink.add(to: .current, forMode: .common)
+    }
+    
+    @objc func update() {
+        chartView.update()
+        previewChartView.update()
     }
     
     private func generateChartModels() -> [ChartModel] {
@@ -36,7 +44,7 @@ class ViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM"
 
-        if let data = DataChartModelFactory.fetchCharts() {
+        if let data = DataChartModelFactory.fetchCharts() { // TODO: fromResource: "chart_data_copy"
             // пока заполним первым массивом.
             let firstChart = data[0]
             

@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,21 +11,21 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="TelegramCharts" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEy-i1-zpB" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="16" y="30" width="343" height="480"/>
+                                <rect key="frame" x="16" y="30" width="568" height="480"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="480" id="esq-LX-gN4"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dId-La-Sua" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="518" width="375" height="40"/>
+                                <rect key="frame" x="0.0" y="518" width="600" height="40"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YVW-AO-FUd" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                        <rect key="frame" x="16" y="1" width="343" height="38"/>
+                                        <rect key="frame" x="16" y="1" width="568" height="38"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                 </subviews>
@@ -55,8 +51,8 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="lineChart" destination="zEy-i1-zpB" id="4Wx-uE-1Ip"/>
-                        <outlet property="shortChart" destination="YVW-AO-FUd" id="aum-GM-nir"/>
+                        <outlet property="chartView" destination="zEy-i1-zpB" id="4Wx-uE-1Ip"/>
+                        <outlet property="previewChartView" destination="YVW-AO-FUd" id="aum-GM-nir"/>
                         <outlet property="sliderView" destination="dId-La-Sua" id="eg3-YX-lel"/>
                     </connections>
                 </viewController>

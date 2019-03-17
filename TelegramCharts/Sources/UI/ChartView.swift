@@ -10,82 +10,58 @@ import UIKit
 
 class ChartView: UIView {
     
-    var chartModels: [ChartModel]? {
-        didSet {
-            setNeedsLayout()
-        }
-    }
+    var chartModels: [ChartModel]? { didSet { setNeedsLayout() } }
 
-    var range: Range<Int> = 0..<1 {
-        didSet {
-            setNeedsLayout()
-        }
-    }
+    var range: RangeModel = (0, 0) { didSet { setNeedsLayout() } }
     
-    var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() {
-        didSet {
-            setNeedsLayout()
-        }
-    }
+    var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() { didSet { setNeedsLayout() } }
 
-    var colorScheme: ColorSchemeProtocol = DayScheme() {
-        didSet {
-            backgroundColor = colorScheme.background
-            setNeedsLayout()
-        }
-    }
+    var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
-    var isShortView: Bool = false {
-        didSet {
-            setNeedsLayout()
-        }
-    }
-    
-    /// gap between each point
+    var isPreviewMode: Bool = false { didSet { setNeedsLayout() } }
+
     var lineGap: CGFloat = 60.0
     
-    /// preseved space at top of the chart
     var topSpace: CGFloat = 40.0
     
-    /// preserved space at bottom of the chart to show labels along the Y axis
     var bottomSpace: CGFloat = 40.0
     
-    /// The top most horizontal line in the chart will be 10% higher than the highest value in the chart
     var topHorizontalLine: CGFloat = 95.0 / 100.0
     
-    /// Active or desactive animation on dots
     var animateDots: Bool = false
 
-    /// Active or desactive dots
     var showDots: Bool = false
 
-    /// Dot inner Radius
     var innerRadius: CGFloat = 6
 
-    /// Dot outer Radius
     var outerRadius: CGFloat = 10
+    
+    private var minValue: CGFloat = 0
+    
+    private var maxValue: CGFloat = 0
 
+    private var targetMaxValue: CGFloat = 0
+
+    private var deltaToTargetValue: CGFloat = 0
+    
+    private var timeAnimation: Int = 0
+    
+    private var maxTimeAnimation: Int = 18
+    
     private var countPoints: Int = 0
+
+    private let animationDuration: CFTimeInterval = 0.3
     
-    private var maxValue: Int?
-    
-    private var minValue: Int?
-    
-    /// Contains the main line which represents the data
     private let dataLayer: CALayer = CALayer()
     
-    /// Contains dataLayer and gradientLayer
     private let mainLayer: CALayer = CALayer()
     
-    /// Contains mainLayer and label for each data entry
-    //private let scrollView: UIScrollView = UIScrollView()
-    
-    /// Contains horizontal lines
     private let gridLayer: CALayer = CALayer()
     
-    /// An array of CGPoint on dataLayer coordinate system that the main line will go through. These points will be calculated from dataEntries array
     private var dataPoints: [[CGPoint]]?
 
+    private var chartLines: [CAShapeLayer]?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -101,20 +77,48 @@ class ChartView: UIView {
         setupView()
     }
     
+    func update() {
+        if timeAnimation < maxTimeAnimation {
+            // Ease-in-out function from
+            // https://math.stackexchange.com/questions/121720/ease-in-out-function
+            var prevy: CGFloat = 0
+            for time in 0..<maxTimeAnimation {
+                let x = CGFloat(time) / CGFloat(maxTimeAnimation - 1)
+                let y = (x * x) / (x * x + (1.0 - x) * (1.0 - x))
+                
+                let toAddValue = deltaToTargetValue * (y - prevy)
+                prevy = y
+                
+                if time == timeAnimation {
+                    maxValue = maxValue + toAddValue
+                }
+            }
+            timeAnimation += 1
+        }
+    }
+    
+    private func setMaxValue(_ newMaxValue: CGFloat, animated: Bool = false) {
+        if animated {
+            guard newMaxValue != targetMaxValue else {
+                return
+            }
+            targetMaxValue = newMaxValue
+            deltaToTargetValue = newMaxValue - maxValue
+            timeAnimation = 0
+        } else {
+            maxValue = newMaxValue
+        }
+    }
+    
     private func setupView() {
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(gridLayer)
         layer.addSublayer(mainLayer)
-        //scrollView.layer.addSublayer(mainLayer)
-        
-        //addSubview(scrollView)
-        backgroundColor = colorScheme.background
         clipsToBounds = true
     }
     
     override func layoutSubviews() {
-        //scrollView.frame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height)
-        let countPoints = self.countPoints
+        backgroundColor = colorScheme.background
         guard let chartModels = chartModels else {
             return
         }
@@ -122,7 +126,6 @@ class ChartView: UIView {
         
         let width = CGFloat(countPoints) * lineGap
         let height = self.frame.size.height
-        //scrollView.contentSize = CGSize(width: width, height: height)
         mainLayer.frame = CGRect(x: 0, y: 0, width: width, height: height)
         dataLayer.frame = CGRect(x: 0, y: topSpace, width: mainLayer.frame.width,
                                  height: mainLayer.frame.height - topSpace - bottomSpace)
@@ -135,48 +138,59 @@ class ChartView: UIView {
         
         gridLayer.frame = CGRect(x: 0, y: topSpace, width: self.frame.width, height: mainLayer.frame.height - topSpace - bottomSpace)
         
-        clean()
-        if showDots { drawDots() }
-        drawHorizontalLines()
+        // clean()
+        // if showDots { drawDots() }
+        // drawHorizontalLines()
         drawCharts()
-        drawLables()
+        // drawLables()
     }
     
     private func calcProperties() {
-        
-        countPoints = range.count
-        if isShortView {
-            countPoints = chartModels?.map { $0.data.count }.max() ?? 0
-        }
-
-        minValue = 0
-        maxValue = chartModels?.map { chart in
-            let data = isShortView ? chart.data : Array(chart.data[range])
-            return data.max()?.value }.compactMap { $0 }.max()
-
-        lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
-        
-        if isShortView {
+        let animateMaxValue = maxValue == 0 ? false : true
+        if isPreviewMode {
             topSpace = 0.0
             bottomSpace = 0.0
             topHorizontalLine = 110.0 / 100.0
+            
+            countPoints = chartModels?.map { $0.data.count }.max() ?? 0
+            lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
+            let max: CGFloat = chartModels?.map { chartModel in
+                if chartModel.isHidden {
+                    return 0
+                } else {
+                    return CGFloat(chartModel.data.max()?.value ?? 0)
+                }}.compactMap { $0 }.max() ?? 0
+            setMaxValue(max, animated: animateMaxValue)
         } else {
             topSpace = 40.0
             bottomSpace = 40.0
             topHorizontalLine = 95.0 / 100.0
+            lineGap = self.frame.size.width / (range.end - range.start - 1)
+            if let chartModels = chartModels {
+                var max: CGFloat = 0
+                for chartModel in chartModels {
+                    for i in 0..<chartModel.data.count {
+                        let x = (CGFloat(i) - range.start) * lineGap
+                        if x >= 0, x <= self.frame.size.width {
+                            let value = CGFloat(chartModel.data[i].value)
+                            if value > max {
+                                max = value
+                            }
+                        }
+                    }
+                }
+                setMaxValue(max, animated: animateMaxValue)
+            }
         }
     }
     
     private func convertDataEntriesToPoints(entries: [PointModel]) -> [CGPoint] {
-        guard let max = maxValue, let min = minValue else {
-            return []
-        }
         var result: [CGPoint] = []
-        let minMaxRange: CGFloat = CGFloat(max - min) * topHorizontalLine
-        let startFrom: CGFloat = 0 //isShortView ? 0 : 20 // TODO: + 40
+        let minMaxRange: CGFloat = CGFloat(maxValue - minValue) * topHorizontalLine
+        let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
         
         for i in 0..<entries.count {
-            let height = dataLayer.frame.height * (1 - ((CGFloat(entries[i].value) - CGFloat(min)) / minMaxRange))
+            let height = dataLayer.frame.height * (1 - ((CGFloat(entries[i].value) - CGFloat(minValue)) / minMaxRange))
             let point = CGPoint(x: CGFloat(i) * lineGap + startFrom, y: height)
             result.append(point)
         }
@@ -188,30 +202,47 @@ class ChartView: UIView {
             let chartModels = chartModels else {
             return
         }
+        
+        var newChartLines = [CAShapeLayer]()
+        let needsUpdatePath = self.chartLines != nil
+        
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
             if chartModel.isHidden { continue }
-
+            
+            var lineLayer = CAShapeLayer()
+            if needsUpdatePath {
+                lineLayer = self.chartLines![index]
+            }
+            
             var points = dataPoints[index]
-            if !isShortView {
-                points = Array(points[range])
+            if !isPreviewMode {
                 for i in 0..<points.count {
-                    points[i] = CGPoint(x: CGFloat(i) * lineGap, y: points[i].y)
+                    points[i] = CGPoint(x: (CGFloat(i) - range.start) * lineGap, y: points[i].y)
                 }
             }
+            
             if let path = drawingStyle.createPath(dataPoints: points) {
-                let lineLayer = CAShapeLayer()
-                lineLayer.path = path.cgPath
-                lineLayer.strokeColor = chartModel.color.cgColor
-                lineLayer.fillColor = UIColor.clear.cgColor
-                lineLayer.lineWidth = isShortView ? 1.0 : 2.0
-                dataLayer.addSublayer(lineLayer)
+                if needsUpdatePath {
+                    lineLayer.path = path.cgPath
+                } else {
+                    lineLayer.path = path.cgPath
+                    lineLayer.strokeColor = chartModel.color.cgColor
+                    lineLayer.fillColor = UIColor.clear.cgColor
+                    lineLayer.lineWidth = isPreviewMode ? 1.0 : 2.0
+                    dataLayer.addSublayer(lineLayer)
+                    newChartLines.append(lineLayer)
+                }
             }
+        }
+        
+        if !needsUpdatePath {
+            self.chartLines = newChartLines
         }
     }
         
     private func drawLables() {
-        guard let chartModels = chartModels, chartModels.count > 0, !isShortView else {
+        guard let chartModels = chartModels, chartModels.count > 0, !isPreviewMode else {
             return
         }
         var points: [PointModel]?
@@ -219,11 +250,12 @@ class ChartView: UIView {
             if $0.data.count > points?.count ?? 0 { points = $0.data }
         }
         if var points = points {
-            if !isShortView {
+            // TODO: здесь учесть видимый участок графика
+            /* if !isPreviewMode {
                 points = Array(points[range])
-            }
+            }*/
 
-            let startFrom: CGFloat = 0 //isShortView ? 0 : 20 // TODO: + 40
+            let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
             for i in 0..<points.count {
                 let textLayer = CATextLayer()
                 textLayer.frame = CGRect(x: CGFloat(i) * lineGap - lineGap / 2 + startFrom,
@@ -243,7 +275,7 @@ class ChartView: UIView {
     }
     
     private func drawHorizontalLines() {
-        guard let _ = chartModels, !isShortView else {
+        guard let _ = chartModels, !isPreviewMode else {
             return
         }
 
@@ -262,13 +294,8 @@ class ChartView: UIView {
             lineLayer.lineWidth = 0.5
             gridLayer.addSublayer(lineLayer)
             
-            var minMaxGap: CGFloat = 0
-            var lineValue: Int = 0
-            if let max = maxValue,
-                let min = minValue {
-                minMaxGap = CGFloat(max - min) * topHorizontalLine
-                lineValue = Int((1 - value) * minMaxGap) + Int(min)
-            }
+            let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
+            let lineValue = Int((1 - value) * minMaxGap) + Int(minValue)
 
             let textLayer = CATextLayer()
             textLayer.frame = CGRect(x: 4, y: height - 16, width: 50, height: 16)
@@ -294,7 +321,7 @@ class ChartView: UIView {
     }
 
     private func drawDots() {
-        guard let dataPoints = dataPoints, dataPoints.count > 0, !isShortView,
+        guard let dataPoints = dataPoints, dataPoints.count > 0, !isPreviewMode,
             let chartModels = chartModels else {
             return
         }
@@ -305,9 +332,10 @@ class ChartView: UIView {
             
             var dotLayers: [DotCALayer] = []
             var points = dataPoints[index]
-            if !isShortView {
+            // TODO: здесь учесть видимый участок графика
+            /* if !isPreviewMode {
                 points = Array(points[range])
-            }
+            }*/
             for i in 0..<points.count {
                 let dataPoint = points[i]
                 let xValue = CGFloat(i) * lineGap - outerRadius / 2

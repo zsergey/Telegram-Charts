@@ -10,8 +10,8 @@ import UIKit
 
 class SliderView: UIView {
     
-    var onChangeRange: ((Range<Int>) ->())?
-    var currentRange: Range<Int> = 0..<1
+    var onChangeRange: ((RangeModel) ->())?
+    var currentRange: RangeModel = (0, 0)
 
     var chartModels: [ChartModel]? {
         didSet {
@@ -194,8 +194,8 @@ class SliderView: UIView {
             return
         }
         let startIndex = startX / indexGap
-        let endIndex = startIndex + sliderWidth / indexGap + 1.0
-        currentRange = Int(startIndex)..<min(Int(endIndex), countPoints)
+        let endIndex = (startX + sliderWidth) / indexGap + 1
+        currentRange = (startIndex, endIndex)
         onChangeRange?(currentRange)
     }
     

@@ -28,3 +28,5 @@ struct ChartModel {
     let isHidden: Bool = false
     let data: [PointModel]
 }
+
+typealias RangeModel = (start: CGFloat, end: CGFloat)
