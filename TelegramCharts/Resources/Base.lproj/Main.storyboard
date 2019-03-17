@@ -26,31 +26,31 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dId-La-Sua" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="16" y="518" width="343" height="40"/>
+                                <rect key="frame" x="0.0" y="518" width="375" height="40"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YVW-AO-FUd" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="1" width="343" height="38"/>
+                                        <rect key="frame" x="16" y="1" width="343" height="38"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="YVW-AO-FUd" firstAttribute="top" secondItem="dId-La-Sua" secondAttribute="top" constant="1" id="4tj-u1-rgr"/>
-                                    <constraint firstItem="YVW-AO-FUd" firstAttribute="leading" secondItem="dId-La-Sua" secondAttribute="leading" id="NxI-Kq-MRY"/>
+                                    <constraint firstItem="YVW-AO-FUd" firstAttribute="leading" secondItem="dId-La-Sua" secondAttribute="leading" constant="16" id="NxI-Kq-MRY"/>
                                     <constraint firstAttribute="bottom" secondItem="YVW-AO-FUd" secondAttribute="bottom" constant="1" id="TE8-ed-8Ta"/>
                                     <constraint firstAttribute="height" constant="40" id="ULm-Cc-B2C"/>
-                                    <constraint firstAttribute="trailing" secondItem="YVW-AO-FUd" secondAttribute="trailing" id="o5v-Yi-sCL"/>
+                                    <constraint firstAttribute="trailing" secondItem="YVW-AO-FUd" secondAttribute="trailing" constant="16" id="o5v-Yi-sCL"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dId-La-Sua" secondAttribute="trailing" constant="16" id="GSk-R5-fah"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dId-La-Sua" secondAttribute="trailing" id="GSk-R5-fah"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zEy-i1-zpB" secondAttribute="trailing" constant="16" id="Lnp-jU-OTS"/>
                             <constraint firstItem="zEy-i1-zpB" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="P6s-wW-mk5"/>
                             <constraint firstItem="dId-La-Sua" firstAttribute="top" secondItem="zEy-i1-zpB" secondAttribute="bottom" constant="8" id="tcx-vT-X0y"/>
                             <constraint firstItem="zEy-i1-zpB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="te2-ym-oQX"/>
-                            <constraint firstItem="dId-La-Sua" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="zgV-4X-lde"/>
+                            <constraint firstItem="dId-La-Sua" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="zgV-4X-lde"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>

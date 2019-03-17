@@ -15,9 +15,10 @@ class SliderView: UIView {
     var chartModels: [ChartModel]? {
         didSet {
             countPoints = chartModels?.map { $0.data.count }.max() ?? 0
-            let maxValue = countPoints * 25 / 100
-            currentRange = maxValue > 0 ? 0..<maxValue : 0..<1
             lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
+            sliderWidth = minValueSliderWidth
+            // let maxValue = countPoints * 25 / 100
+            // currentRange = maxValue > 0 ? 0..<maxValue : 0..<1
             setNeedsLayout()
         }
     }
@@ -28,37 +29,61 @@ class SliderView: UIView {
         }
     }
 
-    private var startX: CGFloat {
-        return CGFloat(Int(CGFloat(currentRange.startIndex) * lineGap))
+    private var startX: CGFloat = 0 {
+        didSet {
+            // высчитать новый range
+            setNeedsLayout()
+        }
+    }
+    
+    private var sliderWidth: CGFloat = 0 {
+        didSet {
+            // высчитать новый range
+            setNeedsLayout()
+        }
     }
 
-    private var sliderWidth: CGFloat {
-        return CGFloat(Int(CGFloat(currentRange.endIndex - currentRange.startIndex) * lineGap))
-    }
+    private var tapStartX: CGFloat = 0
 
+    private var tapSliderWidth: CGFloat = 0
+
+    private let tapSize: CGFloat = 34
+    
+    private var minValueSliderWidth: CGFloat = 0
+    
     private var countPoints: Int = 0
 
     private var lineGap: CGFloat = 0.0
 
-    private var currentRange: Range<Int> = 0..<1
+    private var currentRange: Range<Int> = 0..<1 {
+        didSet {
+            startX = CGFloat(Int(CGFloat(currentRange.startIndex) * lineGap))
+            sliderWidth = CGFloat(Int(CGFloat(currentRange.endIndex - currentRange.startIndex) * lineGap))
+        }
+    }
 
     private let mainLayer: CALayer = CALayer()
     
-    private let widthThumb: CGFloat = 11
+    private let thumbWidth: CGFloat = 11
 
-    private let widthArrow: CGFloat = 6
+    private let arrowWidth: CGFloat = 6
     
     private let thumbCornerRadius: CGFloat = 0.25
 
-    private let angle: CGFloat = 56
+    private let arrowAngle: CGFloat = 60
 
-    private enum TapPosition {
+    private let trailingSpace: CGFloat = 16
+
+    private let leadingSpace: CGFloat = 16
+
+    private enum SliderTap {
         case left
         case right
         case center
+        case none
     }
     
-    private var tapPosition: TapPosition = .center
+    private var sliderTap: SliderTap = .none
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,6 +101,8 @@ class SliderView: UIView {
     }
     
     private func setupView() {
+        minValueSliderWidth = 2 * thumbWidth + 2 * tapSize
+        
         layer.addSublayer(mainLayer)
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
@@ -88,7 +115,86 @@ class SliderView: UIView {
         drawSlider()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        detectSliderTap(from: touches)
+    }
+    
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
+        switch recognizer.state {
+        case .began:
+            tapStartX = startX
+            tapSliderWidth = sliderWidth
+        case .changed:
+            let translation = recognizer.translation(in: self)
+            switch sliderTap {
+            case .center: processCenter(translation)
+            case .left: processLeft(translation)
+            case .right: processRight(translation)
+            default: break
+            }
+        default: break
+        }
+    }
+    
+    private func processCenter(_ translation: CGPoint) {
+        let minValue: CGFloat = 0
+        let maxValue = self.frame.size.width - sliderWidth - trailingSpace - leadingSpace
+        var value = tapStartX + translation.x
+        if value < minValue {
+            value = minValue
+        } else if value > maxValue {
+            value = maxValue
+        }
+        startX = value
+    }
+    
+    private func processLeft(_ translation: CGPoint) {
+        let minValueX: CGFloat = 0
+        var valueX = tapStartX + translation.x
+        var valueWidth = tapSliderWidth - translation.x
+        if valueX < minValueX {
+            valueX = minValueX
+            let translationx = valueX - tapStartX
+            valueWidth = tapSliderWidth - translationx
+        }
+        if valueWidth < minValueSliderWidth {
+            valueWidth = minValueSliderWidth
+            let translationx = tapSliderWidth - valueWidth
+            valueX = tapStartX + translationx
+        }
+        startX = valueX
+        sliderWidth = valueWidth
+    }
+
+    private func processRight(_ translation: CGPoint) {
+        let maxValueSliderWidth = self.frame.size.width - trailingSpace - leadingSpace - tapStartX
+        var valueWidth = tapSliderWidth + translation.x
+        if valueWidth < minValueSliderWidth {
+            valueWidth = minValueSliderWidth
+        } else if valueWidth > maxValueSliderWidth {
+            valueWidth = maxValueSliderWidth
+        }
+        sliderWidth = valueWidth
+    }
+
+    private func detectSliderTap(from touches: Set<UITouch>) {
+        sliderTap = .none
+        guard let point = touches.first?.location(in: self) else {
+            return
+        }
+        let halfTapSize = tapSize / 2
+        let x = startX + trailingSpace
+        if point.x >= x - halfTapSize,
+            point.x <= x + thumbWidth + halfTapSize {
+            sliderTap = .left
+        } else if point.x >= x + sliderWidth - thumbWidth - halfTapSize,
+            point.x <= x + sliderWidth + halfTapSize {
+            sliderTap = .right
+        } else if point.x > x + thumbWidth + halfTapSize,
+            point.x < x + sliderWidth - thumbWidth - halfTapSize {
+            sliderTap = .center
+        }
     }
     
     private func clean() {
@@ -97,8 +203,8 @@ class SliderView: UIView {
 
     private func drawSlider() {
         drawBackgrounds()
-        drawThumb(with: CGRect(x: startX, y: 1, width: widthThumb, height: self.frame.size.height - 2))
-        drawThumb(with: CGRect(x: startX + sliderWidth - widthThumb, y: 1, width: widthThumb, height: self.frame.size.height - 2))
+        drawThumb(with: CGRect(x: startX + trailingSpace, y: 1, width: thumbWidth, height: self.frame.size.height - 2))
+        drawThumb(with: CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: 1, width: thumbWidth, height: self.frame.size.height - 2))
         drawLines()
         drawArrows()
     }
@@ -114,16 +220,16 @@ class SliderView: UIView {
     
     private func drawLines() {
         let height = self.frame.size.height
-        var x1 = startX
-        var x2 = startX + sliderWidth
+        var x1 = startX + trailingSpace
+        var x2 = startX + sliderWidth + trailingSpace
         var rect = CGRect(x: x1 + 1, y: 0, width: sliderWidth - 2, height: 1)
         drawRect(rect: rect, byRoundingCorners: [.topLeft, .topRight], strokeColor: colorScheme.slider.line)
         
         rect = CGRect(x: x1 + 1, y: height - 1, width: sliderWidth - 2, height: 1)
         drawRect(rect: rect, byRoundingCorners: [.bottomLeft, .bottomRight], strokeColor: colorScheme.slider.line)
         
-        x1 = x1 + widthThumb
-        x2 = x2 - widthThumb
+        x1 = x1 + thumbWidth
+        x2 = x2 - thumbWidth
         
         drawLine(from: CGPoint(x: x1, y: 1), to: CGPoint(x: x2, y: 1), color: colorScheme.background)
         drawLine(from: CGPoint(x: x1, y: height - 1), to: CGPoint(x: x2, y: height - 1), color: colorScheme.background)
@@ -131,10 +237,10 @@ class SliderView: UIView {
     
     private func drawBackgrounds() {
         let height = self.frame.size.height
-        let width = self.frame.size.width
-        let x = startX
+        let width = self.frame.size.width - leadingSpace
+        let x = startX + trailingSpace
         if x > 0 {
-            let rect = CGRect(x: 0, y: 1, width: startX, height: height - 2)
+            let rect = CGRect(x: trailingSpace, y: 1, width: startX, height: height - 2)
             drawRect(rect: rect, fillColor: colorScheme.slider.background)
         }
         if x + sliderWidth < width {
@@ -176,8 +282,8 @@ class SliderView: UIView {
     
     private func drawArrows() {
         let height = self.frame.size.height
-        drawArrow(at: CGPoint(x: startX + widthThumb / 2, y: height / 2), left: true)
-        drawArrow(at: CGPoint(x: startX + sliderWidth - widthThumb / 2, y: height / 2), left: false)
+        drawArrow(at: CGPoint(x: startX + trailingSpace + thumbWidth / 2, y: height / 2), left: true)
+        drawArrow(at: CGPoint(x: startX + trailingSpace + sliderWidth - thumbWidth / 2, y: height / 2), left: false)
     }
     
     private func drawArrow(at point: CGPoint, left: Bool) {
@@ -185,14 +291,14 @@ class SliderView: UIView {
 
         let heightArrow: CGFloat = 1
         let lineWidth: CGFloat = 0.75
-        let rect = CGRect(x: 0, y: 0, width: widthArrow, height: heightArrow)
+        let rect = CGRect(x: 0, y: 0, width: arrowWidth, height: heightArrow)
         
         let line = drawRect(rect: rect, byRoundingCorners: corners,
                             strokeColor: colorScheme.slider.arrow,
                             fillColor: colorScheme.slider.arrow,
                             lineWidth: lineWidth)
         
-        var radians = left ? angle.radians : (180 - angle).radians
+        var radians = left ? arrowAngle.radians : (180 - arrowAngle).radians
         let deltaX: CGFloat = left ? 1.25 : -1.25 - lineWidth
         var transform = CATransform3DMakeTranslation(point.x - deltaX,
                                                      point.y - heightArrow / 4, 0)
@@ -203,7 +309,7 @@ class SliderView: UIView {
                              strokeColor: colorScheme.slider.arrow,
                              fillColor: colorScheme.slider.arrow,
                              lineWidth: lineWidth)
-        radians = left ? (360 - angle).radians : (180 + angle).radians
+        radians = left ? (360 - arrowAngle).radians : (180 + arrowAngle).radians
         var transform2 = CATransform3DMakeTranslation(point.x - lineWidth - deltaX,
                                                       point.y - heightArrow / 4, 0)
         transform2 = CATransform3DRotate(transform2, radians, 0.0, 0.0, 1.0)
