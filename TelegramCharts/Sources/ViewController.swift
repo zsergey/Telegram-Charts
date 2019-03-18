@@ -38,6 +38,22 @@ class ViewController: UIViewController {
         previewChartView.update()
     }
     
+    @IBAction func chartSwicth1Changed(_ sender: UISwitch) {
+        if var chartModels = chartView.chartModels {
+            chartModels[0].isHidden = !sender.isOn
+            chartView.setNeedsLayout()
+            previewChartView.setNeedsLayout()
+        }
+    }
+    
+    @IBAction func chartSwicth2Changed(_ sender: UISwitch) {
+        if var chartModels = chartView.chartModels {
+            chartModels[1].isHidden = !sender.isOn
+            chartView.setNeedsLayout()
+            previewChartView.setNeedsLayout()
+        }
+    }
+    
     private func generateChartModels() -> [ChartModel] {
         var result: [ChartModel] = []
 
@@ -74,7 +90,7 @@ class ViewController: UIViewController {
                         }
                     }
                     
-                    let chartModel = ChartModel.init(name: name, color: color, data: pointModels)
+                    let chartModel = ChartModel(name: name, color: color, isHidden: false, data: pointModels)
                     result.append(chartModel)
                 }
             }

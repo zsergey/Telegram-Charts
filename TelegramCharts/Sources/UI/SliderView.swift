@@ -10,8 +10,8 @@ import UIKit
 
 class SliderView: UIView {
     
-    var onChangeRange: ((RangeModel) ->())?
-    var currentRange: RangeModel = (0, 0)
+    var onChangeRange: ((IndexRange) ->())?
+    var currentRange: IndexRange = (0, 0)
 
     var chartModels: [ChartModel]? {
         didSet {
@@ -91,8 +91,6 @@ class SliderView: UIView {
     }
     
     private func setupView() {
-        minValueSliderWidth = 2 * thumbWidth + 2 * tapSize
-        
         layer.addSublayer(mainLayer)
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
@@ -107,6 +105,7 @@ class SliderView: UIView {
     }
     
     private func calcProperties() {
+        minValueSliderWidth = 2 * thumbWidth + 2 * tapSize
         indexGap = (self.frame.size.width - trailingSpace - leadingSpace) / (CGFloat(countPoints) - 1)
         if sliderWidth == 0 {
             sliderWidth = minValueSliderWidth

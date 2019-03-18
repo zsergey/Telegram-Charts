@@ -12,7 +12,7 @@ class ChartView: UIView {
     
     var chartModels: [ChartModel]? { didSet { setNeedsLayout() } }
 
-    var range: RangeModel = (0, 0) { didSet { setNeedsLayout() } }
+    var range: IndexRange = (0, 0) { didSet { setNeedsLayout() } }
     
     var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() { didSet { setNeedsLayout() } }
 
@@ -38,7 +38,7 @@ class ChartView: UIView {
     
     private var minValue: CGFloat = 0
     
-    private var maxValue: CGFloat = 0
+    private var maxValue: CGFloat = 0 { didSet { setNeedsLayout() } }
 
     private var targetMaxValue: CGFloat = 0
 
@@ -46,11 +46,11 @@ class ChartView: UIView {
     
     private var timeAnimation: Int = 0
     
-    private var maxTimeAnimation: Int = 18
+    private var maxTimeAnimation: Int = 18 // 0.3 sec
     
     private var countPoints: Int = 0
 
-    private let animationDuration: CFTimeInterval = 0.3
+    private let animationDuration: CFTimeInterval = 0.5
     
     private let dataLayer: CALayer = CALayer()
     
@@ -136,7 +136,8 @@ class ChartView: UIView {
             dataPoints?.append(points)
         }
         
-        gridLayer.frame = CGRect(x: 0, y: topSpace, width: self.frame.width, height: mainLayer.frame.height - topSpace - bottomSpace)
+        gridLayer.frame = CGRect(x: 0, y: topSpace, width: self.frame.width,
+                                 height: mainLayer.frame.height - topSpace - bottomSpace)
         
         // clean()
         // if showDots { drawDots() }
@@ -147,6 +148,8 @@ class ChartView: UIView {
     
     private func calcProperties() {
         let animateMaxValue = maxValue == 0 ? false : true
+        print("animateMaxValue = \(animateMaxValue)")
+        
         if isPreviewMode {
             topSpace = 0.0
             bottomSpace = 0.0
@@ -169,6 +172,7 @@ class ChartView: UIView {
             if let chartModels = chartModels {
                 var max: CGFloat = 0
                 for chartModel in chartModels {
+                    if chartModel.isHidden { continue }
                     for i in 0..<chartModel.data.count {
                         let x = (CGFloat(i) - range.start) * lineGap
                         if x >= 0, x <= self.frame.size.width {
@@ -208,7 +212,6 @@ class ChartView: UIView {
         
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
-            if chartModel.isHidden { continue }
             
             var lineLayer = CAShapeLayer()
             if needsUpdatePath {
@@ -225,6 +228,16 @@ class ChartView: UIView {
             if let path = drawingStyle.createPath(dataPoints: points) {
                 if needsUpdatePath {
                     lineLayer.path = path.cgPath
+                    if chartModel.opacity != lineLayer.opacity {
+                        let toValue: Float = chartModel.isHidden ? 0 : 1
+                        let animation = CABasicAnimation(keyPath: "opacity")
+                        animation.fromValue = lineLayer.isHidden ? 0 : 1
+                        animation.toValue = toValue
+                        animation.duration = animationDuration
+                        lineLayer.add(animation, forKey: "opacity")
+                        lineLayer.opacity = toValue
+                    }
+                    
                 } else {
                     lineLayer.path = path.cgPath
                     lineLayer.strokeColor = chartModel.color.cgColor
@@ -328,7 +341,7 @@ class ChartView: UIView {
         
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
-            if chartModel.isHidden { continue }
+            // if chartModel.isHidden { continue }
             
             var dotLayers: [DotCALayer] = []
             var points = dataPoints[index]
