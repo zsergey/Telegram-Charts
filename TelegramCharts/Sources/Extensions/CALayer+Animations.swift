@@ -38,4 +38,22 @@ extension CALayer {
             self.opacity = toValue
         }
     }
+    
+}
+
+extension CAShapeLayer {
+    
+    func changePath(to path: UIBezierPath, animationDuration: CFTimeInterval) {
+        if animationDuration == 0 {
+            self.path = path.cgPath
+        } else {
+            let animation = CABasicAnimation(keyPath: "path")
+            animation.fromValue = self.path
+            animation.toValue = path.cgPath
+            animation.duration = animationDuration
+            animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            self.add(animation, forKey: "path")
+            self.path = path.cgPath
+        }
+    }
 }

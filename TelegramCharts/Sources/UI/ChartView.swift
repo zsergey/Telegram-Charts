@@ -19,22 +19,24 @@ class ChartView: UIView {
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
     var isPreviewMode: Bool = false { didSet { setNeedsLayout() } }
-
-    var lineGap: CGFloat = 60.0
     
-    var topSpace: CGFloat = 40.0
-    
-    var bottomSpace: CGFloat = 40.0
-    
-    var topHorizontalLine: CGFloat = 95.0 / 100.0
-    
-    var animateDots: Bool = false
+    var animationDuration: CFTimeInterval = 0.5
 
-    var showDots: Bool = false
+    private var lineGap: CGFloat = 60.0
+    
+    private var topSpace: CGFloat = 40.0
+    
+    private var bottomSpace: CGFloat = 40.0
+    
+    private var topHorizontalLine: CGFloat = 95.0 / 100.0
+    
+    private var animateDots: Bool = false
 
-    var innerRadius: CGFloat = 6
+    private var showDots: Bool = false
 
-    var outerRadius: CGFloat = 10
+    private var innerRadius: CGFloat = 6
+
+    private var outerRadius: CGFloat = 10
     
     private var minValue: CGFloat = 0
     
@@ -44,13 +46,13 @@ class ChartView: UIView {
 
     private var deltaToTargetValue: CGFloat = 0
     
-    private var timeAnimation: Int = 0
-    
-    private var maxTimeAnimation: Int = 30 // 0.5 sec
+    private var frameAnimation: Int = 0
     
     private var countPoints: Int = 0
 
-    private let animationDuration: CFTimeInterval = 0.5
+    private var framesInAnimationDuration: Int {
+        return Int(CFTimeInterval(60) * animationDuration)
+    }
     
     private let dataLayer: CALayer = CALayer()
     
@@ -66,9 +68,6 @@ class ChartView: UIView {
 
     private var gridLinesToRemove: [ValueLayer]?
 
-    private var valueLayer0: ValueLayer?
-
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -85,22 +84,22 @@ class ChartView: UIView {
     }
     
     func update() {
-        if timeAnimation < maxTimeAnimation {
+        if frameAnimation < framesInAnimationDuration {
             // Ease-in-out function from
             // https://math.stackexchange.com/questions/121720/ease-in-out-function
             var prevy: CGFloat = 0
-            for time in 0..<maxTimeAnimation {
-                let x = CGFloat(time) / CGFloat(maxTimeAnimation - 1)
+            for time in 0..<framesInAnimationDuration {
+                let x = CGFloat(time) / CGFloat(framesInAnimationDuration - 1)
                 let y = (x * x) / (x * x + (1.0 - x) * (1.0 - x))
                 
                 let toAddValue = deltaToTargetValue * (y - prevy)
                 prevy = y
                 
-                if time == timeAnimation {
+                if time == frameAnimation {
                     maxValue = maxValue + toAddValue
                 }
             }
-            timeAnimation += 1
+            frameAnimation += 1
         }
     }
     
@@ -112,7 +111,7 @@ class ChartView: UIView {
             targetMaxValue = newMaxValue
             drawHorizontalLines()
             deltaToTargetValue = newMaxValue - maxValue
-            timeAnimation = 0
+            frameAnimation = 0
         } else {
             maxValue = newMaxValue
             drawHorizontalLines()
@@ -244,14 +243,14 @@ class ChartView: UIView {
             
             if let path = drawingStyle.createPath(dataPoints: points) {
                 if isUpdating {
-                    lineLayer.path = path.cgPath
+                    lineLayer.changePath(to: path, animationDuration: animationDuration)
+                    CATransaction.setDisableActions(true)
                     if chartModel.opacity != lineLayer.opacity {
-                        let toValue: Float = chartModel.isHidden ? 0 : 1
-                        let fromValue: Float = lineLayer.isHidden ? 0 : 1
+                        let toValue: Float = chartModel.opacity
+                        let fromValue: Float = lineLayer.opacity
                         lineLayer.changeOpacity(from: fromValue, to: toValue,
                                                 animationDuration: animationDuration)
                     }
-                    
                 } else {
                     lineLayer.path = path.cgPath
                     lineLayer.strokeColor = chartModel.color.cgColor

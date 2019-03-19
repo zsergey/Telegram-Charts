@@ -37,21 +37,21 @@ class ViewController: UIViewController {
         chartView.update()
         previewChartView.update()
     }
-    
-    @IBAction func chartSwicth1Changed(_ sender: UISwitch) {
+
+    func changeIsHidden(for index: Int, sender: UISwitch) {
         if var chartModels = chartView.chartModels {
-            chartModels[0].isHidden = !sender.isOn
+            chartModels[index].isHidden = !sender.isOn
             chartView.setNeedsLayout()
             previewChartView.setNeedsLayout()
         }
     }
     
+    @IBAction func chartSwicth1Changed(_ sender: UISwitch) {
+        changeIsHidden(for: 0, sender: sender)
+    }
+    
     @IBAction func chartSwicth2Changed(_ sender: UISwitch) {
-        if var chartModels = chartView.chartModels {
-            chartModels[1].isHidden = !sender.isOn
-            chartView.setNeedsLayout()
-            previewChartView.setNeedsLayout()
-        }
+        changeIsHidden(for: 1, sender: sender)
     }
     
     private func generateChartModels() -> [ChartModel] {
