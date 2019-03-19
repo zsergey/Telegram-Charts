@@ -46,11 +46,11 @@ class ChartView: UIView {
     
     private var timeAnimation: Int = 0
     
-    private var maxTimeAnimation: Int = 18 // 0.3 sec
+    private var maxTimeAnimation: Int = 30 // 0.5 sec
     
     private var countPoints: Int = 0
 
-    private let animationDuration: CFTimeInterval = 2.3 // TODO: change to 0.3
+    private let animationDuration: CFTimeInterval = 0.5
     
     private let dataLayer: CALayer = CALayer()
     
@@ -195,8 +195,11 @@ class ChartView: UIView {
     }
     
     private func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
-        if minMaxGap == 0 {
-            return -self.frame.size.height
+        if value == 0 {
+            return dataLayer.frame.height
+        }
+        if Int(minMaxGap) == 0 {
+            return -dataLayer.frame.height
         }
         return dataLayer.frame.height * (1 - ((CGFloat(value) - CGFloat(minValue)) / minMaxGap))
     }
@@ -303,15 +306,15 @@ class ChartView: UIView {
             return
         }
         
+        let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
+        let newMinMaxGap = CGFloat(targetMaxValue - minValue) * topHorizontalLine
+        
         let heightGrid: CGFloat = 30
         let widthGrid: CGFloat = self.frame.size.width
         let isUpdating = self.gridLines != nil
         var newGridLines = [ValueLayer]()
         var newGridLinesToRemove = [ValueLayer]()
 
-        let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
-        let newMinMaxGap = CGFloat(targetMaxValue - minValue) * topHorizontalLine
-        
         _ = gridLinesToRemove?.map { $0.removeFromSuperlayer() }
         
         let gridValues: [CGFloat] = [0, 0.2, 0.4, 0.6, 0.8, 1]
@@ -336,11 +339,10 @@ class ChartView: UIView {
             
             // Animate old layer.
             if let valueLayer = valueLayer {
-                valueLayer.lineColor = UIColor.red
-                valueLayer.textColor = UIColor.red
                 let toHeight = calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
                 let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
                 let duration = value == 1 ? 0 : animationDuration
+                CATransaction.setDisableActions(true)
                 valueLayer.moveTo(point: toPoint, animationDuration: duration)
                 valueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
                 newGridLinesToRemove.append(valueLayer)
@@ -360,7 +362,6 @@ class ChartView: UIView {
                 let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
                 newValueLayer.frame = rect
             }
-            
         }
         
         gridLines = newGridLines
