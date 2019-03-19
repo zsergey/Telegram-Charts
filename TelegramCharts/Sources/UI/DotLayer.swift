@@ -1,5 +1,5 @@
 //
-//  DotCALayer.swift
+//  DotLayer.swift
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/11/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DotCALayer: CALayer {
+class DotLayer: CALayer {
 
     var innerRadius: CGFloat = 6
     var dotInnerColor = UIColor.black
@@ -27,6 +27,8 @@ class DotCALayer: CALayer {
 
     override func layoutSublayers() {
         super.layoutSublayers()
+        sublayers?.forEach { $0.removeFromSuperlayer() }
+        
         let inset = self.bounds.size.width - innerRadius
         let innerDotLayer = CALayer()
         innerDotLayer.frame = self.bounds.insetBy(dx: inset / 2, dy: inset / 2)

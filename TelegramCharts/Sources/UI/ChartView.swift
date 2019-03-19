@@ -50,7 +50,7 @@ class ChartView: UIView {
     
     private var countPoints: Int = 0
 
-    private let animationDuration: CFTimeInterval = 0.5
+    private let animationDuration: CFTimeInterval = 2.3 // TODO: change to 0.3
     
     private let dataLayer: CALayer = CALayer()
     
@@ -61,6 +61,13 @@ class ChartView: UIView {
     private var dataPoints: [[CGPoint]]?
 
     private var chartLines: [CAShapeLayer]?
+
+    private var gridLines: [ValueLayer]?
+
+    private var gridLinesToRemove: [ValueLayer]?
+
+    private var valueLayer0: ValueLayer?
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -103,10 +110,12 @@ class ChartView: UIView {
                 return
             }
             targetMaxValue = newMaxValue
+            drawHorizontalLines()
             deltaToTargetValue = newMaxValue - maxValue
             timeAnimation = 0
         } else {
             maxValue = newMaxValue
+            drawHorizontalLines()
         }
     }
     
@@ -141,15 +150,12 @@ class ChartView: UIView {
         
         // clean()
         // if showDots { drawDots() }
-        // drawHorizontalLines()
         drawCharts()
         // drawLables()
     }
     
     private func calcProperties() {
         let animateMaxValue = maxValue == 0 ? false : true
-        print("animateMaxValue = \(animateMaxValue)")
-        
         if isPreviewMode {
             topSpace = 0.0
             bottomSpace = 0.0
@@ -188,13 +194,24 @@ class ChartView: UIView {
         }
     }
     
+    private func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
+        if minMaxGap == 0 {
+            return -self.frame.size.height
+        }
+        return dataLayer.frame.height * (1 - ((CGFloat(value) - CGFloat(minValue)) / minMaxGap))
+    }
+    
+    private func calcLineValue(for value: CGFloat, with minMaxGap: CGFloat) -> Int {
+        return Int((1 - value) * minMaxGap) + Int(minValue)
+    }
+    
     private func convertDataEntriesToPoints(entries: [PointModel]) -> [CGPoint] {
         var result: [CGPoint] = []
-        let minMaxRange: CGFloat = CGFloat(maxValue - minValue) * topHorizontalLine
+        let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
         let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
         
         for i in 0..<entries.count {
-            let height = dataLayer.frame.height * (1 - ((CGFloat(entries[i].value) - CGFloat(minValue)) / minMaxRange))
+            let height = calcHeight(for: entries[i].value, with: minMaxGap)
             let point = CGPoint(x: CGFloat(i) * lineGap + startFrom, y: height)
             result.append(point)
         }
@@ -207,16 +224,13 @@ class ChartView: UIView {
             return
         }
         
-        var newChartLines = [CAShapeLayer]()
-        let needsUpdatePath = self.chartLines != nil
+        let isUpdating = chartLines != nil
+        var newChartLines = isUpdating ? nil : [CAShapeLayer]()
         
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
             
-            var lineLayer = CAShapeLayer()
-            if needsUpdatePath {
-                lineLayer = self.chartLines![index]
-            }
+            let lineLayer = isUpdating ? chartLines![index] : CAShapeLayer()
             
             var points = dataPoints[index]
             if !isPreviewMode {
@@ -226,16 +240,13 @@ class ChartView: UIView {
             }
             
             if let path = drawingStyle.createPath(dataPoints: points) {
-                if needsUpdatePath {
+                if isUpdating {
                     lineLayer.path = path.cgPath
                     if chartModel.opacity != lineLayer.opacity {
                         let toValue: Float = chartModel.isHidden ? 0 : 1
-                        let animation = CABasicAnimation(keyPath: "opacity")
-                        animation.fromValue = lineLayer.isHidden ? 0 : 1
-                        animation.toValue = toValue
-                        animation.duration = animationDuration
-                        lineLayer.add(animation, forKey: "opacity")
-                        lineLayer.opacity = toValue
+                        let fromValue: Float = lineLayer.isHidden ? 0 : 1
+                        lineLayer.changeOpacity(from: fromValue, to: toValue,
+                                                animationDuration: animationDuration)
                     }
                     
                 } else {
@@ -244,13 +255,13 @@ class ChartView: UIView {
                     lineLayer.fillColor = UIColor.clear.cgColor
                     lineLayer.lineWidth = isPreviewMode ? 1.0 : 2.0
                     dataLayer.addSublayer(lineLayer)
-                    newChartLines.append(lineLayer)
+                    newChartLines!.append(lineLayer)
                 }
             }
         }
         
-        if !needsUpdatePath {
-            self.chartLines = newChartLines
+        if !isUpdating {
+            chartLines = newChartLines
         }
     }
         
@@ -291,45 +302,79 @@ class ChartView: UIView {
         guard let _ = chartModels, !isPreviewMode else {
             return
         }
+        
+        let heightGrid: CGFloat = 30
+        let widthGrid: CGFloat = self.frame.size.width
+        let isUpdating = self.gridLines != nil
+        var newGridLines = [ValueLayer]()
+        var newGridLinesToRemove = [ValueLayer]()
 
+        let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
+        let newMinMaxGap = CGFloat(targetMaxValue - minValue) * topHorizontalLine
+        
+        _ = gridLinesToRemove?.map { $0.removeFromSuperlayer() }
+        
         let gridValues: [CGFloat] = [0, 0.2, 0.4, 0.6, 0.8, 1]
-        for value in gridValues {
-            let height = value * gridLayer.frame.size.height
+        for index in 0..<gridValues.count {
+            let value = gridValues[index]
             
-            let path = UIBezierPath()
-            path.move(to: CGPoint(x: 0, y: height))
-            path.addLine(to: CGPoint(x: gridLayer.frame.size.width, y: height))
+            let lineValue = calcLineValue(for: value, with: minMaxGap)
+            let newLineValue = calcLineValue(for: value, with: newMinMaxGap)
             
-            let lineLayer = CAShapeLayer()
-            lineLayer.path = path.cgPath
-            lineLayer.fillColor = UIColor.clear.cgColor
-            lineLayer.strokeColor = colorScheme.grid.cgColor
-            lineLayer.lineWidth = 0.5
-            gridLayer.addSublayer(lineLayer)
-            
-            let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
-            let lineValue = Int((1 - value) * minMaxGap) + Int(minValue)
+            let valueLayer = isUpdating ? gridLines![index] : nil
+            let newValueLayer = ValueLayer()
 
-            let textLayer = CATextLayer()
-            textLayer.frame = CGRect(x: 4, y: height - 16, width: 50, height: 16)
-            textLayer.foregroundColor = colorScheme.text.cgColor
-            textLayer.backgroundColor = UIColor.clear.cgColor
-            textLayer.contentsScale = UIScreen.main.scale
-            textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
-            textLayer.fontSize = 12
-            textLayer.string = lineValue.format
+            // Animate new layer.
+            let fromNewHeight = calcHeight(for: newLineValue, with: minMaxGap)
+            let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
+            let toNewHeight = calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
+            let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
+            newValueLayer.lineColor = colorScheme.grid
+            newValueLayer.textColor = colorScheme.text
+            gridLayer.addSublayer(newValueLayer)
+            newGridLines.append(newValueLayer)
             
-            gridLayer.addSublayer(textLayer)
+            // Animate old layer.
+            if let valueLayer = valueLayer {
+                valueLayer.lineColor = UIColor.red
+                valueLayer.textColor = UIColor.red
+                let toHeight = calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
+                let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
+                let duration = value == 1 ? 0 : animationDuration
+                valueLayer.moveTo(point: toPoint, animationDuration: duration)
+                valueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
+                newGridLinesToRemove.append(valueLayer)
+            }
+            
+            if isUpdating {
+                newValueLayer.lineValue = newLineValue
+                let duration: CFTimeInterval = value == 1 ? 0 : animationDuration
+                newValueLayer.opacity = 0
+                newValueLayer.frame = fromNewFrame
+                newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
+                newValueLayer.changeOpacity(from: 0, to: 1, animationDuration: duration)
+            } else {
+                newValueLayer.lineValue = lineValue
+                newValueLayer.opacity = 1
+                let height = calcHeight(for: lineValue, with: minMaxGap)
+                let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
+                newValueLayer.frame = rect
+            }
+            
         }
+        
+        gridLines = newGridLines
+        gridLinesToRemove = newGridLinesToRemove
     }
     
     private func clean() {
-        mainLayer.sublayers?.forEach {
+        // TODO: удалить если ненужно
+        /*mainLayer.sublayers?.forEach {
             if $0 is CATextLayer || $0 is DotCALayer{
                 $0.removeFromSuperlayer()
             }
         }
-        dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }*/
         gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
     }
 
@@ -343,7 +388,7 @@ class ChartView: UIView {
             let chartModel = chartModels[index]
             // if chartModel.isHidden { continue }
             
-            var dotLayers: [DotCALayer] = []
+            var dotLayers: [DotLayer] = []
             var points = dataPoints[index]
             // TODO: здесь учесть видимый участок графика
             /* if !isPreviewMode {
@@ -353,7 +398,7 @@ class ChartView: UIView {
                 let dataPoint = points[i]
                 let xValue = CGFloat(i) * lineGap - outerRadius / 2
                 let yValue = dataPoint.y + bottomSpace - outerRadius / 2
-                let dotLayer = DotCALayer()
+                let dotLayer = DotLayer()
                 dotLayer.dotInnerColor = colorScheme.background
                 dotLayer.innerRadius = innerRadius
                 dotLayer.backgroundColor = chartModel.color.cgColor
@@ -373,4 +418,5 @@ class ChartView: UIView {
             }
         }
     }
+    
 }
