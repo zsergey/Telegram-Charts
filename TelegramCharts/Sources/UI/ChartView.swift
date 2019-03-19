@@ -10,15 +10,15 @@ import UIKit
 
 class ChartView: UIView {
     
-    var chartModels: [ChartModel]? { didSet { setNeedsLayout() } }
+    var chartModels: [ChartModel]?
 
-    var range: IndexRange = (0, 0) { didSet { setNeedsLayout() } }
+    var range: IndexRange = (0, 0)
     
     var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() { didSet { setNeedsLayout() } }
 
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
-    var isPreviewMode: Bool = false { didSet { setNeedsLayout() } }
+    var isPreviewMode: Bool = false //{ didSet { setNeedsLayout() } }
     
     var animationDuration: CFTimeInterval = 0.5
 
@@ -40,13 +40,15 @@ class ChartView: UIView {
     
     private var minValue: CGFloat = 0
     
-    private var maxValue: CGFloat = 0 { didSet { setNeedsLayout() } }
+    private var maxValue: CGFloat = 0
 
     private var targetMaxValue: CGFloat = 0
 
     private var deltaToTargetValue: CGFloat = 0
     
     private var frameAnimation: Int = 0
+    
+    private var runMaxValueAnimation: Bool = false
     
     private var countPoints: Int = 0
 
@@ -84,6 +86,9 @@ class ChartView: UIView {
     }
     
     func update() {
+        guard runMaxValueAnimation else {
+            return
+        }
         if frameAnimation < framesInAnimationDuration {
             // Ease-in-out function from
             // https://math.stackexchange.com/questions/121720/ease-in-out-function
@@ -97,9 +102,12 @@ class ChartView: UIView {
                 
                 if time == frameAnimation {
                     maxValue = maxValue + toAddValue
+                    setNeedsLayout()
                 }
             }
             frameAnimation += 1
+        } else {
+            runMaxValueAnimation = false
         }
     }
     
@@ -109,12 +117,12 @@ class ChartView: UIView {
                 return
             }
             targetMaxValue = newMaxValue
-            drawHorizontalLines()
+            drawHorizontalLines(animated: true)
             deltaToTargetValue = newMaxValue - maxValue
             frameAnimation = 0
+            runMaxValueAnimation = true
         } else {
             maxValue = newMaxValue
-            drawHorizontalLines()
         }
     }
     
@@ -125,11 +133,54 @@ class ChartView: UIView {
         clipsToBounds = true
     }
     
+    private func calcProperties() {
+        guard let chartModels = chartModels else {
+            return
+        }
+        let animateMaxValue = maxValue == 0 ? false : true
+        if isPreviewMode {
+            topSpace = 0.0
+            bottomSpace = 0.0
+            topHorizontalLine = 110.0 / 100.0
+            
+            countPoints = chartModels.map { $0.data.count }.max() ?? 0
+            lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
+            let max: CGFloat = chartModels.map { chartModel in
+                if chartModel.isHidden {
+                    return 0
+                } else {
+                    return CGFloat(chartModel.data.max()?.value ?? 0)
+                }}.compactMap { $0 }.max() ?? 0
+            setMaxValue(max, animated: animateMaxValue)
+        } else {
+            topSpace = 40.0
+            bottomSpace = 40.0
+            topHorizontalLine = 95.0 / 100.0
+            lineGap = self.frame.size.width / (range.end - range.start - 1)
+            var max: CGFloat = 0
+            for chartModel in chartModels {
+                if chartModel.isHidden { continue }
+                for i in 0..<chartModel.data.count {
+                    let x = (CGFloat(i) - range.start) * lineGap
+                    if x >= 0, x <= self.frame.size.width {
+                        let value = CGFloat(chartModel.data[i].value)
+                        if value > max {
+                            max = value
+                        }
+                    }
+                }
+            }
+            setMaxValue(max, animated: animateMaxValue)
+        }
+    }
+    
     override func layoutSubviews() {
         backgroundColor = colorScheme.background
         guard let chartModels = chartModels else {
             return
         }
+        
+        let animateMaxValue = maxValue == 0 ? false : true
         calcProperties()
         
         let width = CGFloat(countPoints) * lineGap
@@ -146,51 +197,14 @@ class ChartView: UIView {
         
         gridLayer.frame = CGRect(x: 0, y: topSpace, width: self.frame.width,
                                  height: mainLayer.frame.height - topSpace - bottomSpace)
-        
+        if !animateMaxValue {
+            drawHorizontalLines(animated: false)
+        }
+
         // clean()
         // if showDots { drawDots() }
         drawCharts()
         // drawLables()
-    }
-    
-    private func calcProperties() {
-        let animateMaxValue = maxValue == 0 ? false : true
-        if isPreviewMode {
-            topSpace = 0.0
-            bottomSpace = 0.0
-            topHorizontalLine = 110.0 / 100.0
-            
-            countPoints = chartModels?.map { $0.data.count }.max() ?? 0
-            lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
-            let max: CGFloat = chartModels?.map { chartModel in
-                if chartModel.isHidden {
-                    return 0
-                } else {
-                    return CGFloat(chartModel.data.max()?.value ?? 0)
-                }}.compactMap { $0 }.max() ?? 0
-            setMaxValue(max, animated: animateMaxValue)
-        } else {
-            topSpace = 40.0
-            bottomSpace = 40.0
-            topHorizontalLine = 95.0 / 100.0
-            lineGap = self.frame.size.width / (range.end - range.start - 1)
-            if let chartModels = chartModels {
-                var max: CGFloat = 0
-                for chartModel in chartModels {
-                    if chartModel.isHidden { continue }
-                    for i in 0..<chartModel.data.count {
-                        let x = (CGFloat(i) - range.start) * lineGap
-                        if x >= 0, x <= self.frame.size.width {
-                            let value = CGFloat(chartModel.data[i].value)
-                            if value > max {
-                                max = value
-                            }
-                        }
-                    }
-                }
-                setMaxValue(max, animated: animateMaxValue)
-            }
-        }
     }
     
     private func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
@@ -300,7 +314,7 @@ class ChartView: UIView {
         }
     }
     
-    private func drawHorizontalLines() {
+    private func drawHorizontalLines(animated: Bool) {
         guard let _ = chartModels, !isPreviewMode else {
             return
         }
@@ -319,7 +333,11 @@ class ChartView: UIView {
         let gridValues: [CGFloat] = [0, 0.2, 0.4, 0.6, 0.8, 1]
         for index in 0..<gridValues.count {
             let value = gridValues[index]
-            
+            var duration: CFTimeInterval = 0
+            if animated {
+                duration = value == 1 ? 0 : animationDuration
+            }
+
             let lineValue = calcLineValue(for: value, with: minMaxGap)
             let newLineValue = calcLineValue(for: value, with: newMinMaxGap)
             
@@ -340,7 +358,7 @@ class ChartView: UIView {
             if let valueLayer = valueLayer {
                 let toHeight = calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
                 let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
-                let duration = value == 1 ? 0 : animationDuration
+                //let duration = value == 1 ? 0 : animationDuration
                 CATransaction.setDisableActions(true)
                 valueLayer.moveTo(point: toPoint, animationDuration: duration)
                 valueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
@@ -349,7 +367,7 @@ class ChartView: UIView {
             
             if isUpdating {
                 newValueLayer.lineValue = newLineValue
-                let duration: CFTimeInterval = value == 1 ? 0 : animationDuration
+                //let duration: CFTimeInterval = value == 1 ? 0 : animationDuration
                 newValueLayer.opacity = 0
                 newValueLayer.frame = fromNewFrame
                 newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)

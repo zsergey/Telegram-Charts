@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         sliderView.chartModels = chartModels
         sliderView.onChangeRange = { [weak self] range in
             self?.chartView.range = range
+            self?.chartView.setNeedsLayout()
         }
         
         chartView.chartModels = chartModels
