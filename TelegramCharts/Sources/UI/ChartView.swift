@@ -18,7 +18,7 @@ class ChartView: UIView {
 
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
-    var isPreviewMode: Bool = false //{ didSet { setNeedsLayout() } }
+    var isPreviewMode: Bool = false
     
     var animationDuration: CFTimeInterval = 0.5
 
@@ -69,7 +69,9 @@ class ChartView: UIView {
     private var gridLines: [ValueLayer]?
 
     private var gridLinesToRemove: [ValueLayer]?
-
+    
+    private var labels: [CATextLayer]?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -201,10 +203,10 @@ class ChartView: UIView {
             drawHorizontalLines(animated: false)
         }
 
-        // clean()
+        clean()
         // if showDots { drawDots() }
         drawCharts()
-        // drawLables()
+        drawLables()
     }
     
     private func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
@@ -289,28 +291,53 @@ class ChartView: UIView {
         _ = chartModels.map {
             if $0.data.count > points?.count ?? 0 { points = $0.data }
         }
-        if var points = points {
-            // TODO: здесь учесть видимый участок графика
-            /* if !isPreviewMode {
-                points = Array(points[range])
-            }*/
+        
+        let isUpdating = labels != nil
+        var newLabels = isUpdating ? nil : [CATextLayer]()
 
+        let textGap: CGFloat = 60
+        if var points = points {
             let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
-            for i in 0..<points.count {
-                let textLayer = CATextLayer()
-                textLayer.frame = CGRect(x: CGFloat(i) * lineGap - lineGap / 2 + startFrom,
+
+            var startX: CGFloat = -1
+            for index in 0..<points.count {
+                let textLayer = isUpdating ? labels![index] : CATextLayer()
+
+                let x = (CGFloat(index) - range.start) * lineGap - textGap / 2 + startFrom
+                
+                var opacity: Float = 0
+                if startX == -1 || x - startX >= textGap {
+                    opacity = 1
+                    startX = x
+                }
+                CATransaction.setDisableActions(true)
+                textLayer.frame = CGRect(x: x,
                                          y: mainLayer.frame.size.height - bottomSpace / 2 - 8,
-                                         width: lineGap,
+                                         width: textGap,
                                          height: 16)
-                textLayer.foregroundColor = colorScheme.text.cgColor
-                textLayer.backgroundColor = UIColor.clear.cgColor
-                textLayer.alignmentMode = .center
-                textLayer.contentsScale = UIScreen.main.scale
-                textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
-                textLayer.fontSize = 11
-                textLayer.string = points[i].label
-                mainLayer.addSublayer(textLayer)
+
+                if isUpdating {
+                     if textLayer.opacity != opacity {
+                        textLayer.changeOpacity(from: textLayer.opacity, to: opacity,
+                                                animationDuration: animationDuration)
+                    }
+                } else {
+                    textLayer.foregroundColor = colorScheme.text.cgColor
+                    textLayer.backgroundColor = UIColor.clear.cgColor
+                    textLayer.alignmentMode = .center
+                    textLayer.contentsScale = UIScreen.main.scale
+                    textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
+                    textLayer.fontSize = 11
+                    textLayer.string = points[index].date
+                    textLayer.opacity = opacity
+                    mainLayer.addSublayer(textLayer)
+                    newLabels!.append(textLayer)
+                }
             }
+        }
+
+        if !isUpdating {
+            labels = newLabels
         }
     }
     
@@ -341,10 +368,9 @@ class ChartView: UIView {
             let lineValue = calcLineValue(for: value, with: minMaxGap)
             let newLineValue = calcLineValue(for: value, with: newMinMaxGap)
             
-            let valueLayer = isUpdating ? gridLines![index] : nil
+            let oldValueLayer = isUpdating ? gridLines![index] : nil
             let newValueLayer = ValueLayer()
 
-            // Animate new layer.
             let fromNewHeight = calcHeight(for: newLineValue, with: minMaxGap)
             let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
             let toNewHeight = calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
@@ -354,20 +380,17 @@ class ChartView: UIView {
             gridLayer.addSublayer(newValueLayer)
             newGridLines.append(newValueLayer)
             
-            // Animate old layer.
-            if let valueLayer = valueLayer {
+            if let oldValueLayer = oldValueLayer {
                 let toHeight = calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
                 let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
-                //let duration = value == 1 ? 0 : animationDuration
                 CATransaction.setDisableActions(true)
-                valueLayer.moveTo(point: toPoint, animationDuration: duration)
-                valueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
-                newGridLinesToRemove.append(valueLayer)
+                oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
+                oldValueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
+                newGridLinesToRemove.append(oldValueLayer)
             }
             
             if isUpdating {
                 newValueLayer.lineValue = newLineValue
-                //let duration: CFTimeInterval = value == 1 ? 0 : animationDuration
                 newValueLayer.opacity = 0
                 newValueLayer.frame = fromNewFrame
                 newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
@@ -387,13 +410,13 @@ class ChartView: UIView {
     
     private func clean() {
         // TODO: удалить если ненужно
-        /*mainLayer.sublayers?.forEach {
-            if $0 is CATextLayer || $0 is DotCALayer{
-                $0.removeFromSuperlayer()
-            }
-        }
-        dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }*/
-        gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+//        mainLayer.sublayers?.forEach {
+//            if $0 is CATextLayer || $0 is DotLayer{
+//                $0.removeFromSuperlayer()
+//            }
+//        }
+        /*dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() } */
     }
 
     private func drawDots() {

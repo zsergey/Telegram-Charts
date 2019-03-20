@@ -58,9 +58,6 @@ class ViewController: UIViewController {
     private func generateChartModels() -> [ChartModel] {
         var result: [ChartModel] = []
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMM"
-
         if let data = DataChartModelFactory.fetchCharts() { // TODO: fromResource: "chart_data_copy"
             // пока заполним первым массивом.
             let firstChart = data[0]
@@ -86,7 +83,7 @@ class ViewController: UIViewController {
                     for index in 0..<count {
                         if let date = dataX[index] as? Date,
                             let value = dataY[index] as? Int {
-                            let pointModel = PointModel(value: value, label: formatter.string(from: date))
+                            let pointModel = PointModel(value: value, date: date.format)
                             pointModels.append(pointModel)
                         }
                     }

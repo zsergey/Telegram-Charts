@@ -22,6 +22,7 @@
 		AD94517C223D90EF00E8CD9D /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */; };
 		ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
 		ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
+		ADDBBDC92241F2210090E2AD /* Date+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */; };
 		ADE5770E2236E8920006200D /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = ADE577042236E8920006200D /* chart_data.json */; };
 		ADE5770F2236E8920006200D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADE577052236E8920006200D /* Assets.xcassets */; };
 		ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ADE577062236E8920006200D /* LaunchScreen.storyboard */; };
@@ -49,6 +50,7 @@
 		AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		ADDBBDC4224010010090E2AD /* ValueLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueLayer.swift; sourceTree = "<group>"; };
 		ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Animations.swift"; sourceTree = "<group>"; };
+		ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatter.swift"; sourceTree = "<group>"; };
 		ADE576EC2236E59B0006200D /* TelegramCharts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TelegramCharts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADE577042236E8920006200D /* chart_data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data.json; sourceTree = "<group>"; };
 		ADE577052236E8920006200D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 			isa = PBXGroup;
 			children = (
 				ADE577242236FE620006200D /* UIColor+Initializer.swift */,
+				ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */,
 				AD9226DD223A286E00A5B7D6 /* Int+Format.swift */,
 				AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */,
 				ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */,
@@ -250,6 +253,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADDBBDC92241F2210090E2AD /* Date+Formatter.swift in Sources */,
 				ADE577142236E8920006200D /* AppDelegate.swift in Sources */,
 				AD9226D7223A12B800A5B7D6 /* NightScheme.swift in Sources */,
 				ADE577132236E8920006200D /* ViewController.swift in Sources */,

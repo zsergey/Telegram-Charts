@@ -10,7 +10,7 @@ import UIKit
 
 struct PointModel {
     let value: Int
-    let label: String
+    let date: String
 }
 
 extension PointModel: Comparable {
