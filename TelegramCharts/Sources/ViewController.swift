@@ -20,10 +20,27 @@ class ViewController: UIViewController {
         let chartModels = generateChartModels()
         sliderView.chartModels = chartModels
         sliderView.onChangeRange = { [weak self] range in
-            self?.chartView.range = range
-            self?.chartView.setNeedsLayout()
+            guard let self = self else {
+                return
+            }
+            self.chartView.range = range
+            self.chartView.setNeedsLayout()
         }
-        
+        sliderView.onBeganTouch = { [weak self] sliderDirection in
+            guard let self = self else {
+                return
+            }
+            self.chartView.sliderDirection = sliderDirection
+            self.chartView.setNeedsLayout()
+        }
+        sliderView.onEndTouch = { [weak self] sliderDirection in
+            guard let self = self else {
+                return
+            }
+            self.chartView.sliderDirection = sliderDirection
+            self.chartView.setNeedsLayout()
+        }
+
         chartView.chartModels = chartModels
         chartView.range = sliderView.currentRange
         

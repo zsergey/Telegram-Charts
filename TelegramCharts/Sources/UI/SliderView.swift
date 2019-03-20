@@ -8,9 +8,19 @@
 
 import UIKit
 
+enum SliderDirection {
+    case left
+    case right
+    case center
+    case none
+    case finished
+}
+
 class SliderView: UIView {
     
     var onChangeRange: ((IndexRange) ->())?
+    var onBeganTouch: ((SliderDirection) ->())?
+    var onEndTouch: ((SliderDirection) ->())?
     var currentRange: IndexRange = (0, 0)
 
     var chartModels: [ChartModel]? {
@@ -65,15 +75,8 @@ class SliderView: UIView {
     private let trailingSpace: CGFloat = 16
 
     private let leadingSpace: CGFloat = 16
-
-    private enum SliderTap {
-        case left
-        case right
-        case center
-        case none
-    }
     
-    private var sliderTap: SliderTap = .none
+    private var sliderDirection: SliderDirection = .finished
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -119,14 +122,17 @@ class SliderView: UIView {
             tapSliderWidth = sliderWidth
             let point = recognizer.location(in: self)
             detectSliderTap(from: point)
+            onBeganTouch?(sliderDirection)
         case .changed:
             let translation = recognizer.translation(in: self)
-            switch sliderTap {
+            switch sliderDirection {
             case .center: processCenter(translation)
             case .left: processLeft(translation)
             case .right: processRight(translation)
             default: break
             }
+        case .ended:
+            onEndTouch?(.finished)
         default: break
         }
     }
@@ -173,18 +179,18 @@ class SliderView: UIView {
     }
 
     private func detectSliderTap(from point: CGPoint) {
-        sliderTap = .none
+        sliderDirection = .none
         let halfTapSize = tapSize / 2
         let x = startX + trailingSpace
         if point.x >= x - halfTapSize,
             point.x <= x + thumbWidth + halfTapSize {
-            sliderTap = .left
+            sliderDirection = .left
         } else if point.x >= x + sliderWidth - thumbWidth - halfTapSize,
             point.x <= x + sliderWidth + halfTapSize {
-            sliderTap = .right
+            sliderDirection = .right
         } else if point.x > x + thumbWidth + halfTapSize,
             point.x < x + sliderWidth - thumbWidth - halfTapSize {
-            sliderTap = .center
+            sliderDirection = .center
         }
     }
     

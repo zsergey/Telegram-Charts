@@ -29,6 +29,8 @@ class ChartView: UIView {
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
     var isPreviewMode: Bool = false
+
+    var sliderDirection: SliderDirection = .finished
     
     var animationDuration: CFTimeInterval = 0.5
 
@@ -61,6 +63,8 @@ class ChartView: UIView {
     private var framesInAnimationDuration: Int {
         return Int(CFTimeInterval(60) * animationDuration)
     }
+    
+    private let labelWidth: CGFloat = 35
     
     private let dataLayer: CALayer = CALayer()
     
@@ -212,7 +216,7 @@ class ChartView: UIView {
         }
 
         drawCharts()
-        drawLables()
+        drawLables(animated: animateMaxValue)
     }
     
     private func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
@@ -289,7 +293,7 @@ class ChartView: UIView {
         }
     }
         
-    private func drawLables() {
+    private func drawLables(animated: Bool) {
         guard let chartModels = chartModels, chartModels.count > 0, !isPreviewMode else {
             return
         }
@@ -301,33 +305,20 @@ class ChartView: UIView {
         let isUpdating = labels != nil
         var newLabels = isUpdating ? nil : [CATextLayer]()
 
-        let textGap: CGFloat = 60
-        if var points = points {
+        if let points = points {
             let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
 
-            var startX: CGFloat = -1
             for index in 0..<points.count {
                 let textLayer = isUpdating ? labels![index] : CATextLayer()
 
-                let x = (CGFloat(index) - range.start) * lineGap - textGap / 2 + startFrom
+                let x = (CGFloat(index) - range.start) * lineGap - labelWidth / 2 + startFrom
                 
-                var opacity: Float = 0
-                if startX == -1 || x - startX >= textGap {
-                    opacity = 1
-                    startX = x
-                }
                 CATransaction.setDisableActions(true)
                 textLayer.frame = CGRect(x: x,
                                          y: mainLayer.frame.size.height - bottomSpace / 2 - 8,
-                                         width: textGap,
+                                         width: labelWidth,
                                          height: 16)
-
-                if isUpdating {
-                     if textLayer.opacity != opacity {
-                        textLayer.changeOpacity(from: textLayer.opacity, to: opacity,
-                                                animationDuration: animationDuration)
-                    }
-                } else {
+                if !isUpdating {
                     textLayer.foregroundColor = colorScheme.text.cgColor
                     textLayer.backgroundColor = UIColor.clear.cgColor
                     textLayer.alignmentMode = .center
@@ -335,7 +326,6 @@ class ChartView: UIView {
                     textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
                     textLayer.fontSize = 11
                     textLayer.string = points[index].date
-                    textLayer.opacity = opacity
                     mainLayer.addSublayer(textLayer)
                     newLabels!.append(textLayer)
                 }
@@ -344,6 +334,82 @@ class ChartView: UIView {
 
         if !isUpdating {
             labels = newLabels
+        }
+
+        switch sliderDirection {
+        case .center, .finished, .none:
+            hideLabels(skipHidden: true, animated: animated)
+        case .left, .right:
+            hideLabels(skipHidden: false, animated: animated)
+        }
+    }
+    
+    func hideLabels(skipHidden: Bool, animated: Bool) {
+        guard let chartModels = chartModels, chartModels.count > 0, !isPreviewMode else {
+            return
+        }
+
+        var wereHiddenLayers = false
+        var lastFrame: CGRect = .zero
+        
+        var points: [PointModel]? // zsergey - спорные моменты
+        _ = chartModels.map {
+            if $0.data.count > points?.count ?? 0 { points = $0.data }
+        }
+        if let points = points {
+            var layersToHide = [CATextLayer]()
+            for index in 0..<points.count {
+                let textLayer = labels![index]
+                
+                if skipHidden, textLayer.opacity == 0 {
+                    continue
+                }
+                
+                let startXFrame = textLayer.frame.origin.x - textLayer.frame.size.width / 2
+                CATransaction.setDisableActions(true)
+
+                if lastFrame == .zero {
+                    textLayer.opacity = 1
+                    lastFrame = textLayer.frame
+                } else {
+                    let endXLastFrame = lastFrame.origin.x + lastFrame.size.width / 2 + labelWidth
+                    if startXFrame > endXLastFrame {
+                        textLayer.opacity = 1
+                        lastFrame = textLayer.frame
+                    } else {
+                        var opacity = max(Float(1 - (endXLastFrame - startXFrame) / textLayer.frame.size.width), 0)
+                        
+                        if sliderDirection == .center ||
+                            sliderDirection == .none,
+                            opacity >= 0.5 {
+                            opacity = 1
+                        }
+                        
+                        if sliderDirection == .finished, opacity >= 0.5 {
+                            // nothing to change.
+                        } else {
+                            textLayer.opacity = opacity
+                        }
+                        
+                        if opacity == 0 {
+                            lastFrame = .zero
+                            wereHiddenLayers = true
+                        } else if opacity != 1 {
+                            layersToHide.append(textLayer)
+                        }
+                    }
+                }
+            }
+            
+            if wereHiddenLayers {
+                hideLabels(skipHidden: true, animated: animated)
+            } else if sliderDirection == .finished {
+                for textLayer in layersToHide {
+                    let toOpacity: Float = textLayer.opacity >= 0.5 ? 1 : 0
+                    textLayer.changeOpacity(from: textLayer.opacity, to: toOpacity,
+                                            animationDuration: animated ? animationDuration : 0)
+                }
+            }
         }
     }
     
