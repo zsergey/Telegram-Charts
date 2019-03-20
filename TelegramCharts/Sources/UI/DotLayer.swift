@@ -27,7 +27,6 @@ class DotLayer: CALayer {
 
     override func layoutSublayers() {
         super.layoutSublayers()
-        sublayers?.forEach { $0.removeFromSuperlayer() }
         
         let inset = self.bounds.size.width - innerRadius
         let innerDotLayer = CALayer()

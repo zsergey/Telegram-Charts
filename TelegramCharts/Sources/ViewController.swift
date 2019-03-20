@@ -42,6 +42,8 @@ class ViewController: UIViewController {
     func changeIsHidden(for index: Int, sender: UISwitch) {
         if var chartModels = chartView.chartModels {
             chartModels[index].isHidden = !sender.isOn
+            chartView.chartModels = chartModels
+            previewChartView.chartModels = chartModels
             chartView.setNeedsLayout()
             previewChartView.setNeedsLayout()
         }

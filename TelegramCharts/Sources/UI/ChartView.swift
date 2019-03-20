@@ -10,9 +10,19 @@ import UIKit
 
 class ChartView: UIView {
     
-    var chartModels: [ChartModel]?
+    var chartModels: [ChartModel]? {
+        didSet {
+            self.selectedIndex = nil
+            cleanDots()
+        }
+    }
 
-    var range: IndexRange = (0, 0)
+    var range: IndexRange = (0, 0) {
+        didSet {
+            self.selectedIndex = nil
+            cleanDots()
+        }
+    }
     
     var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() { didSet { setNeedsLayout() } }
 
@@ -30,10 +40,6 @@ class ChartView: UIView {
     
     private var topHorizontalLine: CGFloat = 95.0 / 100.0
     
-    private var animateDots: Bool = false
-
-    private var showDots: Bool = false
-
     private var innerRadius: CGFloat = 6
 
     private var outerRadius: CGFloat = 10
@@ -71,6 +77,8 @@ class ChartView: UIView {
     private var gridLinesToRemove: [ValueLayer]?
     
     private var labels: [CATextLayer]?
+    
+    private var selectedIndex: Int?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -203,8 +211,6 @@ class ChartView: UIView {
             drawHorizontalLines(animated: false)
         }
 
-        clean()
-        // if showDots { drawDots() }
         drawCharts()
         drawLables()
     }
@@ -408,55 +414,68 @@ class ChartView: UIView {
         gridLinesToRemove = newGridLinesToRemove
     }
     
-    private func clean() {
-        // TODO: удалить если ненужно
-//        mainLayer.sublayers?.forEach {
-//            if $0 is CATextLayer || $0 is DotLayer{
-//                $0.removeFromSuperlayer()
-//            }
-//        }
-        /*dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
-        gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() } */
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        drawDotsIfNeeded(touches)
+    }
+    
+    private func drawDotsIfNeeded(_ touches: Set<UITouch>) {
+        guard let dataPoints = dataPoints, dataPoints.count > 0,
+            !isPreviewMode, let touch = touches.first else {
+                return
+        }
+        let location = touch.location(in: self)
+        guard location.x >= 0, location.x <= frame.size.width else {
+            return
+        }
+        
+        let newSelectedIndex = Int((location.x + range.start * lineGap) / lineGap)
+        var isUpdating = self.selectedIndex == nil
+        if let selectedIndex = self.selectedIndex,
+            selectedIndex != newSelectedIndex {
+            isUpdating = true
+        }
+        if isUpdating {
+            self.selectedIndex = newSelectedIndex
+            cleanDots()
+            drawDots()
+        }
+    }
+    
+    private func cleanDots() {
+        CATransaction.setDisableActions(true)
+        mainLayer.sublayers?.forEach {
+            if $0 is DotLayer {
+                $0.removeFromSuperlayer()
+            }
+        }
     }
 
     private func drawDots() {
         guard let dataPoints = dataPoints, dataPoints.count > 0, !isPreviewMode,
-            let chartModels = chartModels else {
+            let chartModels = chartModels,
+            let selectedIndex = self.selectedIndex else {
             return
         }
-        
+
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
-            // if chartModel.isHidden { continue }
+             if chartModel.isHidden { continue }
             
             var dotLayers: [DotLayer] = []
             var points = dataPoints[index]
-            // TODO: здесь учесть видимый участок графика
-            /* if !isPreviewMode {
-                points = Array(points[range])
-            }*/
-            for i in 0..<points.count {
-                let dataPoint = points[i]
-                let xValue = CGFloat(i) * lineGap - outerRadius / 2
-                let yValue = dataPoint.y + bottomSpace - outerRadius / 2
-                let dotLayer = DotLayer()
-                dotLayer.dotInnerColor = colorScheme.background
-                dotLayer.innerRadius = innerRadius
-                dotLayer.backgroundColor = chartModel.color.cgColor
-                dotLayer.cornerRadius = outerRadius / 2
-                dotLayer.frame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
-                dotLayers.append(dotLayer)
-                
-                mainLayer.addSublayer(dotLayer)
-                
-                if animateDots {
-                    let anim = CABasicAnimation(keyPath: "opacity")
-                    anim.duration = 1.0
-                    anim.fromValue = 0
-                    anim.toValue = 1
-                    dotLayer.add(anim, forKey: "opacity")
-                }
-            }
+            
+            let dataPoint = points[selectedIndex]
+            let xValue = (CGFloat(selectedIndex) - range.start) * lineGap - outerRadius / 2
+            let yValue = dataPoint.y + bottomSpace - outerRadius / 2
+            let dotLayer = DotLayer()
+            dotLayer.dotInnerColor = colorScheme.background
+            dotLayer.innerRadius = innerRadius
+            dotLayer.backgroundColor = chartModel.color.cgColor
+            dotLayer.cornerRadius = outerRadius / 2
+            dotLayer.frame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
+            dotLayers.append(dotLayer)
+            mainLayer.addSublayer(dotLayer)
         }
     }
     
