@@ -19,14 +19,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zEy-i1-zpB" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="16" y="30" width="343" height="480"/>
+                                <rect key="frame" x="16" y="30" width="343" height="380"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="480" id="esq-LX-gN4"/>
+                                    <constraint firstAttribute="height" constant="380" id="esq-LX-gN4"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dId-La-Sua" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="518" width="375" height="40"/>
+                                <rect key="frame" x="0.0" y="418" width="375" height="40"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YVW-AO-FUd" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
                                         <rect key="frame" x="16" y="1" width="343" height="38"/>
@@ -42,30 +42,54 @@
                                     <constraint firstAttribute="trailing" secondItem="YVW-AO-FUd" secondAttribute="trailing" constant="16" id="o5v-Yi-sCL"/>
                                 </constraints>
                             </view>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ofq-44-4fK">
-                                <rect key="frame" x="310" y="620" width="51" height="31"/>
-                                <connections>
-                                    <action selector="chartSwicth2Changed:" destination="BYZ-38-t0r" eventType="valueChanged" id="xqu-In-a1W"/>
-                                </connections>
-                            </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jJV-eb-KTJ">
-                                <rect key="frame" x="16" y="620" width="51" height="31"/>
+                                <rect key="frame" x="310" y="483" width="51" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="sRN-Nh-rse"/>
+                                </constraints>
                                 <connections>
                                     <action selector="chartSwicth1Changed:" destination="BYZ-38-t0r" eventType="valueChanged" id="yca-r6-cXf"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chart #1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-qD-NLl">
+                                <rect key="frame" x="16" y="488" width="278" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chart #2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QQe-8C-4qw">
+                                <rect key="frame" x="16" y="535" width="278" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ofq-44-4fK">
+                                <rect key="frame" x="310" y="530" width="51" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="ftw-zK-ib3"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="chartSwicth2Changed:" destination="BYZ-38-t0r" eventType="valueChanged" id="xqu-In-a1W"/>
                                 </connections>
                             </switch>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="jJV-eb-KTJ" secondAttribute="trailing" constant="16" id="3bm-JD-jCB"/>
+                            <constraint firstItem="L2y-qD-NLl" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="5b9-oo-bOd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="dId-La-Sua" secondAttribute="trailing" id="GSk-R5-fah"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Ofq-44-4fK" secondAttribute="trailing" constant="16" id="KVL-t5-GEA"/>
+                            <constraint firstItem="Ofq-44-4fK" firstAttribute="top" secondItem="jJV-eb-KTJ" secondAttribute="bottom" constant="16" id="Kv1-zI-ndd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="zEy-i1-zpB" secondAttribute="trailing" constant="16" id="Lnp-jU-OTS"/>
+                            <constraint firstItem="jJV-eb-KTJ" firstAttribute="top" secondItem="dId-La-Sua" secondAttribute="bottom" constant="25" id="NHx-KW-R5F"/>
                             <constraint firstItem="zEy-i1-zpB" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="P6s-wW-mk5"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="jJV-eb-KTJ" secondAttribute="bottom" constant="16" id="PJ9-7t-Mgv"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Ofq-44-4fK" secondAttribute="bottom" constant="16" id="TAo-Xj-SIB"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Ofq-44-4fK" secondAttribute="trailing" constant="16" id="TGf-QZ-p3h"/>
-                            <constraint firstItem="jJV-eb-KTJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="bDQ-8L-2gL"/>
+                            <constraint firstItem="Ofq-44-4fK" firstAttribute="leading" secondItem="QQe-8C-4qw" secondAttribute="trailing" constant="16" id="cgF-SA-Jtv"/>
+                            <constraint firstItem="jJV-eb-KTJ" firstAttribute="leading" secondItem="L2y-qD-NLl" secondAttribute="trailing" constant="16" id="d4K-N3-9jq"/>
+                            <constraint firstItem="QQe-8C-4qw" firstAttribute="top" secondItem="L2y-qD-NLl" secondAttribute="bottom" constant="26" id="dlW-dA-8FU"/>
+                            <constraint firstItem="QQe-8C-4qw" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="jdT-WR-OcN"/>
                             <constraint firstItem="dId-La-Sua" firstAttribute="top" secondItem="zEy-i1-zpB" secondAttribute="bottom" constant="8" id="tcx-vT-X0y"/>
                             <constraint firstItem="zEy-i1-zpB" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="te2-ym-oQX"/>
+                            <constraint firstItem="L2y-qD-NLl" firstAttribute="top" secondItem="dId-La-Sua" secondAttribute="bottom" constant="30" id="uSX-mp-DWw"/>
                             <constraint firstItem="dId-La-Sua" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="zgV-4X-lde"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
