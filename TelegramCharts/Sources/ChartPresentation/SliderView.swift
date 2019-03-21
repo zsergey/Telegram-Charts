@@ -96,6 +96,7 @@ class SliderView: UIView {
     private func setupView() {
         layer.addSublayer(mainLayer)
         
+        self.backgroundColor = colorScheme.chart.background
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
         addGestureRecognizer(panGesture)
@@ -238,8 +239,8 @@ class SliderView: UIView {
         x1 = x1 + thumbWidth
         x2 = x2 - thumbWidth
         
-        drawLine(from: CGPoint(x: x1, y: 1), to: CGPoint(x: x2, y: 1), color: colorScheme.background)
-        drawLine(from: CGPoint(x: x1, y: height - 1), to: CGPoint(x: x2, y: height - 1), color: colorScheme.background)
+        drawLine(from: CGPoint(x: x1, y: 1), to: CGPoint(x: x2, y: 1), color: colorScheme.chart.background)
+        drawLine(from: CGPoint(x: x1, y: height - 1), to: CGPoint(x: x2, y: height - 1), color: colorScheme.chart.background)
     }
     
     private func drawBackgrounds() {

@@ -24,7 +24,7 @@ class ChartView: UIView {
         }
     }
     
-    var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() { didSet { setNeedsLayout() } }
+    var drawingStyle: DrawingStyleProtocol = CurveDrawingStyle() { didSet { setNeedsLayout() } }
 
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
@@ -189,7 +189,7 @@ class ChartView: UIView {
     }
     
     override func layoutSubviews() {
-        backgroundColor = colorScheme.background
+        backgroundColor = colorScheme.chart.background
         guard let chartModels = chartModels else {
             return
         }
@@ -319,7 +319,7 @@ class ChartView: UIView {
                                          width: labelWidth,
                                          height: 16)
                 if !isUpdating {
-                    textLayer.foregroundColor = colorScheme.text.cgColor
+                    textLayer.foregroundColor = colorScheme.chart.text.cgColor
                     textLayer.backgroundColor = UIColor.clear.cgColor
                     textLayer.alignmentMode = .center
                     textLayer.contentsScale = UIScreen.main.scale
@@ -447,8 +447,8 @@ class ChartView: UIView {
             let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
             let toNewHeight = calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
             let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
-            newValueLayer.lineColor = colorScheme.grid
-            newValueLayer.textColor = colorScheme.text
+            newValueLayer.lineColor = colorScheme.chart.grid
+            newValueLayer.textColor = colorScheme.chart.text
             gridLayer.addSublayer(newValueLayer)
             newGridLines.append(newValueLayer)
             
@@ -535,7 +535,7 @@ class ChartView: UIView {
             let xValue = (CGFloat(selectedIndex) - range.start) * lineGap - outerRadius / 2
             let yValue = dataPoint.y + bottomSpace - outerRadius / 2
             let dotLayer = DotLayer()
-            dotLayer.dotInnerColor = colorScheme.background
+            dotLayer.dotInnerColor = colorScheme.chart.background
             dotLayer.innerRadius = innerRadius
             dotLayer.backgroundColor = chartModel.color.cgColor
             dotLayer.cornerRadius = outerRadius / 2

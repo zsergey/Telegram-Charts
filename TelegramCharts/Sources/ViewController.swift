@@ -10,45 +10,69 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet var tableView: UITableView! {
+        didSet {
+            tableView.delegate = self
+            tableView.dataSource = self
+        }
+    }
+    
     @IBOutlet var chartView: ChartView!
     @IBOutlet var previewChartView: ChartView!
     @IBOutlet var sliderView: SliderView!
-    
+
+    var colorScheme: ColorSchemeProtocol! {
+        didSet {
+            
+//            navigationController?.navigationBar.barTintColor = colorScheme.background
+//            navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: colorScheme.title]
+//            (navigationController as? NavigationViewController)?.colorScheme = colorScheme
+//
+//            view.backgroundColor = colorScheme.background
+//            chartView.colorScheme = colorScheme
+//            previewChartView.colorScheme = colorScheme
+//            sliderView.colorScheme = colorScheme
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let chartModels = generateChartModels()
-        sliderView.chartModels = chartModels
-        sliderView.onChangeRange = { [weak self] range in
-            guard let self = self else {
-                return
-            }
-            self.chartView.range = range
-            self.chartView.setNeedsLayout()
-        }
-        sliderView.onBeganTouch = { [weak self] sliderDirection in
-            guard let self = self else {
-                return
-            }
-            self.chartView.sliderDirection = sliderDirection
-            self.chartView.setNeedsLayout()
-        }
-        sliderView.onEndTouch = { [weak self] sliderDirection in
-            guard let self = self else {
-                return
-            }
-            self.chartView.sliderDirection = sliderDirection
-            self.chartView.setNeedsLayout()
-        }
-
-        chartView.chartModels = chartModels
-        chartView.range = sliderView.currentRange
-        
-        previewChartView.chartModels = chartModels
-        previewChartView.isPreviewMode = true
-        
-        let displayLink = CADisplayLink(target: self, selector: #selector(update))
-        displayLink.add(to: .current, forMode: .common)
+//        navigationController?.navigationBar.isTranslucent = false
+//
+//        colorScheme = NightScheme()
+//        let chartModels = generateChartModels()
+//        sliderView.chartModels = chartModels
+//        sliderView.onChangeRange = { [weak self] range in
+//            guard let self = self else {
+//                return
+//            }
+//            self.chartView.range = range
+//            self.chartView.setNeedsLayout()
+//        }
+//        sliderView.onBeganTouch = { [weak self] sliderDirection in
+//            guard let self = self else {
+//                return
+//            }
+//            self.chartView.sliderDirection = sliderDirection
+//            self.chartView.setNeedsLayout()
+//        }
+//        sliderView.onEndTouch = { [weak self] sliderDirection in
+//            guard let self = self else {
+//                return
+//            }
+//            self.chartView.sliderDirection = sliderDirection
+//            self.chartView.setNeedsLayout()
+//        }
+//
+//        chartView.chartModels = chartModels
+//        chartView.range = sliderView.currentRange
+//
+//        previewChartView.chartModels = chartModels
+//        previewChartView.isPreviewMode = true
+//
+//        let displayLink = CADisplayLink(target: self, selector: #selector(update))
+//        displayLink.add(to: .current, forMode: .common)
     }
     
     @objc func update() {
@@ -118,3 +142,18 @@ class ViewController: UIViewController {
 
 }
 
+extension ViewController: UITableViewDelegate {
+    
+}
+
+extension ViewController: UITableViewDataSource {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+    
+}

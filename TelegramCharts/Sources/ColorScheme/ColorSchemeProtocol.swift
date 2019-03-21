@@ -15,10 +15,17 @@ struct SliderColor {
     let arrow: UIColor
 }
 
+struct ChartColor {
+    var background: UIColor
+    var grid: UIColor
+    var text: UIColor
+}
+
 protocol ColorSchemeProtocol {
     var background: UIColor { get }
-    var grid: UIColor { get }
-    var text: UIColor { get }
+    var title: UIColor { get }
+    var statusBarStyle: UIStatusBarStyle { get }
     
+    var chart: ChartColor { get }
     var slider: SliderColor { get }
 }
