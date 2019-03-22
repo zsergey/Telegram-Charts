@@ -38,9 +38,9 @@ class ChartView: UIView, Reusable, Updatable {
 
     private var lineGap: CGFloat = 60.0
     
-    private var topSpace: CGFloat = 40.0
+    private var topSpace: CGFloat = 0.0
     
-    private var bottomSpace: CGFloat = 40.0
+    private var bottomSpace: CGFloat = 0.0
     
     private var topHorizontalLine: CGFloat = 95.0 / 100.0
     
@@ -170,7 +170,7 @@ class ChartView: UIView, Reusable, Updatable {
             setMaxValue(max, animated: animateMaxValue)
         } else {
             topSpace = 40.0
-            bottomSpace = 40.0
+            bottomSpace = 20.0
             topHorizontalLine = 95.0 / 100.0
             lineGap = self.frame.size.width / (range.end - range.start - 1)
             var max: CGFloat = 0
@@ -317,7 +317,7 @@ class ChartView: UIView, Reusable, Updatable {
                 
                 CATransaction.setDisableActions(true)
                 textLayer.frame = CGRect(x: x,
-                                         y: mainLayer.frame.size.height - bottomSpace / 2 - 8,
+                                         y: mainLayer.frame.size.height - bottomSpace / 2 - 4,
                                          width: labelWidth,
                                          height: 16)
                 if !isUpdating {

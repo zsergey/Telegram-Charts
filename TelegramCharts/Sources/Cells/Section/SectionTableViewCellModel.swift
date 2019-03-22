@@ -9,12 +9,15 @@
 import Foundation
 
 struct SectionTableViewCellModel {
-    var titleText: String
+    var text: String
+    var colorScheme: ColorSchemeProtocol
 }
 
 extension SectionTableViewCellModel: CellViewModelType {
     
-    func setup(on cell: ButtonTableViewCell) {
-        
+    func setup(on cell: SectionTableViewCell) {
+        cell.label.text = text
+        cell.backgroundColor = colorScheme.section.background
+        cell.label.textColor = colorScheme.section.text
     }
 }

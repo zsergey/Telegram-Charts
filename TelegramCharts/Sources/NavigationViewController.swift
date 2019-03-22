@@ -12,6 +12,8 @@ class NavigationViewController: UINavigationController {
 
     var colorScheme: ColorSchemeProtocol = DayScheme() {
         didSet {
+            let image = UIImage(named: colorScheme.separatorImageName)
+            self.navigationController?.navigationBar.setBackgroundImage(image, for: .default)
             setNeedsStatusBarAppearanceUpdate()
         }
     }

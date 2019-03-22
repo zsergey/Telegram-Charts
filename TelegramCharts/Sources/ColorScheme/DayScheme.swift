@@ -11,7 +11,7 @@ import UIKit
 struct DayScheme: ColorSchemeProtocol {
     
     var background: UIColor {
-        return UIColor(hex: "#EFEFF4")!
+        return UIColor(hex: "#F7F7F7")!
     }
     
     var title: UIColor {
@@ -20,6 +20,24 @@ struct DayScheme: ColorSchemeProtocol {
 
     var statusBarStyle: UIStatusBarStyle {
         return .default
+    }
+    
+    var separator: UIColor {
+        return UIColor(hex: "#C8C7CC")!
+    }
+    
+    var separatorImageName: String {
+        return "DayColorSeparator"
+    }
+    
+    var button: ButtonColor {
+        return ButtonColor(normal: UIColor(hex: "#327FDE")!,
+                           selected: UIColor(hex: "#327FDE", alpha: 0.7)!)
+    }
+
+    var section: SectionColor {
+        return SectionColor(background: UIColor(hex: "#EFEFF4")!,
+                            text: UIColor(hex: "#6D6D72")!)
     }
 
     var chart: ChartColor {

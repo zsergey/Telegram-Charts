@@ -20,14 +20,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D1j-Q1-j7B" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                        <rect key="frame" x="16" y="16" width="352" height="380"/>
+                        <rect key="frame" x="16" y="0.0" width="352" height="310"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="380" id="acD-iu-QfR"/>
+                            <constraint firstAttribute="height" constant="310" id="acD-iu-QfR"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p4w-D1-gJH" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="404" width="384" height="40"/>
+                        <rect key="frame" x="0.0" y="320" width="384" height="40"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dld-po-VIh" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
                                 <rect key="frame" x="16" y="1" width="352" height="38"/>
@@ -46,9 +46,9 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="D1j-Q1-j7B" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="52v-qY-cB5"/>
-                    <constraint firstItem="D1j-Q1-j7B" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="766-7f-U3w"/>
+                    <constraint firstItem="D1j-Q1-j7B" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="766-7f-U3w"/>
                     <constraint firstAttribute="trailing" secondItem="D1j-Q1-j7B" secondAttribute="trailing" constant="16" id="Pqe-US-T1a"/>
-                    <constraint firstItem="p4w-D1-gJH" firstAttribute="top" secondItem="D1j-Q1-j7B" secondAttribute="bottom" constant="8" id="dXN-Is-qay"/>
+                    <constraint firstItem="p4w-D1-gJH" firstAttribute="top" secondItem="D1j-Q1-j7B" secondAttribute="bottom" constant="10" id="dXN-Is-qay"/>
                     <constraint firstAttribute="trailing" secondItem="p4w-D1-gJH" secondAttribute="trailing" id="eCI-f4-KhL"/>
                     <constraint firstItem="p4w-D1-gJH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="nRQ-Mq-Hbo"/>
                 </constraints>

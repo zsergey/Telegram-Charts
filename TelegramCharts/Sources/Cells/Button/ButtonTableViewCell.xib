@@ -18,8 +18,27 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bNP-4d-Z3e">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                        <state key="normal" title="Button"/>
+                        <connections>
+                            <action selector="tapButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="DMU-Vf-COA"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="bNP-4d-Z3e" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="2m9-n6-377"/>
+                    <constraint firstAttribute="bottom" secondItem="bNP-4d-Z3e" secondAttribute="bottom" id="FP7-bA-TtO"/>
+                    <constraint firstItem="bNP-4d-Z3e" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="eRf-uI-acH"/>
+                    <constraint firstAttribute="trailing" secondItem="bNP-4d-Z3e" secondAttribute="trailing" id="yn0-ph-Hd2"/>
+                </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="button" destination="bNP-4d-Z3e" id="Mrz-He-9aM"/>
+            </connections>
         </tableViewCell>
     </objects>
 </document>

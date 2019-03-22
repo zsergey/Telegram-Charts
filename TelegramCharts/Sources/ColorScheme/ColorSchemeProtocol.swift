@@ -21,11 +21,24 @@ struct ChartColor {
     var text: UIColor
 }
 
+struct SectionColor {
+    var background: UIColor
+    var text: UIColor
+}
+
+struct ButtonColor {
+    var normal: UIColor
+    var selected: UIColor
+}
+
 protocol ColorSchemeProtocol {
     var background: UIColor { get }
     var title: UIColor { get }
     var statusBarStyle: UIStatusBarStyle { get }
-    
+    var separator: UIColor { get }
+    var separatorImageName: String { get }
+    var button: ButtonColor { get }
+    var section: SectionColor { get }
     var chart: ChartColor { get }
     var slider: SliderColor { get }
 }

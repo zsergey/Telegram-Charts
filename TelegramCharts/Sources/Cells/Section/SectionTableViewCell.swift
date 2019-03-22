@@ -10,4 +10,5 @@ import UIKit
 
 class SectionTableViewCell: UITableViewCell {
     
+    @IBOutlet var label: UILabel!
 }

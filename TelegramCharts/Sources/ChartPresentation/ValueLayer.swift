@@ -44,7 +44,7 @@ class ValueLayer: CALayer {
         addSublayer(lineLayer)
         
         let textLayer = CATextLayer()
-        textLayer.frame = CGRect(x: 4, y: height - 16, width: 50, height: 16)
+        textLayer.frame = CGRect(x: 0, y: height - 16, width: 50, height: 16)
         textLayer.foregroundColor = textColor.cgColor
         textLayer.backgroundColor = UIColor.clear.cgColor
         textLayer.contentsScale = UIScreen.main.scale

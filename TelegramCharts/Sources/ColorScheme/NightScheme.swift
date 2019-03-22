@@ -11,7 +11,7 @@ import UIKit
 struct NightScheme: ColorSchemeProtocol {
 
     var background: UIColor {
-        return UIColor(hex: "#1A222C")!
+        return UIColor(hex: "#24303F")!
     }
 
     var title: UIColor {
@@ -20,6 +20,24 @@ struct NightScheme: ColorSchemeProtocol {
     
     var statusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+    
+    var separator: UIColor {
+        return UIColor(hex: "#131A22")!
+    }
+
+    var separatorImageName: String {
+        return "NightColorSeparator"
+    }
+
+    var button: ButtonColor {
+        return ButtonColor(normal: UIColor(hex: "#327FDE")!,
+                           selected: UIColor(hex: "#327FDE", alpha: 0.7)!)
+    }
+
+    var section: SectionColor {
+        return SectionColor(background: UIColor(hex: "#1A222C")!,
+                            text: UIColor(hex: "#5E6B7D")!)
     }
 
     var chart: ChartColor {

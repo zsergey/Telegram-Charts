@@ -25,7 +25,8 @@ class ChartViewController: UIViewController {
             navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: colorScheme.title]
             (navigationController as? NavigationViewController)?.colorScheme = colorScheme
 
-            view.backgroundColor = colorScheme.background
+            tableView.backgroundColor = colorScheme.section.background
+            tableView.separatorColor = colorScheme.separator
 //            chartView.colorScheme = colorScheme
 //            previewChartView.colorScheme = colorScheme
 //            sliderView.colorScheme = colorScheme
@@ -39,7 +40,7 @@ class ChartViewController: UIViewController {
 
         colorScheme = NightScheme()
         
-        displayCollection = ChartDisplayCollection()
+        displayCollection = ChartDisplayCollection(colorScheme: colorScheme)
         displayCollection.charts = ChartModelFactory.readChartModels()
         tableView.registerNibs(from: displayCollection)
 
@@ -94,6 +95,7 @@ extension ChartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let model = displayCollection.model(for: indexPath)
         let cell = tableView.dequeueReusableCell(for: indexPath, with: model)
+        cell.separatorInset = displayCollection.separatorInset(for: indexPath, view: view)
         return cell
     }
 }
