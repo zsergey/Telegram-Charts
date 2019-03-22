@@ -10,8 +10,23 @@ import UIKit
 
 class ChartTableViewCell: UITableViewCell {
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    @IBOutlet var chartView: ChartView!
+    @IBOutlet var previewChartView: ChartView!
+    @IBOutlet var sliderView: SliderView!
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        chartView.prepareForReuse()
+        previewChartView.prepareForReuse()
+        sliderView.prepareForReuse()
     }
-    
+}
+
+extension ChartTableViewCell: Updatable {
+
+    func update() {
+        chartView.update()
+        previewChartView.update()
+    }
 }

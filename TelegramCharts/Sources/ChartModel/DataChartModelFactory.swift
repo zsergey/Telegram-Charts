@@ -35,7 +35,8 @@ struct DataChartModelFactory {
     private static func readArray(_ array: [[String : Any]]) -> [DataChartModel]? {
         var chartModels = [DataChartModel]()
         
-        for dictionary in array {
+        for index in 0..<array.count {
+            let dictionary = array[index]
             guard let columns = dictionary["columns"] as? [[Any]],
                 let types = dictionary["types"] as? [String: Any],
                 let names = dictionary["names"] as? [String: Any],

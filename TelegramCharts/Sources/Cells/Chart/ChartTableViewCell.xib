@@ -12,15 +12,54 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="212" id="KGk-i7-Jjw" customClass="ChartTableViewCell" customModule="TelegramCharts" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="384" height="212"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="488" id="KGk-i7-Jjw" customClass="ChartTableViewCell" customModule="TelegramCharts" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="384" height="488"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="384" height="211.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="384" height="487.5"/>
                 <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D1j-Q1-j7B" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
+                        <rect key="frame" x="16" y="16" width="352" height="380"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="380" id="acD-iu-QfR"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p4w-D1-gJH" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="404" width="384" height="40"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dld-po-VIh" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
+                                <rect key="frame" x="16" y="1" width="352" height="38"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="dld-po-VIh" firstAttribute="top" secondItem="p4w-D1-gJH" secondAttribute="top" constant="1" id="6t3-jj-qsV"/>
+                            <constraint firstItem="dld-po-VIh" firstAttribute="leading" secondItem="p4w-D1-gJH" secondAttribute="leading" constant="16" id="8D9-G3-M6A"/>
+                            <constraint firstAttribute="trailing" secondItem="dld-po-VIh" secondAttribute="trailing" constant="16" id="IM0-1A-o0Y"/>
+                            <constraint firstAttribute="bottom" secondItem="dld-po-VIh" secondAttribute="bottom" constant="1" id="VWV-Nh-sOv"/>
+                            <constraint firstAttribute="height" constant="40" id="mKI-0B-dR9"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="D1j-Q1-j7B" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="52v-qY-cB5"/>
+                    <constraint firstItem="D1j-Q1-j7B" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="766-7f-U3w"/>
+                    <constraint firstAttribute="trailing" secondItem="D1j-Q1-j7B" secondAttribute="trailing" constant="16" id="Pqe-US-T1a"/>
+                    <constraint firstItem="p4w-D1-gJH" firstAttribute="top" secondItem="D1j-Q1-j7B" secondAttribute="bottom" constant="8" id="dXN-Is-qay"/>
+                    <constraint firstAttribute="trailing" secondItem="p4w-D1-gJH" secondAttribute="trailing" id="eCI-f4-KhL"/>
+                    <constraint firstItem="p4w-D1-gJH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="nRQ-Mq-Hbo"/>
+                </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
-            <point key="canvasLocation" x="180.80000000000001" y="229.38530734632684"/>
+            <connections>
+                <outlet property="chartView" destination="D1j-Q1-j7B" id="obu-hQ-fto"/>
+                <outlet property="previewChartView" destination="dld-po-VIh" id="Qqy-jN-qha"/>
+                <outlet property="sliderView" destination="p4w-D1-gJH" id="K4O-WS-da9"/>
+            </connections>
+            <point key="canvasLocation" x="76.799999999999997" y="179.91004497751126"/>
         </tableViewCell>
     </objects>
 </document>

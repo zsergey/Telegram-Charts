@@ -16,7 +16,7 @@ enum SliderDirection {
     case finished
 }
 
-class SliderView: UIView {
+class SliderView: UIView, Reusable {
     
     var onChangeRange: ((IndexRange) ->())?
     var onBeganTouch: ((SliderDirection) ->())?
@@ -323,4 +323,11 @@ class SliderView: UIView {
         transform2 = CATransform3DRotate(transform2, radians, 0.0, 0.0, 1.0)
         line2.transform = transform2
     }
+    
+    func prepareForReuse() {
+        chartModels = nil
+        sliderDirection = .finished
+        sliderWidth = 0
+    }
+
 }

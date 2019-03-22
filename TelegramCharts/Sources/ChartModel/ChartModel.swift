@@ -1,5 +1,5 @@
 //
-//  PointModel.swift
+//  ChartModel.swift
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/13/19.

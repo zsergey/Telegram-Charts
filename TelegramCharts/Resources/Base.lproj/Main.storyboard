@@ -13,7 +13,7 @@
         <!--Statistics-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="TelegramCharts" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ChartViewController" customModule="TelegramCharts" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -27,12 +27,15 @@
                         <constraints>
                             <constraint firstItem="cdQ-b2-keg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="DH7-74-eBW"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="cdQ-b2-keg" secondAttribute="trailing" id="FVt-Vn-2ZI"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="cdQ-b2-keg" secondAttribute="bottom" id="Goz-X0-VV0"/>
+                            <constraint firstAttribute="bottom" secondItem="cdQ-b2-keg" secondAttribute="bottom" id="Goz-X0-VV0"/>
                             <constraint firstItem="cdQ-b2-keg" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="f6o-hI-76g"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Statistics" id="Fzy-ih-vEs"/>
+                    <connections>
+                        <outlet property="tableView" destination="cdQ-b2-keg" id="prQ-Dd-kfR"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -55,101 +58,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eVx-ow-7wW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="53.600000000000001" y="26.53673163418291"/>
-        </scene>
-        <!--Statistics-->
-        <scene sceneID="l54-NG-vBN">
-            <objects>
-                <viewController id="GhL-5r-bei" customClass="ViewController" customModule="TelegramCharts" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Mx6-AK-ria">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aYW-xW-HNK" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="16" y="30" width="343" height="380"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="380" id="Y4R-ng-WPn"/>
-                                </constraints>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A43-tS-Tgr" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="418" width="375" height="40"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TI9-hA-iVx" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                        <rect key="frame" x="16" y="1" width="343" height="38"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="TI9-hA-iVx" secondAttribute="bottom" constant="1" id="6Oi-vr-aI1"/>
-                                    <constraint firstAttribute="height" constant="40" id="U7l-gc-QGi"/>
-                                    <constraint firstAttribute="trailing" secondItem="TI9-hA-iVx" secondAttribute="trailing" constant="16" id="ZAd-31-YSK"/>
-                                    <constraint firstItem="TI9-hA-iVx" firstAttribute="leading" secondItem="A43-tS-Tgr" secondAttribute="leading" constant="16" id="h4z-oC-6hw"/>
-                                    <constraint firstItem="TI9-hA-iVx" firstAttribute="top" secondItem="A43-tS-Tgr" secondAttribute="top" constant="1" id="v4L-OJ-Jpr"/>
-                                </constraints>
-                            </view>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lf9-5u-XCd">
-                                <rect key="frame" x="310" y="483" width="51" height="31"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="31" id="gGQ-bP-crY"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="chartSwicth1Changed:" destination="GhL-5r-bei" eventType="valueChanged" id="gPf-r7-pnK"/>
-                                </connections>
-                            </switch>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chart #1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D3L-WW-Qj4">
-                                <rect key="frame" x="16" y="488" width="278" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chart #2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1qN-fA-pPW">
-                                <rect key="frame" x="16" y="535" width="278" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i1w-vq-m9z">
-                                <rect key="frame" x="310" y="530" width="51" height="31"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="31" id="gGU-oh-D9R"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="chartSwicth2Changed:" destination="GhL-5r-bei" eventType="valueChanged" id="tb6-Sj-IFD"/>
-                                </connections>
-                            </switch>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="A43-tS-Tgr" firstAttribute="leading" secondItem="Ymr-Q7-F09" secondAttribute="leading" id="Aj5-TT-ClL"/>
-                            <constraint firstItem="D3L-WW-Qj4" firstAttribute="top" secondItem="A43-tS-Tgr" secondAttribute="bottom" constant="30" id="DoX-gn-Dx8"/>
-                            <constraint firstItem="Ymr-Q7-F09" firstAttribute="trailing" secondItem="aYW-xW-HNK" secondAttribute="trailing" constant="16" id="F8f-4P-aPf"/>
-                            <constraint firstItem="lf9-5u-XCd" firstAttribute="top" secondItem="A43-tS-Tgr" secondAttribute="bottom" constant="25" id="Ke4-Pl-M1M"/>
-                            <constraint firstItem="Ymr-Q7-F09" firstAttribute="trailing" secondItem="lf9-5u-XCd" secondAttribute="trailing" constant="16" id="WgF-7I-baX"/>
-                            <constraint firstItem="A43-tS-Tgr" firstAttribute="top" secondItem="aYW-xW-HNK" secondAttribute="bottom" constant="8" id="Whf-4P-HJp"/>
-                            <constraint firstItem="Ymr-Q7-F09" firstAttribute="trailing" secondItem="i1w-vq-m9z" secondAttribute="trailing" constant="16" id="Wka-zg-6aH"/>
-                            <constraint firstItem="Ymr-Q7-F09" firstAttribute="trailing" secondItem="A43-tS-Tgr" secondAttribute="trailing" id="YXd-E1-0kN"/>
-                            <constraint firstItem="1qN-fA-pPW" firstAttribute="leading" secondItem="Ymr-Q7-F09" secondAttribute="leading" constant="16" id="ZOZ-qO-i3D"/>
-                            <constraint firstItem="i1w-vq-m9z" firstAttribute="top" secondItem="lf9-5u-XCd" secondAttribute="bottom" constant="16" id="b1d-nk-aue"/>
-                            <constraint firstItem="D3L-WW-Qj4" firstAttribute="leading" secondItem="Ymr-Q7-F09" secondAttribute="leading" constant="16" id="fs7-qN-JUW"/>
-                            <constraint firstItem="1qN-fA-pPW" firstAttribute="top" secondItem="D3L-WW-Qj4" secondAttribute="bottom" constant="26" id="gZt-xx-JO2"/>
-                            <constraint firstItem="aYW-xW-HNK" firstAttribute="leading" secondItem="Ymr-Q7-F09" secondAttribute="leading" constant="16" id="lnr-NL-gb6"/>
-                            <constraint firstItem="i1w-vq-m9z" firstAttribute="leading" secondItem="1qN-fA-pPW" secondAttribute="trailing" constant="16" id="n8e-gL-XMG"/>
-                            <constraint firstItem="aYW-xW-HNK" firstAttribute="top" secondItem="Ymr-Q7-F09" secondAttribute="top" constant="10" id="r23-gV-Ro5"/>
-                            <constraint firstItem="lf9-5u-XCd" firstAttribute="leading" secondItem="D3L-WW-Qj4" secondAttribute="trailing" constant="16" id="saR-JU-8SQ"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="Ymr-Q7-F09"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Statistics" id="o4I-yb-sH5"/>
-                    <connections>
-                        <outlet property="chartView" destination="aYW-xW-HNK" id="Vln-ay-LW5"/>
-                        <outlet property="previewChartView" destination="TI9-hA-iVx" id="min-CV-3e6"/>
-                        <outlet property="sliderView" destination="A43-tS-Tgr" id="w7U-ly-86n"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ToT-bZ-7Uz" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1809" y="27"/>
         </scene>
     </scenes>
 </document>

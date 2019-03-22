@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChartView: UIView {
+class ChartView: UIView, Reusable, Updatable {
     
     var chartModels: [ChartModel]? {
         didSet {
@@ -33,6 +33,8 @@ class ChartView: UIView {
     var sliderDirection: SliderDirection = .finished
     
     var animationDuration: CFTimeInterval = 0.5
+
+    private(set) var isReused = false
 
     private var lineGap: CGFloat = 60.0
     
@@ -545,4 +547,28 @@ class ChartView: UIView {
         }
     }
     
+    func prepareForReuse() {
+
+        chartModels = nil
+        chartLines = nil
+        gridLines = nil
+        labels = nil
+        dataPoints = nil
+
+        mainLayer.sublayers?.forEach {
+            if $0 is CATextLayer || $0 is DotLayer {
+                $0.removeFromSuperlayer()
+            }
+        }
+        dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        
+        range = (0, 0)
+        maxValue = 0
+        targetMaxValue = 0
+        runMaxValueAnimation = false
+        isPreviewMode = false
+        isReused = true
+    }
+
 }
