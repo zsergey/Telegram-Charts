@@ -51,6 +51,9 @@
 		ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577202236EDB20006200D /* DataChartModelFactory.swift */; };
 		ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577242236FE620006200D /* UIColor+Initializer.swift */; };
 		ADE57727223702C50006200D /* DataChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE57726223702C50006200D /* DataChartModel.swift */; };
+		ADFF33B32245272F0019A4D4 /* SectionTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFF33B22245272F0019A4D4 /* SectionTableViewCellModel.swift */; };
+		ADFF33B8224527620019A4D4 /* SectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFF33B6224527620019A4D4 /* SectionTableViewCell.swift */; };
+		ADFF33B9224527620019A4D4 /* SectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADFF33B7224527620019A4D4 /* SectionTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +103,9 @@
 		ADE577202236EDB20006200D /* DataChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataChartModelFactory.swift; sourceTree = "<group>"; };
 		ADE577242236FE620006200D /* UIColor+Initializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Initializer.swift"; sourceTree = "<group>"; };
 		ADE57726223702C50006200D /* DataChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChartModel.swift; sourceTree = "<group>"; };
+		ADFF33B22245272F0019A4D4 /* SectionTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTableViewCellModel.swift; sourceTree = "<group>"; };
+		ADFF33B6224527620019A4D4 /* SectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTableViewCell.swift; sourceTree = "<group>"; };
+		ADFF33B7224527620019A4D4 /* SectionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionTableViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +153,7 @@
 		ADB3E9E022441BCB007CC2F2 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				ADFF33B1224527160019A4D4 /* Section */,
 				ADB3E9EB22441C29007CC2F2 /* Button */,
 				ADB3E9E622441BEF007CC2F2 /* Title */,
 				ADB3E9E122441BD6007CC2F2 /* Chart */,
@@ -277,6 +284,16 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		ADFF33B1224527160019A4D4 /* Section */ = {
+			isa = PBXGroup;
+			children = (
+				ADFF33B22245272F0019A4D4 /* SectionTableViewCellModel.swift */,
+				ADFF33B6224527620019A4D4 /* SectionTableViewCell.swift */,
+				ADFF33B7224527620019A4D4 /* SectionTableViewCell.xib */,
+			);
+			path = Section;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -336,6 +353,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */,
+				ADFF33B9224527620019A4D4 /* SectionTableViewCell.xib in Resources */,
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,
 				ADB3E9E522441BE9007CC2F2 /* ChartTableViewCell.xib in Resources */,
 				ADE5770E2236E8920006200D /* chart_data.json in Resources */,
@@ -362,6 +380,7 @@
 				ADE577132236E8920006200D /* ChartViewController.swift in Sources */,
 				ADB3E9F222441D56007CC2F2 /* CellViewModel.swift in Sources */,
 				ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */,
+				ADFF33B8224527620019A4D4 /* SectionTableViewCell.swift in Sources */,
 				ADB3E9FC22441F4F007CC2F2 /* ChartTableViewCellModel.swift in Sources */,
 				AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */,
 				AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */,
@@ -371,6 +390,7 @@
 				AD17FF35224498AA0073F0BB /* ButtonTableViewCellModel.swift in Sources */,
 				AD17FF33224498730073F0BB /* TitleTableViewCellModel.swift in Sources */,
 				AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */,
+				ADFF33B32245272F0019A4D4 /* SectionTableViewCellModel.swift in Sources */,
 				ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */,
 				AD94517C223D90EF00E8CD9D /* CGFloatExtension.swift in Sources */,
 				ADB3E9F422441D6D007CC2F2 /* DisplayCollection.swift in Sources */,
