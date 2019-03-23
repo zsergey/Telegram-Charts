@@ -10,15 +10,24 @@ import UIKit
 
 class TitleTableViewCell: UITableViewCell {
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
+    @IBOutlet var iconView: UIView!
+    @IBOutlet var label: UILabel!
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
+        let color = iconView.backgroundColor
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        
+        if selected {
+            iconView.backgroundColor = color
+        }
     }
-
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        let color = iconView.backgroundColor
+        super.setHighlighted(highlighted, animated: animated)
+        
+        if highlighted {
+            iconView.backgroundColor = color
+        }
+    }
 }

@@ -22,13 +22,23 @@ extension PointModel: Comparable {
     }
 }
 
-struct ChartModel {
+class ChartModel {
     var name: String
     var color: UIColor
     var isHidden: Bool
+    var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
     var opacity: Float {
         return isHidden ? 0 : 1
+    }
+    
+    init(name: String, color: UIColor, isHidden: Bool,
+         drawingStyle: DrawingStyleProtocol, data: [PointModel]) {
+        self.name = name
+        self.color = color
+        self.isHidden = isHidden
+        self.drawingStyle = drawingStyle
+        self.data = data
     }
 }
 

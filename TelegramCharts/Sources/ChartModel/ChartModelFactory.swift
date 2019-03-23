@@ -50,6 +50,7 @@ struct ChartModelFactory {
                         let chartModel = ChartModel(name: name,
                                                     color: color,
                                                     isHidden: false,
+                                                    drawingStyle: StandardDrawingStyle(),
                                                     data: pointModels)
                         chartModels.append(chartModel)
                     }

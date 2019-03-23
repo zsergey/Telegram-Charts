@@ -10,6 +10,8 @@ import Foundation
 
 struct ChartTableViewCellModel {
     var chartModels: [ChartModel]?
+    var colorScheme: ColorSchemeProtocol
+    var drawingStyle: DrawingStyleProtocol
 }
 
 extension ChartTableViewCellModel: CellViewModelType {
@@ -40,6 +42,14 @@ extension ChartTableViewCellModel: CellViewModelType {
                 // TODO: на старте анимация, не очень хорошо
                 cell.previewChartView.setNeedsLayout()
             }
+            
+            cell.chartView.colorScheme = colorScheme
+            cell.previewChartView.colorScheme = colorScheme
+            cell.chartView.drawingStyle = drawingStyle
+            cell.previewChartView.drawingStyle = drawingStyle
+            cell.sliderView.colorScheme = colorScheme
+            cell.backgroundColor = colorScheme.chart.background
+            cell.selectedBackgroundView = colorScheme.selectedCellView
         }
     }
 }

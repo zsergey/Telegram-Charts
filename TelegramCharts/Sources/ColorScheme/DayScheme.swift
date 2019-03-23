@@ -14,6 +14,10 @@ struct DayScheme: ColorSchemeProtocol {
         return UIColor(hex: "#F7F7F7")!
     }
     
+    var selectedCellView: UIView {
+        return view(by: UIColor(hex: "#EFEFF4")!)
+    }
+
     var title: UIColor {
         return UIColor(hex: "#000000")!
     }
@@ -31,8 +35,7 @@ struct DayScheme: ColorSchemeProtocol {
     }
     
     var button: ButtonColor {
-        return ButtonColor(normal: UIColor(hex: "#327FDE")!,
-                           selected: UIColor(hex: "#327FDE", alpha: 0.7)!)
+        return ButtonColor(normal: UIColor(hex: "#327FDE")!)
     }
 
     var section: SectionColor {

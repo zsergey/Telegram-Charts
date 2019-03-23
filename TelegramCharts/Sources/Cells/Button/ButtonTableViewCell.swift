@@ -10,9 +10,6 @@ import UIKit
 
 class ButtonTableViewCell: UITableViewCell {
 
-    @IBOutlet var button: UIButton!
+    @IBOutlet var label: UILabel!
     
-    @IBAction func tapButton(_ sender: Any) {
-        
-    }
 }

@@ -28,11 +28,11 @@ struct SectionColor {
 
 struct ButtonColor {
     var normal: UIColor
-    var selected: UIColor
 }
 
 protocol ColorSchemeProtocol {
     var background: UIColor { get }
+    var selectedCellView: UIView { get }
     var title: UIColor { get }
     var statusBarStyle: UIStatusBarStyle { get }
     var separator: UIColor { get }
@@ -41,4 +41,13 @@ protocol ColorSchemeProtocol {
     var section: SectionColor { get }
     var chart: ChartColor { get }
     var slider: SliderColor { get }
+}
+
+extension ColorSchemeProtocol {
+
+    func view(by color: UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        return view
+    }
 }

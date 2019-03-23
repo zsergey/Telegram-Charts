@@ -96,7 +96,6 @@ class SliderView: UIView, Reusable {
     private func setupView() {
         layer.addSublayer(mainLayer)
         
-        self.backgroundColor = colorScheme.chart.background
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
         addGestureRecognizer(panGesture)
@@ -206,6 +205,7 @@ class SliderView: UIView, Reusable {
     }
     
     private func clean() {
+        layer.backgroundColor = colorScheme.chart.background.cgColor
         mainLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
     }
 

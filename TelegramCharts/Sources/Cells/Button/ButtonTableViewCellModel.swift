@@ -16,9 +16,9 @@ struct ButtonTableViewCellModel {
 extension ButtonTableViewCellModel: CellViewModelType {
     
     func setup(on cell: ButtonTableViewCell) {
-        cell.button.setTitle(text, for: .normal)
-        cell.button.setTitleColor(colorScheme.button.normal, for: .normal)
-        cell.button.setTitleColor(colorScheme.button.selected, for: .selected)
+        cell.label.text = text
+        cell.label.textColor = colorScheme.button.normal
         cell.backgroundColor = colorScheme.chart.background
+        cell.selectedBackgroundView = colorScheme.selectedCellView
     }
 }

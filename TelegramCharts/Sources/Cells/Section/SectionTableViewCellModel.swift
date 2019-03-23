@@ -17,7 +17,7 @@ extension SectionTableViewCellModel: CellViewModelType {
     
     func setup(on cell: SectionTableViewCell) {
         cell.label.text = text
-        cell.backgroundColor = colorScheme.section.background
         cell.label.textColor = colorScheme.section.text
+        cell.backgroundColor = colorScheme.section.background
     }
 }

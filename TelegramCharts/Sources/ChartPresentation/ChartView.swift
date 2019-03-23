@@ -24,7 +24,7 @@ class ChartView: UIView, Reusable, Updatable {
         }
     }
     
-    var drawingStyle: DrawingStyleProtocol = CurveDrawingStyle() { didSet { setNeedsLayout() } }
+    var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() { didSet { setNeedsLayout() } }
 
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
@@ -512,7 +512,7 @@ class ChartView: UIView, Reusable, Updatable {
     
     private func cleanDots() {
         CATransaction.setDisableActions(true)
-        mainLayer.sublayers?.forEach {
+        dataLayer.sublayers?.forEach {
             if $0 is DotLayer {
                 $0.removeFromSuperlayer()
             }
@@ -535,7 +535,8 @@ class ChartView: UIView, Reusable, Updatable {
             
             let dataPoint = points[selectedIndex]
             let xValue = (CGFloat(selectedIndex) - range.start) * lineGap - outerRadius / 2
-            let yValue = dataPoint.y + bottomSpace - outerRadius / 2
+            let yValue = dataPoint.y  - outerRadius / 2
+
             let dotLayer = DotLayer()
             dotLayer.dotInnerColor = colorScheme.chart.background
             dotLayer.innerRadius = innerRadius
@@ -543,7 +544,7 @@ class ChartView: UIView, Reusable, Updatable {
             dotLayer.cornerRadius = outerRadius / 2
             dotLayer.frame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
             dotLayers.append(dotLayer)
-            mainLayer.addSublayer(dotLayer)
+            dataLayer.addSublayer(dotLayer)
         }
     }
     
@@ -556,10 +557,11 @@ class ChartView: UIView, Reusable, Updatable {
         dataPoints = nil
 
         mainLayer.sublayers?.forEach {
-            if $0 is CATextLayer || $0 is DotLayer {
+            if $0 is CATextLayer {
                 $0.removeFromSuperlayer()
             }
         }
+
         dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
         gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
         

@@ -16,6 +16,8 @@ class ChartViewController: UIViewController {
         didSet {
             tableView.delegate = self
             tableView.dataSource = self
+            tableView.rowHeight = 0
+            tableView.estimatedRowHeight = 370
         }
     }
     
@@ -27,9 +29,6 @@ class ChartViewController: UIViewController {
 
             tableView.backgroundColor = colorScheme.section.background
             tableView.separatorColor = colorScheme.separator
-//            chartView.colorScheme = colorScheme
-//            previewChartView.colorScheme = colorScheme
-//            sliderView.colorScheme = colorScheme
         }
     }
 
@@ -40,8 +39,14 @@ class ChartViewController: UIViewController {
 
         colorScheme = NightScheme()
         
-        displayCollection = ChartDisplayCollection(colorScheme: colorScheme)
+        displayCollection = ChartDisplayCollection(colorScheme: colorScheme,
+                                                   drawingStyle: StandardDrawingStyle())
         displayCollection.charts = ChartModelFactory.readChartModels()
+        displayCollection.onChangeDataSource = { [weak self] in
+            guard let self = self else { return }
+            self.colorScheme = self.displayCollection.colorScheme
+            self.reloadRows(self.visibleRows())
+        }
         tableView.registerNibs(from: displayCollection)
 
         let displayLink = CADisplayLink(target: self, selector: #selector(update))
@@ -52,24 +57,22 @@ class ChartViewController: UIViewController {
         _ = tableView.visibleCells.map { ($0 as? ChartTableViewCell)?.update() }
     }
 
-//    func changeIsHidden(for index: Int, sender: UISwitch) {
-//        if var chartModels = chartView.chartModels {
-//            chartModels[index].isHidden = !sender.isOn
-//            chartView.chartModels = chartModels
-//            previewChartView.chartModels = chartModels
-//            chartView.setNeedsLayout()
-//            previewChartView.setNeedsLayout()
-//        }
-//    }
-//    
-//    @IBAction func chartSwicth1Changed(_ sender: UISwitch) {
-//        changeIsHidden(for: 0, sender: sender)
-//    }
-//    
-//    @IBAction func chartSwicth2Changed(_ sender: UISwitch) {
-//        changeIsHidden(for: 1, sender: sender)
-//    }
+    func reloadRows(_ rows: [IndexPath]) {
+        self.tableView.beginUpdates()
+        self.tableView.reloadRows(at: rows, with: .fade)
+        self.tableView.endUpdates()
+    }
     
+    func visibleRows() -> [IndexPath] {
+        var indexPaths = [IndexPath]()
+        let cells = self.tableView.visibleCells
+        for cell in cells {
+            if let indexPath = self.tableView.indexPath(for: cell) {
+                indexPaths.append(indexPath)
+            }
+        }
+        return indexPaths
+    }
     
 }
 
@@ -83,7 +86,20 @@ extension ChartViewController: UITableViewDelegate {
         let model = displayCollection.model(for: indexPath)
         model.setupDefault(on: cell)
     }
-    
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let chartIndexPath = displayCollection.didSelect(indexPath: indexPath)
+        
+        
+        if let _ = tableView.cellForRow(at: indexPath) {
+            reloadRows([indexPath])
+        }
+        if let chartIndexPath = chartIndexPath,
+             let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {
+            cell.layoutIfNeeded()
+        }
+    }
 }
 
 extension ChartViewController: UITableViewDataSource {
@@ -96,6 +112,7 @@ extension ChartViewController: UITableViewDataSource {
         let model = displayCollection.model(for: indexPath)
         let cell = tableView.dequeueReusableCell(for: indexPath, with: model)
         cell.separatorInset = displayCollection.separatorInset(for: indexPath, view: view)
+        cell.accessoryType = displayCollection.accessoryType(for: indexPath)
         return cell
     }
 }
