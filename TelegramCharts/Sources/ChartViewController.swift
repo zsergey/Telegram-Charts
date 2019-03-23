@@ -44,10 +44,20 @@ class ChartViewController: UIViewController {
                                                    colorScheme: colorScheme,
                                                    drawingStyle: StandardDrawingStyle())
 
-        displayCollection.onChangeDataSource = { [weak self] in
+        displayCollection.onChangeDrawingStyle = { [weak self] in
+            guard let self = self else { return }
+            let cells = self.tableView.visibleCells
+            for cell in cells {
+                if let cell = cell as? ChartTableViewCell {
+                    cell.calcProperties()
+                }
+            }
+        }
+        
+        displayCollection.onChangeColorScheme = { [weak self] in
             guard let self = self else { return }
             self.colorScheme = self.displayCollection.colorScheme
-            self.reloadRows(self.visibleRows())
+            self.tableView.reloadData()
         }
         tableView.registerNibs(from: displayCollection)
 

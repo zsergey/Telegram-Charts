@@ -124,6 +124,7 @@ class ChartView: UIView, Reusable, Updatable {
                 }
             } else {
                 lineLayer.path = path.cgPath
+                lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
                 lineLayer.fillColor = UIColor.clear.cgColor
                 lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0

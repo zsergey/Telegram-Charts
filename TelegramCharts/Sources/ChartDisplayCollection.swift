@@ -24,8 +24,9 @@ class ChartDisplayCollection: DisplayCollection {
         self.createRows()
     }
     
-    var onChangeDataSource: (() -> ())?
-    
+    var onChangeColorScheme: (() -> ())?
+    var onChangeDrawingStyle: (() -> ())?
+
     private enum `Type` {
         case section(String)
         case chart(ChartDataSource, ChartDataSource)
@@ -136,14 +137,16 @@ class ChartDisplayCollection: DisplayCollection {
         let type = rows[indexPath.row]
         switch type {
         case .colorScheme:
+            FeedbackGenerator.impactOccurred(style: .medium)
             colorScheme = colorScheme is DayScheme ? NightScheme() : DayScheme()
             createRows()
-            onChangeDataSource?()
+            onChangeColorScheme?()
         case .drawingStyle:
+            FeedbackGenerator.impactOccurred(style: .medium)
             drawingStyle = drawingStyle is StandardDrawingStyle ? CurveDrawingStyle() : StandardDrawingStyle()
             createRows()
             changeDrawingStyle(to: drawingStyle)
-            onChangeDataSource?()
+            onChangeDrawingStyle?()
         case .title(let model):
             FeedbackGenerator.impactOccurred(style: .medium)
             model.isHidden = !model.isHidden
