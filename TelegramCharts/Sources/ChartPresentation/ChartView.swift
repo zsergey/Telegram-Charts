@@ -23,7 +23,9 @@ class ChartView: UIView, Reusable, Updatable {
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
     var sliderDirection: SliderDirection = .finished
-
+    
+    private var isJustReused = true
+    
     private let labelWidth: CGFloat = 35
     
     private let dataLayer: CALayer = CALayer()
@@ -77,8 +79,6 @@ class ChartView: UIView, Reusable, Updatable {
             return
         }
         
-        let animateMaxValue = dataSource.maxValue == 0 ? false : true
-
         let width = CGFloat(dataSource.countPoints) * dataSource.lineGap
         let height = self.frame.size.height
         self.mainLayer.frame = CGRect(x: 0, y: 0, width: width, height: height)
@@ -90,11 +90,12 @@ class ChartView: UIView, Reusable, Updatable {
                                       width: self.frame.width,
                                       height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
         
-        if !animateMaxValue {
+        if isJustReused {
             self.drawHorizontalLines(animated: false)
+            isJustReused = false
         }
-        
         self.drawCharts()
+        
         // TODO: пока закомментил
         //self.drawLables(animated: animateMaxValue)
     }
@@ -391,7 +392,8 @@ class ChartView: UIView, Reusable, Updatable {
         gridLines = nil
         labels = nil
         dataSource = nil
-
+        isJustReused = true
+        
         mainLayer.sublayers?.forEach {
             if $0 is CATextLayer {
                 $0.removeFromSuperlayer()

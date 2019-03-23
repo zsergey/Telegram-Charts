@@ -85,7 +85,16 @@ class ChartViewController: UIViewController {
         }
         return indexPaths
     }
-    
+
+    func didSelectRow(at indexPath: IndexPath, chartAt chartIndexPath: IndexPath?) {
+        if let _ = tableView.cellForRow(at: indexPath) as? TitleTableViewCell {
+            reloadRows([indexPath])
+        }
+        if let chartIndexPath = chartIndexPath,
+            let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {
+            cell.calcProperties()
+        }
+    }
 }
 
 extension ChartViewController: UITableViewDelegate {
@@ -102,13 +111,7 @@ extension ChartViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let chartIndexPath = displayCollection.didSelect(indexPath: indexPath)
-        if let _ = tableView.cellForRow(at: indexPath) {
-            reloadRows([indexPath])
-        }
-        if let chartIndexPath = chartIndexPath,
-            let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {
-            cell.calcProperties()
-        }
+        didSelectRow(at: indexPath, chartAt: chartIndexPath)
     }
 }
 
