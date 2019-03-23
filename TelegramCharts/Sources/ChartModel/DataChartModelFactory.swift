@@ -11,12 +11,12 @@ import UIKit
 struct DataChartModelFactory {
     
     @discardableResult
-    static func fetchCharts() -> [DataChartModel]? {
-        return fetchCharts(fromResource: "chart_data")
+    static func make() -> [DataChartModel]? {
+        return make(fromResource: "chart_data")
     }
     
     @discardableResult
-    static func fetchCharts(fromResource name: String) -> [DataChartModel]? {
+    static func make(fromResource name: String) -> [DataChartModel]? {
         guard let path = Bundle.main.path(forResource: name, ofType: "json") else {
             return nil
         }

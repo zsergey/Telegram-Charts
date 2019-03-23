@@ -10,10 +10,10 @@ import Foundation
 
 struct ChartModelFactory {
     
-    static func readChartModels() -> [[ChartModel]] {
+    static func make() -> [[ChartModel]] {
         var result: [[ChartModel]] = []
         
-        if let data = DataChartModelFactory.fetchCharts() {
+        if let data = DataChartModelFactory.make() {
             for index in 0..<data.count {
                 
                 let chartData = data[index]

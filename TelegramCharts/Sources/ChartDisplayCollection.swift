@@ -9,45 +9,46 @@
 import UIKit
 
 class ChartDisplayCollection: DisplayCollection {
-
-    var onChangeDataSource: (() -> ())?
+    
+    var dataSource: СoupleChartDataSource
     var colorScheme: ColorSchemeProtocol
     var drawingStyle: DrawingStyleProtocol
 
-    init(colorScheme: ColorSchemeProtocol, drawingStyle: DrawingStyleProtocol) {
+    init(dataSource: СoupleChartDataSource,
+         colorScheme: ColorSchemeProtocol,
+         drawingStyle: DrawingStyleProtocol) {
+        self.dataSource = dataSource
         self.colorScheme = colorScheme
         self.drawingStyle = drawingStyle
+        self.changeDrawingStyle(to: drawingStyle)
+        self.createRows()
     }
+    
+    var onChangeDataSource: (() -> ())?
     
     private enum `Type` {
         case section(String)
-        case chart([ChartModel])
+        case chart(ChartDataSource, ChartDataSource)
         case title(ChartModel)
         case colorScheme(String)
         case drawingStyle(String)
         case button(String)
     }
     
-    private var dataSource: [Type] = []
+    private var rows: [Type] = []
     
-    var titleColorSchemeButton: String {
+    private var titleColorSchemeButton: String {
         var text = "Switch to "
         let nextMode = colorScheme is DayScheme ? "Night" : "Day"
         text = text + nextMode + " Mode"
-        return  text
+        return text
     }
 
-    var titleDrawingStyleButton: String {
+    private var titleDrawingStyleButton: String {
         var text = "Switch to "
         let nextStyle = drawingStyle is StandardDrawingStyle ? "Curve" : "Standard"
         text = text + nextStyle + " Drawing Style"
-        return  text
-    }
-
-    var charts: [[ChartModel]] = [] {
-        didSet {
-            createDataSource()
-        }
+        return text
     }
     
     static var modelsForRegistration: [CellViewAnyModelType.Type] {
@@ -57,31 +58,37 @@ class ChartDisplayCollection: DisplayCollection {
                 ButtonTableViewCellModel.self]
     }
     
-    private func createDataSource() {
-        dataSource.removeAll()
-        for index in 0..<charts.count {
-            let chart = charts[index]
-            dataSource.append(.section("FOLLOWERS"))
-            dataSource.append(.chart(chart))
-            _ = chart.map { dataSource.append(.title($0)) }
-            dataSource.append(.section(""))
-            dataSource.append(.colorScheme(titleColorSchemeButton))
-            dataSource.append(.drawingStyle(titleDrawingStyleButton))
+    private func createRows() {
+        rows.removeAll()
+        for index in 0..<dataSource.main.count {
+            let main = dataSource.main[index]
+            let preview = dataSource.preview[index]
+            rows.append(.section(main.name))
+            rows.append(.chart(main, preview))
+            _ = main.chartModels.map { rows.append(.title($0)) }
+            rows.append(.section(""))
+            rows.append(.colorScheme(titleColorSchemeButton))
+            rows.append(.drawingStyle(titleDrawingStyleButton))
         }
     }
     
+    func changeDrawingStyle(to drawingStyle: DrawingStyleProtocol) {
+        _ = self.dataSource.main.map { $0.drawingStyle = drawingStyle}
+        _ = self.dataSource.preview.map { $0.drawingStyle = drawingStyle}
+    }
+    
     func numberOfRows(in section: Int) -> Int {
-        return dataSource.count
+        return rows.count
     }
 
     func separatorInset(for indexPath: IndexPath, view: UIView) -> UIEdgeInsets {
         var left = view.frame.size.width
-        let type = dataSource[indexPath.row]
+        let type = rows[indexPath.row]
         switch type {
         case .section: left = 0
         case .chart: break
         case .title:
-            switch dataSource[indexPath.row + 1] {
+            switch rows[indexPath.row + 1] {
             case .title: left = 44
             default: left = 0
             }
@@ -91,7 +98,7 @@ class ChartDisplayCollection: DisplayCollection {
     }
     
     func accessoryType(for indexPath: IndexPath) -> UITableViewCell.AccessoryType {
-        let type = dataSource[indexPath.row]
+        let type = rows[indexPath.row]
         switch type {
         case .title(let model): return model.isHidden ? .none : .checkmark
         default: return .none
@@ -99,12 +106,14 @@ class ChartDisplayCollection: DisplayCollection {
     }
     
     func model(for indexPath: IndexPath) -> CellViewAnyModelType {
-        let type = dataSource[indexPath.row]
+        let type = rows[indexPath.row]
         switch type {
         case .section(let name):
             return SectionTableViewCellModel(text: name, colorScheme: colorScheme)
-        case .chart(let models):
-            return ChartTableViewCellModel(chartModels: models, colorScheme: colorScheme, drawingStyle: drawingStyle)
+        case .chart(let main, let preview):
+            return ChartTableViewCellModel(chartDataSource: main,
+                                           previewChartDataSource: preview,
+                                           colorScheme: colorScheme, drawingStyle: drawingStyle)
         case .title(let model):
             return TitleTableViewCellModel(text: model.name, color: model.color, colorScheme: colorScheme)
         case .button(let text), .colorScheme(let text), .drawingStyle(let text):
@@ -113,7 +122,7 @@ class ChartDisplayCollection: DisplayCollection {
     }
     
     func height(for indexPath: IndexPath) -> CGFloat {
-        let type = dataSource[indexPath.row]
+        let type = rows[indexPath.row]
         switch type {
         case .section(let name): return name.count > 0 ? 55 : 35
         case .chart: return 370
@@ -124,15 +133,16 @@ class ChartDisplayCollection: DisplayCollection {
     
     func didSelect(indexPath: IndexPath) -> IndexPath? {
         var result: IndexPath?
-        let type = dataSource[indexPath.row]
+        let type = rows[indexPath.row]
         switch type {
         case .colorScheme:
             colorScheme = colorScheme is DayScheme ? NightScheme() : DayScheme()
-            createDataSource()
+            createRows()
             onChangeDataSource?()
         case .drawingStyle:
             drawingStyle = drawingStyle is StandardDrawingStyle ? CurveDrawingStyle() : StandardDrawingStyle()
-            createDataSource()
+            createRows()
+            changeDrawingStyle(to: drawingStyle)
             onChangeDataSource?()
         case .title(let model):
             FeedbackGenerator.impactOccurred(style: .medium)
@@ -140,7 +150,7 @@ class ChartDisplayCollection: DisplayCollection {
             var row = indexPath.row
             while row > 0 {
                 row -= 1
-                let type = dataSource[row]
+                let type = rows[row]
                 switch type {
                 case .chart:
                     result = IndexPath(row: row, section: indexPath.section)

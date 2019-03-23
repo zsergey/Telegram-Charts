@@ -39,9 +39,11 @@ class ChartViewController: UIViewController {
 
         colorScheme = NightScheme()
         
-        displayCollection = ChartDisplayCollection(colorScheme: colorScheme,
+        let dataSource = ChartDataSourceFactory.make()
+        displayCollection = ChartDisplayCollection(dataSource: dataSource,
+                                                   colorScheme: colorScheme,
                                                    drawingStyle: StandardDrawingStyle())
-        displayCollection.charts = ChartModelFactory.readChartModels()
+
         displayCollection.onChangeDataSource = { [weak self] in
             guard let self = self else { return }
             self.colorScheme = self.displayCollection.colorScheme
@@ -54,7 +56,7 @@ class ChartViewController: UIViewController {
     }
     
     @objc func update() {
-        _ = tableView.visibleCells.map { ($0 as? ChartTableViewCell)?.update() }
+         _ = tableView.visibleCells.map { ($0 as? ChartTableViewCell)?.update() }
     }
 
     func reloadRows(_ rows: [IndexPath]) {
@@ -90,14 +92,12 @@ extension ChartViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let chartIndexPath = displayCollection.didSelect(indexPath: indexPath)
-        
-        
         if let _ = tableView.cellForRow(at: indexPath) {
             reloadRows([indexPath])
         }
         if let chartIndexPath = chartIndexPath,
-             let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {
-            cell.layoutIfNeeded()
+            let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {
+            cell.calcProperties()
         }
     }
 }

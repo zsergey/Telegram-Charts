@@ -10,62 +10,20 @@ import UIKit
 
 class ChartView: UIView, Reusable, Updatable {
     
-    var chartModels: [ChartModel]? {
-        didSet {
-            self.selectedIndex = nil
-            cleanDots()
-        }
-    }
+    var dataSource: ChartDataSource?
 
-    var range: IndexRange = (0, 0) {
-        didSet {
-            self.selectedIndex = nil
-            cleanDots()
-        }
-    }
+    // TODO:
+//    var range: IndexRange = (0, 0) {
+//        didSet {
+//            self.dataSource?.selectedIndex = nil
+//            cleanDots()
+//        }
+//    }
     
-    var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle() { didSet { setNeedsLayout() } }
-
     var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
     
-    var isPreviewMode: Bool = false
-
     var sliderDirection: SliderDirection = .finished
-    
-    var animationDuration: CFTimeInterval = 0.5
 
-    private(set) var isReused = false
-
-    private var lineGap: CGFloat = 60.0
-    
-    private var topSpace: CGFloat = 0.0
-    
-    private var bottomSpace: CGFloat = 0.0
-    
-    private var topHorizontalLine: CGFloat = 95.0 / 100.0
-    
-    private var innerRadius: CGFloat = 6
-
-    private var outerRadius: CGFloat = 10
-    
-    private var minValue: CGFloat = 0
-    
-    private var maxValue: CGFloat = 0
-
-    private var targetMaxValue: CGFloat = 0
-
-    private var deltaToTargetValue: CGFloat = 0
-    
-    private var frameAnimation: Int = 0
-    
-    private var runMaxValueAnimation: Bool = false
-    
-    private var countPoints: Int = 0
-
-    private var framesInAnimationDuration: Int {
-        return Int(CFTimeInterval(60) * animationDuration)
-    }
-    
     private let labelWidth: CGFloat = 35
     
     private let dataLayer: CALayer = CALayer()
@@ -73,8 +31,6 @@ class ChartView: UIView, Reusable, Updatable {
     private let mainLayer: CALayer = CALayer()
     
     private let gridLayer: CALayer = CALayer()
-    
-    private var dataPoints: [[CGPoint]]?
 
     private var chartLines: [CAShapeLayer]?
 
@@ -84,8 +40,10 @@ class ChartView: UIView, Reusable, Updatable {
     
     private var labels: [CATextLayer]?
     
-    private var selectedIndex: Int?
+    private var innerRadius: CGFloat = 6
     
+    private var outerRadius: CGFloat = 10
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -102,44 +60,7 @@ class ChartView: UIView, Reusable, Updatable {
     }
     
     func update() {
-        guard runMaxValueAnimation else {
-            return
-        }
-        if frameAnimation < framesInAnimationDuration {
-            // Ease-in-out function from
-            // https://math.stackexchange.com/questions/121720/ease-in-out-function
-            var prevy: CGFloat = 0
-            for time in 0..<framesInAnimationDuration {
-                let x = CGFloat(time) / CGFloat(framesInAnimationDuration - 1)
-                let y = (x * x) / (x * x + (1.0 - x) * (1.0 - x))
-                
-                let toAddValue = deltaToTargetValue * (y - prevy)
-                prevy = y
-                
-                if time == frameAnimation {
-                    maxValue = maxValue + toAddValue
-                    setNeedsLayout()
-                }
-            }
-            frameAnimation += 1
-        } else {
-            runMaxValueAnimation = false
-        }
-    }
-    
-    private func setMaxValue(_ newMaxValue: CGFloat, animated: Bool = false) {
-        if animated {
-            guard newMaxValue != targetMaxValue else {
-                return
-            }
-            targetMaxValue = newMaxValue
-            drawHorizontalLines(animated: true)
-            deltaToTargetValue = newMaxValue - maxValue
-            frameAnimation = 0
-            runMaxValueAnimation = true
-        } else {
-            maxValue = newMaxValue
-        }
+        dataSource?.update()
     }
     
     private func setupView() {
@@ -149,144 +70,65 @@ class ChartView: UIView, Reusable, Updatable {
         clipsToBounds = true
     }
     
-    private func calcProperties() {
-        guard let chartModels = chartModels else {
-            return
-        }
-        let animateMaxValue = maxValue == 0 ? false : true
-        if isPreviewMode {
-            topSpace = 0.0
-            bottomSpace = 0.0
-            topHorizontalLine = 110.0 / 100.0
-            
-            countPoints = chartModels.map { $0.data.count }.max() ?? 0
-            lineGap = self.frame.size.width / (CGFloat(countPoints) - 1)
-            let max: CGFloat = chartModels.map { chartModel in
-                if chartModel.isHidden {
-                    return 0
-                } else {
-                    return CGFloat(chartModel.data.max()?.value ?? 0)
-                }}.compactMap { $0 }.max() ?? 0
-            setMaxValue(max, animated: animateMaxValue)
-        } else {
-            topSpace = 40.0
-            bottomSpace = 20.0
-            topHorizontalLine = 95.0 / 100.0
-            lineGap = self.frame.size.width / (range.end - range.start - 1)
-            var max: CGFloat = 0
-            for chartModel in chartModels {
-                if chartModel.isHidden { continue }
-                for i in 0..<chartModel.data.count {
-                    let x = (CGFloat(i) - range.start) * lineGap
-                    if x >= 0, x <= self.frame.size.width {
-                        let value = CGFloat(chartModel.data[i].value)
-                        if value > max {
-                            max = value
-                        }
-                    }
-                }
-            }
-            setMaxValue(max, animated: animateMaxValue)
-        }
-    }
-    
     override func layoutSubviews() {
         backgroundColor = colorScheme.chart.background
-        guard let chartModels = chartModels else {
+        guard let dataSource = dataSource,
+            let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
             return
         }
         
-        let animateMaxValue = maxValue == 0 ? false : true
-        calcProperties()
-        
-        let width = CGFloat(countPoints) * lineGap
-        let height = self.frame.size.height
-        mainLayer.frame = CGRect(x: 0, y: 0, width: width, height: height)
-        dataLayer.frame = CGRect(x: 0, y: topSpace, width: mainLayer.frame.width,
-                                 height: mainLayer.frame.height - topSpace - bottomSpace)
-        
-        dataPoints = [[CGPoint]]()
-        for index in 0..<chartModels.count {
-            let points = convertDataEntriesToPoints(entries: chartModels[index].data)
-            dataPoints?.append(points)
-        }
-        
-        gridLayer.frame = CGRect(x: 0, y: topSpace, width: self.frame.width,
-                                 height: mainLayer.frame.height - topSpace - bottomSpace)
-        if !animateMaxValue {
-            drawHorizontalLines(animated: false)
-        }
+        let animateMaxValue = dataSource.maxValue == 0 ? false : true
 
-        drawCharts()
-        drawLables(animated: animateMaxValue)
-    }
-    
-    private func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
-        if value == 0 {
-            return dataLayer.frame.height
-        }
-        if Int(minMaxGap) == 0 {
-            return -dataLayer.frame.height
-        }
-        return dataLayer.frame.height * (1 - ((CGFloat(value) - CGFloat(minValue)) / minMaxGap))
-    }
-    
-    private func calcLineValue(for value: CGFloat, with minMaxGap: CGFloat) -> Int {
-        return Int((1 - value) * minMaxGap) + Int(minValue)
-    }
-    
-    private func convertDataEntriesToPoints(entries: [PointModel]) -> [CGPoint] {
-        var result: [CGPoint] = []
-        let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
-        let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
+        let width = CGFloat(dataSource.countPoints) * dataSource.lineGap
+        let height = self.frame.size.height
+        self.mainLayer.frame = CGRect(x: 0, y: 0, width: width, height: height)
+        self.dataLayer.frame = CGRect(x: 0, y: dataSource.topSpace,
+                                      width: self.mainLayer.frame.width,
+                                      height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
         
-        for i in 0..<entries.count {
-            let height = calcHeight(for: entries[i].value, with: minMaxGap)
-            let point = CGPoint(x: CGFloat(i) * lineGap + startFrom, y: height)
-            result.append(point)
+        self.gridLayer.frame = CGRect(x: 0, y: dataSource.topSpace,
+                                      width: self.frame.width,
+                                      height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
+        
+        if !animateMaxValue {
+            self.drawHorizontalLines(animated: false)
         }
-        return result
+        
+        self.drawCharts()
+        // TODO: пока закомментил
+        //self.drawLables(animated: animateMaxValue)
     }
     
     private func drawCharts() {
-        guard let dataPoints = dataPoints, dataPoints.count > 0,
-            let chartModels = chartModels else {
+        guard let dataSource = dataSource,
+            let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
+            let paths = dataSource.paths else {
             return
         }
         
         let isUpdating = chartLines != nil
         var newChartLines = isUpdating ? nil : [CAShapeLayer]()
         
-        for index in 0..<chartModels.count {
-            let chartModel = chartModels[index]
-            
+        for index in 0..<dataSource.chartModels.count {
+            let chartModel = dataSource.chartModels[index]
             let lineLayer = isUpdating ? chartLines![index] : CAShapeLayer()
-            
-            var points = dataPoints[index]
-            if !isPreviewMode {
-                for i in 0..<points.count {
-                    points[i] = CGPoint(x: (CGFloat(i) - range.start) * lineGap, y: points[i].y)
+            let path = paths[index]
+            if isUpdating {
+                lineLayer.changePath(to: path, animationDuration: dataSource.animationDuration)
+                CATransaction.setDisableActions(true)
+                if chartModel.opacity != lineLayer.opacity {
+                    let toValue: Float = chartModel.opacity
+                    let fromValue: Float = lineLayer.opacity
+                    lineLayer.changeOpacity(from: fromValue, to: toValue,
+                                            animationDuration: dataSource.animationDuration)
                 }
-            }
-            
-            if let path = drawingStyle.createPath(dataPoints: points) {
-                if isUpdating {
-                    lineLayer.changePath(to: path, animationDuration: animationDuration)
-                    CATransaction.setDisableActions(true)
-                    if chartModel.opacity != lineLayer.opacity {
-                        let toValue: Float = chartModel.opacity
-                        let fromValue: Float = lineLayer.opacity
-                        lineLayer.changeOpacity(from: fromValue, to: toValue,
-                                                animationDuration: animationDuration)
-                    }
-                } else {
-                    lineLayer.path = path.cgPath
-                    lineLayer.strokeColor = chartModel.color.cgColor
-                    lineLayer.fillColor = UIColor.clear.cgColor
-                    lineLayer.lineWidth = isPreviewMode ? 1.0 : 2.0
-                    dataLayer.addSublayer(lineLayer)
-                    newChartLines!.append(lineLayer)
-                }
+            } else {
+                lineLayer.path = path.cgPath
+                lineLayer.strokeColor = chartModel.color.cgColor
+                lineLayer.fillColor = UIColor.clear.cgColor
+                lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
+                dataLayer.addSublayer(lineLayer)
+                newChartLines!.append(lineLayer)
             }
         }
         
@@ -296,41 +138,37 @@ class ChartView: UIView, Reusable, Updatable {
     }
         
     private func drawLables(animated: Bool) {
-        guard let chartModels = chartModels, chartModels.count > 0, !isPreviewMode else {
+        guard let dataSource = dataSource,
+            dataSource.chartModels.count > 0,
+            !dataSource.isPreviewMode else {
             return
-        }
-        var points: [PointModel]?
-        _ = chartModels.map {
-            if $0.data.count > points?.count ?? 0 { points = $0.data }
         }
         
         let isUpdating = labels != nil
         var newLabels = isUpdating ? nil : [CATextLayer]()
 
-        if let points = points {
-            let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
-
-            for index in 0..<points.count {
-                let textLayer = isUpdating ? labels![index] : CATextLayer()
-
-                let x = (CGFloat(index) - range.start) * lineGap - labelWidth / 2 + startFrom
-                
-                CATransaction.setDisableActions(true)
-                textLayer.frame = CGRect(x: x,
-                                         y: mainLayer.frame.size.height - bottomSpace / 2 - 4,
-                                         width: labelWidth,
-                                         height: 16)
-                if !isUpdating {
-                    textLayer.foregroundColor = colorScheme.chart.text.cgColor
-                    textLayer.backgroundColor = UIColor.clear.cgColor
-                    textLayer.alignmentMode = .center
-                    textLayer.contentsScale = UIScreen.main.scale
-                    textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
-                    textLayer.fontSize = 11
-                    textLayer.string = points[index].date
-                    mainLayer.addSublayer(textLayer)
-                    newLabels!.append(textLayer)
-                }
+        let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
+        
+        for index in 0..<dataSource.maxRangePoints.count {
+            let textLayer = isUpdating ? labels![index] : CATextLayer()
+            
+            let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2 + startFrom
+            
+            CATransaction.setDisableActions(true)
+            textLayer.frame = CGRect(x: x,
+                                     y: mainLayer.frame.size.height - dataSource.bottomSpace / 2 - 4,
+                                     width: labelWidth,
+                                     height: 16)
+            if !isUpdating {
+                textLayer.foregroundColor = colorScheme.chart.text.cgColor
+                textLayer.backgroundColor = UIColor.clear.cgColor
+                textLayer.alignmentMode = .center
+                textLayer.contentsScale = UIScreen.main.scale
+                textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
+                textLayer.fontSize = 11
+                textLayer.string = dataSource.maxRangePoints[index].date
+                mainLayer.addSublayer(textLayer)
+                newLabels!.append(textLayer)
             }
         }
 
@@ -347,58 +185,54 @@ class ChartView: UIView, Reusable, Updatable {
     }
     
     func hideLabels(skipHidden: Bool, animated: Bool) {
-        guard let chartModels = chartModels, chartModels.count > 0, !isPreviewMode else {
-            return
+        guard let dataSource = dataSource,
+            dataSource.chartModels.count > 0,
+            !dataSource.isPreviewMode else {
+                return
         }
 
         var wereHiddenLayers = false
         var lastFrame: CGRect = .zero
         
-        var points: [PointModel]? // zsergey - спорные моменты
-        _ = chartModels.map {
-            if $0.data.count > points?.count ?? 0 { points = $0.data }
-        }
-        if let points = points {
-            var layersToHide = [CATextLayer]()
-            for index in 0..<points.count {
-                let textLayer = labels![index]
-                
-                if skipHidden, textLayer.opacity == 0 {
-                    continue
-                }
-                
-                let startXFrame = textLayer.frame.origin.x - textLayer.frame.size.width / 2
-                CATransaction.setDisableActions(true)
-
-                if lastFrame == .zero {
+        var layersToHide = [CATextLayer]()
+        for index in 0..<dataSource.maxRangePoints.count {
+            let textLayer = labels![index]
+            
+            if skipHidden, textLayer.opacity == 0 {
+                continue
+            }
+            
+            let startXFrame = textLayer.frame.origin.x - textLayer.frame.size.width / 2
+            CATransaction.setDisableActions(true)
+            
+            if lastFrame == .zero {
+                textLayer.opacity = 1
+                lastFrame = textLayer.frame
+            } else {
+                let endXLastFrame = lastFrame.origin.x + lastFrame.size.width / 2 + labelWidth
+                if startXFrame > endXLastFrame {
                     textLayer.opacity = 1
                     lastFrame = textLayer.frame
                 } else {
-                    let endXLastFrame = lastFrame.origin.x + lastFrame.size.width / 2 + labelWidth
-                    if startXFrame > endXLastFrame {
-                        textLayer.opacity = 1
-                        lastFrame = textLayer.frame
+                    var opacity = max(Float(1 - (endXLastFrame - startXFrame) / textLayer.frame.size.width), 0)
+                    
+                    if sliderDirection == .center ||
+                        sliderDirection == .none,
+                        opacity >= 0.5 {
+                        opacity = 1
+                    }
+                    
+                    if sliderDirection == .finished, opacity >= 0.5 {
+                        // nothing to change.
                     } else {
-                        var opacity = max(Float(1 - (endXLastFrame - startXFrame) / textLayer.frame.size.width), 0)
-                        
-                        if sliderDirection == .center ||
-                            sliderDirection == .none,
-                            opacity >= 0.5 {
-                            opacity = 1
-                        }
-                        
-                        if sliderDirection == .finished, opacity >= 0.5 {
-                            // nothing to change.
-                        } else {
-                            textLayer.opacity = opacity
-                        }
-                        
-                        if opacity == 0 {
-                            lastFrame = .zero
-                            wereHiddenLayers = true
-                        } else if opacity != 1 {
-                            layersToHide.append(textLayer)
-                        }
+                        textLayer.opacity = opacity
+                    }
+                    
+                    if opacity == 0 {
+                        lastFrame = .zero
+                        wereHiddenLayers = true
+                    } else if opacity != 1 {
+                        layersToHide.append(textLayer)
                     }
                 }
             }
@@ -409,19 +243,20 @@ class ChartView: UIView, Reusable, Updatable {
                 for textLayer in layersToHide {
                     let toOpacity: Float = textLayer.opacity >= 0.5 ? 1 : 0
                     textLayer.changeOpacity(from: textLayer.opacity, to: toOpacity,
-                                            animationDuration: animated ? animationDuration : 0)
+                                            animationDuration: animated ? dataSource.animationDuration : 0)
                 }
             }
         }
     }
     
-    private func drawHorizontalLines(animated: Bool) {
-        guard let _ = chartModels, !isPreviewMode else {
-            return
+    func drawHorizontalLines(animated: Bool) {
+        guard let dataSource = dataSource,
+            !dataSource.isPreviewMode else {
+                return
         }
-        
-        let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
-        let newMinMaxGap = CGFloat(targetMaxValue - minValue) * topHorizontalLine
+
+        let minMaxGap = CGFloat(dataSource.maxValue - dataSource.minValue) * dataSource.topHorizontalLine
+        let newMinMaxGap = CGFloat(dataSource.targetMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
         
         let heightGrid: CGFloat = 30
         let widthGrid: CGFloat = self.frame.size.width
@@ -436,18 +271,18 @@ class ChartView: UIView, Reusable, Updatable {
             let value = gridValues[index]
             var duration: CFTimeInterval = 0
             if animated {
-                duration = value == 1 ? 0 : animationDuration
+                duration = value == 1 ? 0 : dataSource.animationDuration
             }
 
-            let lineValue = calcLineValue(for: value, with: minMaxGap)
-            let newLineValue = calcLineValue(for: value, with: newMinMaxGap)
+            let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap)
+            let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
             
             let oldValueLayer = isUpdating ? gridLines![index] : nil
             let newValueLayer = ValueLayer()
 
-            let fromNewHeight = calcHeight(for: newLineValue, with: minMaxGap)
+            let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
             let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
-            let toNewHeight = calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
+            let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
             let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
             newValueLayer.lineColor = colorScheme.chart.grid
             newValueLayer.textColor = colorScheme.chart.text
@@ -455,7 +290,7 @@ class ChartView: UIView, Reusable, Updatable {
             newGridLines.append(newValueLayer)
             
             if let oldValueLayer = oldValueLayer {
-                let toHeight = calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
+                let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
                 let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
                 CATransaction.setDisableActions(true)
                 oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
@@ -472,7 +307,7 @@ class ChartView: UIView, Reusable, Updatable {
             } else {
                 newValueLayer.lineValue = lineValue
                 newValueLayer.opacity = 1
-                let height = calcHeight(for: lineValue, with: minMaxGap)
+                let height = dataSource.calcHeight(for: lineValue, with: minMaxGap)
                 let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
                 newValueLayer.frame = rect
             }
@@ -488,8 +323,9 @@ class ChartView: UIView, Reusable, Updatable {
     }
     
     private func drawDotsIfNeeded(_ touches: Set<UITouch>) {
-        guard let dataPoints = dataPoints, dataPoints.count > 0,
-            !isPreviewMode, let touch = touches.first else {
+        guard let dataSource = dataSource,
+            let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
+            !dataSource.isPreviewMode, let touch = touches.first else {
                 return
         }
         let location = touch.location(in: self)
@@ -497,14 +333,14 @@ class ChartView: UIView, Reusable, Updatable {
             return
         }
         
-        let newSelectedIndex = Int((location.x + range.start * lineGap) / lineGap)
-        var isUpdating = self.selectedIndex == nil
-        if let selectedIndex = self.selectedIndex,
+        let newSelectedIndex = Int((location.x + dataSource.range.start * dataSource.lineGap) / dataSource.lineGap)
+        var isUpdating = dataSource.selectedIndex == nil
+        if let selectedIndex = dataSource.selectedIndex,
             selectedIndex != newSelectedIndex {
             isUpdating = true
         }
         if isUpdating {
-            self.selectedIndex = newSelectedIndex
+            dataSource.selectedIndex = newSelectedIndex
             cleanDots()
             drawDots()
         }
@@ -520,21 +356,22 @@ class ChartView: UIView, Reusable, Updatable {
     }
 
     private func drawDots() {
-        guard let dataPoints = dataPoints, dataPoints.count > 0, !isPreviewMode,
-            let chartModels = chartModels,
-            let selectedIndex = self.selectedIndex else {
+        guard let dataSource = dataSource,
+            let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
+            !dataSource.isPreviewMode,
+            let selectedIndex = dataSource.selectedIndex else {
             return
         }
 
-        for index in 0..<chartModels.count {
-            let chartModel = chartModels[index]
+        for index in 0..<dataSource.chartModels.count {
+            let chartModel = dataSource.chartModels[index]
              if chartModel.isHidden { continue }
             
             var dotLayers: [DotLayer] = []
             var points = dataPoints[index]
             
             let dataPoint = points[selectedIndex]
-            let xValue = (CGFloat(selectedIndex) - range.start) * lineGap - outerRadius / 2
+            let xValue = (CGFloat(selectedIndex) - dataSource.range.start) * dataSource.lineGap - outerRadius / 2
             let yValue = dataPoint.y  - outerRadius / 2
 
             let dotLayer = DotLayer()
@@ -549,12 +386,10 @@ class ChartView: UIView, Reusable, Updatable {
     }
     
     func prepareForReuse() {
-
-        chartModels = nil
         chartLines = nil
         gridLines = nil
         labels = nil
-        dataPoints = nil
+        dataSource = nil
 
         mainLayer.sublayers?.forEach {
             if $0 is CATextLayer {
@@ -564,13 +399,6 @@ class ChartView: UIView, Reusable, Updatable {
 
         dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
         gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
-        
-        range = (0, 0)
-        maxValue = 0
-        targetMaxValue = 0
-        runMaxValueAnimation = false
-        isPreviewMode = false
-        isReused = true
     }
 
 }

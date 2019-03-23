@@ -18,10 +18,10 @@ enum SliderDirection {
 
 class SliderView: UIView, Reusable {
     
-    var onChangeRange: ((IndexRange) ->())?
+    var onChangeRange: ((IndexRange, CGFloat) ->())?
     var onBeganTouch: ((SliderDirection) ->())?
     var onEndTouch: ((SliderDirection) ->())?
-    var currentRange: IndexRange = (0, 0)
+    var currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
 
     var chartModels: [ChartModel]? {
         didSet {
@@ -35,6 +35,8 @@ class SliderView: UIView, Reusable {
             setNeedsLayout()
         }
     }
+    
+    var sliderWidth: CGFloat = 0
 
     private var startX: CGFloat = 0 {
         didSet {
@@ -43,13 +45,6 @@ class SliderView: UIView, Reusable {
         }
     }
     
-    private var sliderWidth: CGFloat = 0 {
-        didSet {
-            calcCurrentRange()
-            setNeedsLayout()
-        }
-    }
-
     private var tapStartX: CGFloat = 0
 
     private var tapSliderWidth: CGFloat = 0
@@ -102,16 +97,16 @@ class SliderView: UIView, Reusable {
     }
     
     override func layoutSubviews() {
-        calcProperties()
-        clean()
-        drawSlider()
+        self.calcProperties()
+        self.clean()
+        self.drawSlider()
     }
     
     private func calcProperties() {
         minValueSliderWidth = 2 * thumbWidth + 2 * tapSize
         indexGap = (self.frame.size.width - trailingSpace - leadingSpace) / (CGFloat(countPoints) - 1)
         if sliderWidth == 0 {
-            sliderWidth = minValueSliderWidth
+            setSliderWidth(to: minValueSliderWidth)
         }
     }
     
@@ -164,7 +159,7 @@ class SliderView: UIView, Reusable {
             valueX = tapStartX + translationx
         }
         startX = valueX
-        sliderWidth = valueWidth
+        setSliderWidth(to: valueWidth)
     }
 
     private func processRight(_ translation: CGPoint) {
@@ -175,7 +170,7 @@ class SliderView: UIView, Reusable {
         } else if valueWidth > maxValueSliderWidth {
             valueWidth = maxValueSliderWidth
         }
-        sliderWidth = valueWidth
+        setSliderWidth(to: valueWidth)
     }
 
     private func detectSliderTap(from point: CGPoint) {
@@ -200,8 +195,9 @@ class SliderView: UIView, Reusable {
         }
         let startIndex = startX / indexGap
         let endIndex = (startX + sliderWidth) / indexGap + 1
-        currentRange = (startIndex, endIndex)
-        onChangeRange?(currentRange)
+        currentRange.start = startIndex
+        currentRange.end = endIndex
+        onChangeRange?(currentRange, sliderWidth)
     }
     
     private func clean() {
@@ -324,10 +320,17 @@ class SliderView: UIView, Reusable {
         line2.transform = transform2
     }
     
+    private func setSliderWidth(to value: CGFloat) {
+        sliderWidth = value
+        calcCurrentRange()
+        setNeedsLayout()
+    }
+    
     func prepareForReuse() {
         chartModels = nil
         sliderDirection = .finished
         sliderWidth = 0
+        currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
     }
 
 }

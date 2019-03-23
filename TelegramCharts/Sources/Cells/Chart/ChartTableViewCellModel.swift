@@ -6,50 +6,104 @@
 //  Copyright © 2019 @zsergey. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-struct ChartTableViewCellModel {
-    var chartModels: [ChartModel]?
+class ChartTableViewCellModel {
+    var chartDataSource: ChartDataSource
+    var previewChartDataSource: ChartDataSource
+    
     var colorScheme: ColorSchemeProtocol
     var drawingStyle: DrawingStyleProtocol
+    
+    init(chartDataSource: ChartDataSource,
+         previewChartDataSource: ChartDataSource,
+         colorScheme: ColorSchemeProtocol,
+         drawingStyle: DrawingStyleProtocol) {
+        self.chartDataSource = chartDataSource
+        self.previewChartDataSource = previewChartDataSource
+        self.colorScheme = colorScheme
+        self.drawingStyle = drawingStyle
+    }
 }
 
 extension ChartTableViewCellModel: CellViewModelType {
     
     func setup(on cell: ChartTableViewCell) {
-        if let chartModels = chartModels {
-            
-            cell.sliderView.chartModels = chartModels
-            cell.sliderView.onChangeRange = { range in
-                cell.chartView.range = range
-                cell.chartView.setNeedsLayout()
+        
+        cell.model = self
+        
+        setupSliderView(on: cell)
+        setupChartView(on: cell)
+        setupPreviewChartView(on: cell)
+        setupColors(on: cell)
+    }
+    
+    func setupChartView(on cell: ChartTableViewCell) {
+        cell.chartView.dataSource = chartDataSource
+        
+        chartDataSource.onChangeMaxValue = {
+            self.calcProperties(of: self.chartDataSource, for: cell.chartView)
+        }
+        chartDataSource.onSetNewTargetMaxValue = {
+            DispatchQueue.main.async {
+                cell.chartView.drawHorizontalLines(animated: true)
             }
-            cell.sliderView.onBeganTouch = { sliderDirection in
-                cell.chartView.sliderDirection = sliderDirection
-                cell.chartView.setNeedsLayout()
-            }
-            cell.sliderView.onEndTouch = { sliderDirection in
-                cell.chartView.sliderDirection = sliderDirection
-                cell.chartView.setNeedsLayout()
-            }
+        }
+    }
+    
+    func setupPreviewChartView(on cell: ChartTableViewCell) {
+        cell.previewChartView.dataSource = previewChartDataSource
+        
+        previewChartDataSource.onChangeMaxValue = {
+            self.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView)
+        }
+        previewChartDataSource.onSetNewTargetMaxValue = {
+            cell.previewChartView.drawHorizontalLines(animated: true)
+        }
+    }
+    
+    func setupSliderView(on cell: ChartTableViewCell) {
+        cell.sliderView.chartModels = chartDataSource.chartModels
+        cell.sliderView.sliderWidth = chartDataSource.sliderWidth
+        cell.sliderView.currentRange.start = chartDataSource.range.start
+        cell.sliderView.currentRange.end = chartDataSource.range.end
+        cell.sliderView.setNeedsLayout()
+        
+        cell.sliderView.onChangeRange = { range, sliderWidth in
+            self.chartDataSource.range.start = range.start
+            self.chartDataSource.range.end = range.end
+            self.chartDataSource.sliderWidth = sliderWidth
             
-            cell.chartView.chartModels = chartModels
-            cell.chartView.range = cell.sliderView.currentRange
+            self.previewChartDataSource.range.start = range.start
+            self.previewChartDataSource.range.end = range.end
+            self.previewChartDataSource.sliderWidth = sliderWidth
             
-            cell.previewChartView.chartModels = chartModels
-            cell.previewChartView.isPreviewMode = true
-            if cell.previewChartView.isReused {
-                // TODO: на старте анимация, не очень хорошо
-                cell.previewChartView.setNeedsLayout()
+            self.calcProperties(of: self.chartDataSource, for: cell.chartView)
+        }
+        cell.sliderView.onBeganTouch = { sliderDirection in
+            cell.chartView.sliderDirection = sliderDirection
+            cell.chartView.setNeedsLayout()
+        }
+        cell.sliderView.onEndTouch = { sliderDirection in
+            cell.chartView.sliderDirection = sliderDirection
+            cell.chartView.setNeedsLayout()
+        }
+    }
+    
+    func setupColors(on cell: ChartTableViewCell) {
+        cell.chartView.colorScheme = colorScheme
+        cell.previewChartView.colorScheme = colorScheme
+        cell.sliderView.colorScheme = colorScheme
+        cell.backgroundColor = colorScheme.chart.background
+        cell.selectedBackgroundView = colorScheme.selectedCellView
+    }
+    
+    func calcProperties(of dataSource: ChartDataSource, for view: UIView) {
+        DispatchQueue.global(qos: .background).async {
+            dataSource.calcProperties()
+            DispatchQueue.main.async {
+                view.setNeedsLayout()
             }
-            
-            cell.chartView.colorScheme = colorScheme
-            cell.previewChartView.colorScheme = colorScheme
-            cell.chartView.drawingStyle = drawingStyle
-            cell.previewChartView.drawingStyle = drawingStyle
-            cell.sliderView.colorScheme = colorScheme
-            cell.backgroundColor = colorScheme.chart.background
-            cell.selectedBackgroundView = colorScheme.selectedCellView
         }
     }
 }

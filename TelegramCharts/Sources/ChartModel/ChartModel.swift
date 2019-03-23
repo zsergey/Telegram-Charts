@@ -32,8 +32,11 @@ class ChartModel {
         return isHidden ? 0 : 1
     }
     
-    init(name: String, color: UIColor, isHidden: Bool,
-         drawingStyle: DrawingStyleProtocol, data: [PointModel]) {
+    init(name: String,
+         color: UIColor,
+         isHidden: Bool,
+         drawingStyle: DrawingStyleProtocol,
+         data: [PointModel]) {
         self.name = name
         self.color = color
         self.isHidden = isHidden
@@ -42,4 +45,12 @@ class ChartModel {
     }
 }
 
-typealias IndexRange = (start: CGFloat, end: CGFloat)
+class IndexRange {
+    var start: CGFloat
+    var end: CGFloat
+    
+    init(start: CGFloat, end: CGFloat) {
+        self.start = start
+        self.end = end
+    }
+}
