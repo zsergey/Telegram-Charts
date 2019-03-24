@@ -20,6 +20,7 @@
 		AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */; };
 		AD2AD4762247B15600B16492 /* TextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4752247B15600B16492 /* TextLayer.swift */; };
 		AD2AD4782248207300B16492 /* Painter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4772248207300B16492 /* Painter.swift */; };
+		AD2AD47A22483D2800B16492 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AD2AD47922483D2800B16492 /* README.md */; };
 		AD68E210223D255700576C20 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68E20F223D255700576C20 /* SliderView.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
@@ -76,6 +77,7 @@
 		AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		AD2AD4752247B15600B16492 /* TextLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLayer.swift; sourceTree = "<group>"; };
 		AD2AD4772248207300B16492 /* Painter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Painter.swift; sourceTree = "<group>"; };
+		AD2AD47922483D2800B16492 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		AD68E20F223D255700576C20 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotLayer.swift; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 		ADE576EE2236E59B0006200D /* TelegramCharts */ = {
 			isa = PBXGroup;
 			children = (
+				AD2AD47922483D2800B16492 /* README.md */,
 				ADE577032236E8920006200D /* Resources */,
 				ADE5770B2236E8920006200D /* Sources */,
 			);
@@ -380,6 +383,7 @@
 			files = (
 				ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */,
 				ADFF33B9224527620019A4D4 /* SectionTableViewCell.xib in Resources */,
+				AD2AD47A22483D2800B16492 /* README.md in Resources */,
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,
 				ADB3E9E522441BE9007CC2F2 /* ChartTableViewCell.xib in Resources */,
 				ADE5770E2236E8920006200D /* chart_data.json in Resources */,
