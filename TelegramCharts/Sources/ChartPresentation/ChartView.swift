@@ -273,8 +273,23 @@ class ChartView: UIView, Reusable, Updatable {
                 for textLayer in labels {
                     if textLayer.toOpacity == 1 {
                         textLayer.opacity = textLayer.toOpacity
+                        /* if byScroll {
+                            textLayer.opacity = 0
+                            textLayer.changeOpacity(from: textLayer.opacity, to: textLayer.toOpacity,
+                                                    animationDuration: UIView.animationDuration)
+
+                        }*/
                     } else {
                         textLayer.opacity = 0
+                        /*if byScroll {
+                            textLayer.opacity = 0
+                        } else {
+                            textLayer.opacity = textLayer.toOpacity
+                            if textLayer.opacity != 0 {
+                                textLayer.changeOpacity(from: textLayer.opacity, to: 0,
+                                                        animationDuration: UIView.animationDuration)
+                            }
+                        }*/
                     }
                 }
             }
