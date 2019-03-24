@@ -69,7 +69,7 @@ class ChartDisplayCollection: DisplayCollection {
             _ = main.chartModels.map { rows.append(.title($0)) }
             rows.append(.section(""))
             rows.append(.colorScheme(titleColorSchemeButton))
-            // If you want to be able change drawing style uncommnet this:
+            // TODO: If you want to be able change drawing style uncommnet this:
             // rows.append(.drawingStyle(titleDrawingStyleButton))
         }
     }
@@ -91,7 +91,7 @@ class ChartDisplayCollection: DisplayCollection {
         case .chart: break
         case .title:
             switch rows[indexPath.row + 1] {
-            case .title: left = 44
+            case .title: left = 45
             default: left = 0
             }
         case .button, .colorScheme, .drawingStyle: left = 0
@@ -112,6 +112,8 @@ class ChartDisplayCollection: DisplayCollection {
         switch type {
         case .colorScheme:
             cell.label.text = titleColorSchemeButton
+        case .drawingStyle:
+            cell.label.text = titleDrawingStyleButton
         default: break
         }
     }
@@ -136,9 +138,9 @@ class ChartDisplayCollection: DisplayCollection {
         let type = rows[indexPath.row]
         switch type {
         case .section(let name): return name.count > 0 ? 55 : 35
-        case .chart: return 370
+        case .chart: return 372
         case .title: return 45
-        case .button, .colorScheme, .drawingStyle: return 50
+        case .button, .colorScheme, .drawingStyle: return 46
         }
     }
     

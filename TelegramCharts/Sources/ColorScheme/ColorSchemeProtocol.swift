@@ -17,6 +17,7 @@ struct SliderColor {
 struct ChartColor {
     var background: UIColor
     var grid: UIColor
+    var accentGrid: UIColor
     var text: UIColor
 }
 

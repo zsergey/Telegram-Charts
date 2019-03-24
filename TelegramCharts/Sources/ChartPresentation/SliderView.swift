@@ -62,7 +62,7 @@ class SliderView: UIView, Reusable {
     
     private let arrowCornerRadius: CGFloat = 0.25
 
-    private let thumbCornerRadius: CGFloat = 1
+    private let thumbCornerRadius: CGFloat = 1.5
 
     private let arrowAngle: CGFloat = 60
 
@@ -239,7 +239,8 @@ class SliderView: UIView, Reusable {
     private func drawThumbs() {
         // Left Thumb.
         let color = colorScheme.slider.thumb
-        var rect = CGRect(x: startX + trailingSpace, y: -1, width: thumbWidth, height: self.frame.size.height + 2)
+        let height = self.frame.size.height + 1
+        var rect = CGRect(x: startX + trailingSpace, y: -0.5, width: thumbWidth, height: height)
         var corners: UIRectCorner = [.topLeft, .bottomLeft]
         if let leftThumb = leftThumb {
             let path = createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: thumbCornerRadius)
@@ -247,20 +248,22 @@ class SliderView: UIView, Reusable {
             leftThumb.changeColor(to: color, keyPath: "fillColor",
                                   animationDuration: UIView.animationDuration)
         } else {
-            let leftThumb = drawRect(rect: rect, byRoundingCorners: corners, fillColor: color, cornerRadius: thumbCornerRadius)
+            let leftThumb = drawRect(rect: rect, byRoundingCorners: corners,
+                                     fillColor: color, lineWidth: 1.0, cornerRadius: thumbCornerRadius)
             self.leftThumb = leftThumb
         }
 
         // Right Thumb.
         corners = [.topRight, .bottomRight]
-        rect = CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: -1, width: thumbWidth, height: self.frame.size.height + 2)
+        rect = CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: -0.5, width: thumbWidth, height: height)
         if let rightThumb = rightThumb {
             let path = createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: thumbCornerRadius)
             rightThumb.path = path.cgPath
             rightThumb.changeColor(to: color, keyPath: "fillColor",
                                    animationDuration: UIView.animationDuration)
         } else {
-            let rightThumb = drawRect(rect: rect, byRoundingCorners: corners, fillColor: color, cornerRadius: thumbCornerRadius)
+            let rightThumb = drawRect(rect: rect, byRoundingCorners: corners,
+                                      fillColor: color, lineWidth: 1.0, cornerRadius: thumbCornerRadius)
             self.rightThumb = rightThumb
         }
     }
@@ -270,8 +273,8 @@ class SliderView: UIView, Reusable {
         let x = startX + trailingSpace + thumbWidth
         
         // Top Line.
-        let lineWidth = sliderWidth - 1 - 2 * thumbWidth
-        var rect = CGRect(x: x + 0.5, y: -0.5, width: lineWidth, height: 1)
+        let lineWidth = sliderWidth - 2 * thumbWidth
+        var rect = CGRect(x: x, y: -0.25, width: lineWidth, height: 0.5)
         let color = colorScheme.slider.thumb
         if let topLine = topLine {
             let path = createRectPath(rect: rect)
@@ -279,19 +282,19 @@ class SliderView: UIView, Reusable {
             topLine.changeColor(to: color, keyPath: "strokeColor",
                                 animationDuration: UIView.animationDuration)
         } else {
-            let topLine = drawRect(rect: rect, strokeColor: color, lineWidth: 1.0)
+            let topLine = drawRect(rect: rect, strokeColor: color, lineWidth: 0.5)
             self.topLine = topLine
         }
         
         // Bottom Line.
-        rect = CGRect(x: x + 0.5, y: height - 0.5, width: lineWidth, height: 1)
+        rect = CGRect(x: x, y: height - 0.25, width: lineWidth, height: 0.5)
         if let bottomLine = bottomLine {
             let path = createRectPath(rect: rect)
             bottomLine.path = path.cgPath
             bottomLine.changeColor(to: color, keyPath: "strokeColor",
                                    animationDuration: UIView.animationDuration)
         } else {
-            let bottomLine = drawRect(rect: rect, strokeColor: color, lineWidth: 1.0)
+            let bottomLine = drawRect(rect: rect, strokeColor: color, lineWidth: 0.5)
             self.bottomLine = bottomLine
         }
     }

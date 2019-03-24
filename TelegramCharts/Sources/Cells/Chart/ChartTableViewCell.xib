@@ -27,10 +27,10 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p4w-D1-gJH" customClass="SliderView" customModule="TelegramCharts" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="320" width="384" height="40"/>
+                        <rect key="frame" x="0.0" y="320" width="384" height="42"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dld-po-VIh" customClass="ChartView" customModule="TelegramCharts" customModuleProvider="target">
-                                <rect key="frame" x="16" y="1" width="352" height="38"/>
+                                <rect key="frame" x="16" y="1" width="352" height="40"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
@@ -40,7 +40,7 @@
                             <constraint firstItem="dld-po-VIh" firstAttribute="leading" secondItem="p4w-D1-gJH" secondAttribute="leading" constant="16" id="8D9-G3-M6A"/>
                             <constraint firstAttribute="trailing" secondItem="dld-po-VIh" secondAttribute="trailing" constant="16" id="IM0-1A-o0Y"/>
                             <constraint firstAttribute="bottom" secondItem="dld-po-VIh" secondAttribute="bottom" constant="1" id="VWV-Nh-sOv"/>
-                            <constraint firstAttribute="height" constant="40" id="mKI-0B-dR9"/>
+                            <constraint firstAttribute="height" constant="42" id="mKI-0B-dR9"/>
                         </constraints>
                     </view>
                 </subviews>

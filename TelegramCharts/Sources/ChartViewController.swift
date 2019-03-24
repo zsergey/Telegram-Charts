@@ -19,7 +19,7 @@ class ChartViewController: UIViewController {
             tableView.delegate = self
             tableView.dataSource = self
             tableView.rowHeight = 0
-            tableView.estimatedRowHeight = 370
+            tableView.estimatedRowHeight = 372
         }
     }
     

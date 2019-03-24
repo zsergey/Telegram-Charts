@@ -45,7 +45,8 @@ struct NightScheme: ColorSchemeProtocol {
 
     var chart: ChartColor {
         return ChartColor(background: UIColor(hex: "#242F3E")!,
-                          grid: UIColor(hex: "#141B22")!,
+                          grid: UIColor(hex: "#141B22", alpha: 0.4)!,
+                          accentGrid: UIColor(hex: "#141B22")!,
                           text: UIColor(hex: "#606D7C")!)
     }
 

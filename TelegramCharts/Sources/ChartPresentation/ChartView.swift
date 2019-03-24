@@ -348,8 +348,9 @@ class ChartView: UIView, Reusable, Updatable {
     
     func updateColors() {
         if let gridLines = gridLines {
-            _ = gridLines.map { $0.updateColors(lineColor: colorScheme.chart.grid,
-                                                textColor: colorScheme.chart.text)}
+            _ = gridLines.map {
+                let color = $0.lineValue == 0 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
+                $0.updateColors(lineColor: color, textColor: colorScheme.chart.text)}
         }
         if let labels = labels {
             _ = labels.map { $0.changeColor(to: colorScheme.chart.text, keyPath: "foregroundColor",
@@ -392,7 +393,7 @@ class ChartView: UIView, Reusable, Updatable {
             let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
             let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
             let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
-            newValueLayer.lineColor = colorScheme.chart.grid
+            newValueLayer.lineColor = index == gridValues.count - 1 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
             newValueLayer.textColor = colorScheme.chart.text
             gridLayer.addSublayer(newValueLayer)
             newGridLines.append(newValueLayer)
