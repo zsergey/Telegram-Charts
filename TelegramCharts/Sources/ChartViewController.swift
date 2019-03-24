@@ -50,7 +50,9 @@ class ChartViewController: UIViewController {
         
         navigationController?.navigationBar.isTranslucent = false
         
-        createDisplayCollection()
+        let empty = СoupleChartDataSource(main: [ChartDataSource](),
+                                           preview: [ChartDataSource]())
+        self.displayCollection = createDisplayCollection(dataSource: empty)
 
         self.activityIndicator.startAnimating()
         self.tableView.separatorStyle = .none
@@ -59,9 +61,7 @@ class ChartViewController: UIViewController {
             let dataSource = ChartDataSourceFactory.make()
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.displayCollection = ChartDisplayCollection(dataSource: dataSource,
-                                                                colorScheme: self.colorScheme,
-                                                                drawingStyle: self.drawingStyleProtocol)
+                self.displayCollection = self.createDisplayCollection(dataSource: dataSource)
                 self.tableView.separatorStyle = .singleLine
                 self.activityIndicator.stopAnimating()
                 self.tableView.reloadData()
@@ -74,13 +74,11 @@ class ChartViewController: UIViewController {
         needsLayoutNavigationBar = true
     }
     
-    func createDisplayCollection() {
+    func createDisplayCollection(dataSource: СoupleChartDataSource) -> ChartDisplayCollection {
         colorScheme = DayScheme()
         drawingStyleProtocol = StandardDrawingStyle()
-        let dataSource = СoupleChartDataSource(main: [ChartDataSource](),
-                                                preview: [ChartDataSource]())
 
-        displayCollection = ChartDisplayCollection(dataSource: dataSource,
+        let displayCollection = ChartDisplayCollection(dataSource: dataSource,
                                                    colorScheme: colorScheme,
                                                    drawingStyle: drawingStyleProtocol)
         
@@ -104,6 +102,7 @@ class ChartViewController: UIViewController {
             }
         }
         tableView.registerNibs(from: displayCollection)
+        return displayCollection
     }
     
     @objc func update() {
