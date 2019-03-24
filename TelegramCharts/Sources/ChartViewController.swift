@@ -127,8 +127,13 @@ class ChartViewController: UIViewController {
     }
 
     func didSelectRow(at indexPath: IndexPath, chartAt chartIndexPath: IndexPath?) {
-        if let _ = tableView.cellForRow(at: indexPath) as? TitleTableViewCell {
-            reloadRows([indexPath])
+        if let cell = tableView.cellForRow(at: indexPath) {
+            if cell is TitleTableViewCell {
+                reloadRows([indexPath])
+            } else if cell is ButtonTableViewCell {
+                displayCollection.updateColorSchemeButtonText(for: indexPath,
+                                                              in: cell as! ButtonTableViewCell)
+            }
         }
         if let chartIndexPath = chartIndexPath,
             let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {

@@ -69,7 +69,8 @@ class ChartDisplayCollection: DisplayCollection {
             _ = main.chartModels.map { rows.append(.title($0)) }
             rows.append(.section(""))
             rows.append(.colorScheme(titleColorSchemeButton))
-            rows.append(.drawingStyle(titleDrawingStyleButton))
+            // If you want to be able change drawing style uncommnet this:
+            // rows.append(.drawingStyle(titleDrawingStyleButton))
         }
     }
     
@@ -103,6 +104,15 @@ class ChartDisplayCollection: DisplayCollection {
         switch type {
         case .title(let model): return model.isHidden ? .none : .checkmark
         default: return .none
+        }
+    }
+    
+    func updateColorSchemeButtonText(for indexPath: IndexPath, in cell: ButtonTableViewCell) {
+        let type = rows[indexPath.row]
+        switch type {
+        case .colorScheme:
+            cell.label.text = titleColorSchemeButton
+        default: break
         }
     }
     
