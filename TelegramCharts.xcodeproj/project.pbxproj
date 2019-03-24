@@ -19,6 +19,7 @@
 		AD17FF44224687E90073F0BB /* chart_data_max.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF42224687E90073F0BB /* chart_data_max.json */; };
 		AD17FF45224687E90073F0BB /* chart_data_min.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF43224687E90073F0BB /* chart_data_min.json */; };
 		AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */; };
+		AD2AD4762247B15600B16492 /* TextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4752247B15600B16492 /* TextLayer.swift */; };
 		AD68E210223D255700576C20 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68E20F223D255700576C20 /* SliderView.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
@@ -74,6 +75,7 @@
 		AD17FF42224687E90073F0BB /* chart_data_max.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_max.json; sourceTree = "<group>"; };
 		AD17FF43224687E90073F0BB /* chart_data_min.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_min.json; sourceTree = "<group>"; };
 		AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
+		AD2AD4752247B15600B16492 /* TextLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLayer.swift; sourceTree = "<group>"; };
 		AD68E20F223D255700576C20 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotLayer.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				AD68E20F223D255700576C20 /* SliderView.swift */,
 				AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */,
 				ADDBBDC4224010010090E2AD /* ValueLayer.swift */,
+				AD2AD4752247B15600B16492 /* TextLayer.swift */,
 			);
 			path = ChartPresentation;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD2AD4762247B15600B16492 /* TextLayer.swift in Sources */,
 				ADDBBDC92241F2210090E2AD /* Date+Formatter.swift in Sources */,
 				AD17FF41224646FA0073F0BB /* ChartDataSource.swift in Sources */,
 				ADE577142236E8920006200D /* AppDelegate.swift in Sources */,

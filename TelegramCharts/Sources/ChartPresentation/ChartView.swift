@@ -15,15 +15,17 @@ class ChartView: UIView, Reusable, Updatable {
     var colorScheme: ColorSchemeProtocol = DayScheme() {
         didSet {
             setNeedsLayout()
-            updateColorHorizontalLines()
+            updateColors()
         }
     }
     
-    var sliderDirection: SliderDirection = .finished
+    var sliderDirection: SliderDirection = .right
+    
+    private var setFinishedSliderDirection = true
     
     private var isJustReused = true
     
-    private let labelWidth: CGFloat = 35
+    private let labelWidth: CGFloat = 36
     
     private let dataLayer: CALayer = CALayer()
     
@@ -37,7 +39,7 @@ class ChartView: UIView, Reusable, Updatable {
 
     private var gridLinesToRemove: [ValueLayer]?
     
-    private var labels: [CATextLayer]?
+    private var labels: [TextLayer]?
     
     private var innerRadius: CGFloat = 6
     
@@ -92,9 +94,7 @@ class ChartView: UIView, Reusable, Updatable {
             isJustReused = false
         }
         self.drawCharts()
-        
-        // TODO: пока закомментил
-        //self.drawLables(animated: animateMaxValue)
+        self.drawLables()
     }
     
     private func drawCharts() {
@@ -136,7 +136,7 @@ class ChartView: UIView, Reusable, Updatable {
         }
     }
         
-    private func drawLables(animated: Bool) {
+    private func drawLables() {
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {
@@ -144,12 +144,12 @@ class ChartView: UIView, Reusable, Updatable {
         }
         
         let isUpdating = labels != nil
-        var newLabels = isUpdating ? nil : [CATextLayer]()
+        var newLabels = isUpdating ? nil : [TextLayer]()
 
         let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
         
         for index in 0..<dataSource.maxRangePoints.count {
-            let textLayer = isUpdating ? labels![index] : CATextLayer()
+            let textLayer = isUpdating ? labels![index] : TextLayer()
             
             let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2 + startFrom
             
@@ -175,83 +175,146 @@ class ChartView: UIView, Reusable, Updatable {
             labels = newLabels
         }
 
-        switch sliderDirection {
-        case .center, .finished, .none:
-            hideLabels(skipHidden: true, animated: animated)
-        case .left, .right:
-            hideLabels(skipHidden: false, animated: animated)
+        hideWrongLabels(isFirstCall: true)
+        if setFinishedSliderDirection {
+            sliderDirection = .finished
+            hideWrongLabels(isFirstCall: true)
+            setFinishedSliderDirection = false
         }
     }
     
-    func hideLabels(skipHidden: Bool, animated: Bool) {
+    func hideWrongLabels(isFirstCall: Bool) {
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {
                 return
         }
-
-        var wereHiddenLayers = false
-        var lastFrame: CGRect = .zero
         
-        var layersToHide = [CATextLayer]()
-        for index in 0..<dataSource.maxRangePoints.count {
-            let textLayer = labels![index]
+        let skipHidden = !isFirstCall
+        
+        // It's really the first call of the func.
+        if isFirstCall && setFinishedSliderDirection {
+            if sliderDirection == .left || sliderDirection == .right {
+                _ = labels?.map { label in
+                    label.opacity = 1
+                }
+            }
+        }
+
+        // Drop isStatic. We'll find another one next time.
+        if sliderDirection != .left && sliderDirection != .right {
+            _ = labels?.map { label in
+                label.isStatic = false
+            }
+        }
+        
+        if sliderDirection == .left || sliderDirection == .right {
             
-            if skipHidden, textLayer.opacity == 0 {
-                continue
+            var theIndex = 0
+            var staticIndex: Int?
+            for index in 0..<dataSource.maxRangePoints.count {
+                let textLayer = labels![index]
+                if textLayer.isStatic {
+                    staticIndex = index
+                    break
+                }
             }
             
-            let startXFrame = textLayer.frame.origin.x - textLayer.frame.size.width / 2
-            CATransaction.setDisableActions(true)
-            
-            if lastFrame == .zero {
-                textLayer.opacity = 1
-                lastFrame = textLayer.frame
+            if let staticIndex = staticIndex {
+                theIndex = staticIndex
             } else {
-                let endXLastFrame = lastFrame.origin.x + lastFrame.size.width / 2 + labelWidth
-                if startXFrame > endXLastFrame {
-                    textLayer.opacity = 1
-                    lastFrame = textLayer.frame
+                if setFinishedSliderDirection {
+                    let x = sliderDirection == .left ? self.frame.size.height - labelWidth / 2 : labelWidth / 2
+                    theIndex = Int((x + dataSource.range.start * dataSource.lineGap + labelWidth / 2) / dataSource.lineGap)
+                    let textLayer = labels![theIndex]
+                    textLayer.isStatic = true
                 } else {
-                    var opacity = max(Float(1 - (endXLastFrame - startXFrame) / textLayer.frame.size.width), 0)
-                    
-                    if sliderDirection == .center ||
-                        sliderDirection == .none,
-                        opacity >= 0.5 {
-                        opacity = 1
-                    }
-                    
-                    if sliderDirection == .finished, opacity >= 0.5 {
-                        // nothing to change.
-                    } else {
-                        textLayer.opacity = opacity
-                    }
-                    
-                    if opacity == 0 {
-                        lastFrame = .zero
-                        wereHiddenLayers = true
-                    } else if opacity != 1 {
-                        layersToHide.append(textLayer)
+                    let range = 0..<dataSource.maxRangePoints.count
+                    for index in range {
+                        let aIndex = sliderDirection == .left ? range.endIndex - index - 1 : index
+                        let textLayer = labels![aIndex]
+                        if textLayer.opacity == 1 {
+                            textLayer.isStatic = true
+                            theIndex = aIndex
+                            break
+                        }
                     }
                 }
             }
             
-            if wereHiddenLayers {
-                hideLabels(skipHidden: true, animated: animated)
-            } else if sliderDirection == .finished {
-                for textLayer in layersToHide {
-                    let toOpacity: Float = textLayer.opacity >= 0.5 ? 1 : 0
-                    textLayer.changeOpacity(from: textLayer.opacity, to: toOpacity,
-                                            animationDuration: animated ? UIView.animationDuration : 0)
+            if sliderDirection == .left {
+                let inverseRange = 0..<theIndex + 1
+                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true)
+                
+                let indexRange = theIndex..<dataSource.maxRangePoints.count
+                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false)
+            } else {
+                let indexRange = theIndex..<dataSource.maxRangePoints.count
+                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false)
+                
+                let inverseRange = 0..<theIndex + 1
+                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true)
+            }
+        } else if sliderDirection == .finished {
+            _ = labels?.map { textLayer in
+                if textLayer.opacity < 1 {
+                    textLayer.opacity = 0
+                    textLayer.changeOpacity(from: textLayer.opacity, to: 0,
+                                            animationDuration: UIView.animationDuration)
                 }
             }
         }
     }
     
-    func updateColorHorizontalLines() {
+    func doMagic(in range: Range<Int>, skipHidden: Bool, inverse: Bool) {
+        var lastFrame: CGRect = .zero
+        
+        var wereHiddenLayers = false
+        for index in range {
+            let inverseIndex = range.endIndex - index - 1
+            let textLayer = inverse ? labels![inverseIndex] : labels![index]
+            let coef: CGFloat = inverse ? -1 : 1
+            
+            if skipHidden, textLayer.opacity == 0 {
+                continue
+            }
+            
+            let startXFrame = textLayer.frame.origin.x - textLayer.frame.size.width * coef / 2
+            
+            if lastFrame == .zero {
+                textLayer.opacity = 1
+                lastFrame = textLayer.frame
+            } else {
+                let endXLastFrame = lastFrame.origin.x + lastFrame.size.width * coef / 2 + labelWidth * coef
+                let condition = inverse ? startXFrame < endXLastFrame : startXFrame > endXLastFrame
+                if condition {
+                    textLayer.opacity = 1
+                    lastFrame = textLayer.frame
+                } else {
+                    let delta = inverse ? startXFrame - endXLastFrame : endXLastFrame - startXFrame
+                    let opacity = max(Float(1 - delta / textLayer.frame.size.width), 0)
+                    textLayer.opacity = opacity
+                    if opacity == 0 {
+                        lastFrame = .zero
+                        wereHiddenLayers = true
+                    }
+                }
+            }
+        }
+        
+        if wereHiddenLayers {
+            hideWrongLabels(isFirstCall: false)
+        }
+    }
+    
+    func updateColors() {
         if let gridLines = gridLines {
             _ = gridLines.map { $0.updateColors(lineColor: colorScheme.chart.grid,
                                                 textColor: colorScheme.chart.text)}
+        }
+        if let labels = labels {
+            _ = labels.map { $0.changeColor(to: colorScheme.chart.text, keyPath: "foregroundColor",
+                                            animationDuration: UIView.animationDuration) }
         }
     }
     
@@ -398,8 +461,11 @@ class ChartView: UIView, Reusable, Updatable {
         dataSource = nil
         isJustReused = true
         
+        sliderDirection = .right
+        setFinishedSliderDirection = true
+
         mainLayer.sublayers?.forEach {
-            if $0 is CATextLayer {
+            if $0 is TextLayer {
                 $0.removeFromSuperlayer()
             }
         }
