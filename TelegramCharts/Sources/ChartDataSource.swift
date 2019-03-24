@@ -23,7 +23,9 @@ class ChartDataSource: Updatable {
     var range = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
     
     var sliderWidth: CGFloat = 0
-
+    
+    var startX: CGFloat = 0
+    
     var viewSize: CGSize = .zero
     
     var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle()
@@ -91,7 +93,11 @@ class ChartDataSource: Updatable {
             topHorizontalLine = 110.0 / 100.0
             
             countPoints = chartModels.map { $0.data.count }.max() ?? 0
-            lineGap = viewSize.width / (CGFloat(countPoints) - 1)
+            if countPoints <= 0 {
+                lineGap = 0
+            } else {
+                lineGap = viewSize.width / (CGFloat(countPoints) - 1)
+            }
             let max: CGFloat = chartModels.map { chartModel in
                 if chartModel.isHidden {
                     return 0
@@ -103,7 +109,12 @@ class ChartDataSource: Updatable {
             topSpace = 40.0
             bottomSpace = 20.0
             topHorizontalLine = 95.0 / 100.0
-            lineGap = viewSize.width / (range.end - range.start - 1)
+            let value = range.end - range.start - 1
+            if value <= 0 {
+                lineGap = 0
+            } else {
+                lineGap = viewSize.width / value
+            }
             var max: CGFloat = 0
             for chartModel in chartModels {
                 if chartModel.isHidden { continue }

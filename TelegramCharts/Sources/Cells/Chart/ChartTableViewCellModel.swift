@@ -67,19 +67,19 @@ extension ChartTableViewCellModel: CellViewModelType {
     func setupSliderView(on cell: ChartTableViewCell) {
         cell.sliderView.chartModels = chartDataSource.chartModels
         cell.sliderView.sliderWidth = chartDataSource.sliderWidth
-        cell.sliderView.currentRange.start = chartDataSource.range.start
-        cell.sliderView.currentRange.end = chartDataSource.range.end
+        cell.sliderView.startX = chartDataSource.startX
+
+        cell.sliderView.currentRange = chartDataSource.range
         cell.sliderView.setNeedsLayout()
         
-        cell.sliderView.onChangeRange = { range, sliderWidth in
-            self.chartDataSource.range.start = range.start
-            self.chartDataSource.range.end = range.end
+        cell.sliderView.onChangeRange = { range, sliderWidth, startX in
+            self.chartDataSource.range = range
             self.chartDataSource.sliderWidth = sliderWidth
+            self.chartDataSource.startX = startX
             self.chartDataSource.selectedIndex = nil
             cell.chartView.cleanDots()
 
-            self.previewChartDataSource.range.start = range.start
-            self.previewChartDataSource.range.end = range.end
+            self.previewChartDataSource.range = range
             self.previewChartDataSource.sliderWidth = sliderWidth
 
             self.calcProperties(of: self.chartDataSource, for: cell.chartView)
