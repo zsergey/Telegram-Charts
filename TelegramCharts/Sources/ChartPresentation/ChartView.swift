@@ -94,7 +94,7 @@ class ChartView: UIView, Reusable, Updatable {
             isJustReused = false
         }
         self.drawCharts()
-        self.drawLables()
+        //self.drawLables()
     }
     
     private func drawCharts() {

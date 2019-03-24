@@ -50,8 +50,8 @@ struct NightScheme: ColorSchemeProtocol {
     }
 
     var slider: SliderColor {
-        return SliderColor(thumb: UIColor(hex: "#384657", alpha: 0.5)!,
-                           background: UIColor(hex: "#1F2A39", alpha: 0.5)!,
+        return SliderColor(thumb: UIColor(hex: "#36475A", alpha: 0.9)!,
+                           background: UIColor(hex: "#1D2A39", alpha: 0.8)!,
                            arrow: UIColor(hex: "#FFFFFF")!)
     }
 }
