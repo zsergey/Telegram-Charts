@@ -546,8 +546,9 @@ class ChartView: UIView, Reusable, Updatable {
         
         let space: CGFloat = 5
         let oneLine: CGFloat = 20
-        var rectHeight = CGFloat(visibleChartModels.count) * oneLine
-        rectHeight = rectHeight - CGFloat(max((visibleChartModels.count - 2), 0) * 1)
+        let lines = max(visibleChartModels.count, 2)
+        var rectHeight = CGFloat(lines) * oneLine
+        rectHeight = rectHeight - CGFloat(max((lines - 2), 0) * 2)
         var xRect = xLine - rectWidth / 2
         if xRect < 0 {
             xRect = 0
