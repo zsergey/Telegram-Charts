@@ -30,6 +30,11 @@ struct ButtonColor {
     var normal: UIColor
 }
 
+struct DotInfo {
+    var background: UIColor
+    var text: UIColor
+}
+
 protocol ColorSchemeProtocol {
     var background: UIColor { get }
     var selectedCellView: UIView { get }
@@ -41,6 +46,7 @@ protocol ColorSchemeProtocol {
     var section: SectionColor { get }
     var chart: ChartColor { get }
     var slider: SliderColor { get }
+    var dotInfo: DotInfo { get }
 }
 
 extension ColorSchemeProtocol {

@@ -55,4 +55,9 @@ struct NightScheme: ColorSchemeProtocol {
                            background: UIColor(hex: "#1D2A39", alpha: 0.8)!,
                            arrow: UIColor(hex: "#FFFFFF")!)
     }
+    
+    var dotInfo: DotInfo {
+        return DotInfo(background: UIColor(hex: "#1D2836")!,
+                       text: UIColor(hex: "#FFFFFF")!)
+    }
 }

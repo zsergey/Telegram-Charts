@@ -17,9 +17,9 @@
 		AD17FF3F224619950073F0BB /* ChartDataSourceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3E224619950073F0BB /* ChartDataSourceFactory.swift */; };
 		AD17FF41224646FA0073F0BB /* ChartDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF40224646FA0073F0BB /* ChartDataSource.swift */; };
 		AD17FF44224687E90073F0BB /* chart_data_max.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF42224687E90073F0BB /* chart_data_max.json */; };
-		AD17FF45224687E90073F0BB /* chart_data_min.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF43224687E90073F0BB /* chart_data_min.json */; };
 		AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */; };
 		AD2AD4762247B15600B16492 /* TextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4752247B15600B16492 /* TextLayer.swift */; };
+		AD2AD4782248207300B16492 /* Painter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4772248207300B16492 /* Painter.swift */; };
 		AD68E210223D255700576C20 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68E20F223D255700576C20 /* SliderView.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
@@ -73,9 +73,9 @@
 		AD17FF3E224619950073F0BB /* ChartDataSourceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDataSourceFactory.swift; sourceTree = "<group>"; };
 		AD17FF40224646FA0073F0BB /* ChartDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDataSource.swift; sourceTree = "<group>"; };
 		AD17FF42224687E90073F0BB /* chart_data_max.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_max.json; sourceTree = "<group>"; };
-		AD17FF43224687E90073F0BB /* chart_data_min.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_min.json; sourceTree = "<group>"; };
 		AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		AD2AD4752247B15600B16492 /* TextLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLayer.swift; sourceTree = "<group>"; };
+		AD2AD4772248207300B16492 /* Painter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Painter.swift; sourceTree = "<group>"; };
 		AD68E20F223D255700576C20 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotLayer.swift; sourceTree = "<group>"; };
@@ -135,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				AD17FF3C224613DD0073F0BB /* TapticFeedback.swift */,
+				AD2AD4772248207300B16492 /* Painter.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -253,7 +254,6 @@
 			isa = PBXGroup;
 			children = (
 				AD17FF42224687E90073F0BB /* chart_data_max.json */,
-				AD17FF43224687E90073F0BB /* chart_data_min.json */,
 				ADE577042236E8920006200D /* chart_data.json */,
 				ADE577052236E8920006200D /* Assets.xcassets */,
 				ADE577062236E8920006200D /* LaunchScreen.storyboard */,
@@ -381,7 +381,6 @@
 				ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */,
 				ADFF33B9224527620019A4D4 /* SectionTableViewCell.xib in Resources */,
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,
-				AD17FF45224687E90073F0BB /* chart_data_min.json in Resources */,
 				ADB3E9E522441BE9007CC2F2 /* ChartTableViewCell.xib in Resources */,
 				ADE5770E2236E8920006200D /* chart_data.json in Resources */,
 				ADB3E9EA22441C14007CC2F2 /* TitleTableViewCell.xib in Resources */,
@@ -405,6 +404,7 @@
 				AD17FF312244978F0073F0BB /* ChartDisplayCollection.swift in Sources */,
 				AD9226D7223A12B800A5B7D6 /* NightScheme.swift in Sources */,
 				ADB3E9F822441E2A007CC2F2 /* UITableViewCellExtenions.swift in Sources */,
+				AD2AD4782248207300B16492 /* Painter.swift in Sources */,
 				AD17FF3D224613DD0073F0BB /* TapticFeedback.swift in Sources */,
 				ADB3E9EE22441C36007CC2F2 /* ButtonTableViewCell.swift in Sources */,
 				ADE577132236E8920006200D /* ChartViewController.swift in Sources */,

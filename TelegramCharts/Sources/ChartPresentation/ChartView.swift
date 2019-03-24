@@ -43,10 +43,14 @@ class ChartView: UIView, Reusable, Updatable {
     
     private var labels: [TextLayer]?
     
-    private var innerRadius: CGFloat = 6
+    private var innerRadius: CGFloat = 4
     
-    private var outerRadius: CGFloat = 10
+    private var outerRadius: CGFloat = 8
+    
+    private var verticalLine: CAShapeLayer?
 
+    private var dotInfo: CAShapeLayer?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -151,12 +155,10 @@ class ChartView: UIView, Reusable, Updatable {
         let isUpdating = labels != nil
         var newLabels = isUpdating ? nil : [TextLayer]()
 
-        let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
-        
         for index in 0..<dataSource.maxRangePoints.count {
             let textLayer = isUpdating ? labels![index] : TextLayer()
             
-            let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2 + startFrom
+            let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2
             
             CATransaction.setDisableActions(true)
             textLayer.frame = CGRect(x: x,
@@ -356,6 +358,10 @@ class ChartView: UIView, Reusable, Updatable {
             _ = labels.map { $0.changeColor(to: colorScheme.chart.text, keyPath: "foregroundColor",
                                             animationDuration: UIView.animationDuration) }
         }
+        if dataSource?.selectedIndex != nil {
+            cleanDots()
+            drawDots()
+        }
     }
     
     func drawHorizontalLines(animated: Bool) {
@@ -456,7 +462,12 @@ class ChartView: UIView, Reusable, Updatable {
     }
     
     func cleanDots() {
-        CATransaction.setDisableActions(true)
+        if let verticalLine = verticalLine {
+            verticalLine.removeFromSuperlayer()
+        }
+        if let dotInfo = dotInfo {
+            dotInfo.removeFromSuperlayer()
+        }
         dataLayer.sublayers?.forEach {
             if $0 is DotLayer {
                 $0.removeFromSuperlayer()
@@ -471,10 +482,33 @@ class ChartView: UIView, Reusable, Updatable {
             let selectedIndex = dataSource.selectedIndex else {
             return
         }
-
+        
+        var visibleChartModels = [ChartModel]()
         for index in 0..<dataSource.chartModels.count {
             let chartModel = dataSource.chartModels[index]
-             if chartModel.isHidden { continue }
+            if !chartModel.isHidden {
+                visibleChartModels.append(chartModel)
+            }
+        }
+
+        guard visibleChartModels.count > 0 else {
+            return
+        }
+
+        // Line.
+        let path = UIBezierPath()
+        let lineLayer = CAShapeLayer()
+        lineLayer.path = path.cgPath
+        lineLayer.fillColor = UIColor.clear.cgColor
+        lineLayer.strokeColor = colorScheme.chart.accentGrid.cgColor
+        lineLayer.lineWidth = 0.5
+        dataLayer.addSublayer(lineLayer)
+        self.verticalLine = lineLayer
+        
+        var xLine: CGFloat = 0
+        for index in 0..<dataSource.chartModels.count {
+            let chartModel = dataSource.chartModels[index]
+            if chartModel.isHidden { continue }
             
             var dotLayers: [DotLayer] = []
             var points = dataPoints[index]
@@ -491,7 +525,76 @@ class ChartView: UIView, Reusable, Updatable {
             dotLayer.frame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
             dotLayers.append(dotLayer)
             dataLayer.addSublayer(dotLayer)
+            xLine = xValue + outerRadius / 2
         }
+        
+        path.move(to: CGPoint(x: xLine, y: -dataSource.topSpace / 2))
+        path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace))
+        lineLayer.path = path.cgPath
+
+        // Rect.
+        var rectWidth: CGFloat = 80
+        var maxString = ""
+        for chartModel in visibleChartModels {
+            let data = chartModel.data[selectedIndex]
+            let format = data.value.format
+            if maxString.count < format.count {
+                maxString = format
+            }
+        }
+        rectWidth = rectWidth + CGFloat(max((maxString.count - 2), 0) * 5)
+        
+        let space: CGFloat = 5
+        let oneLine: CGFloat = 20
+        var rectHeight = CGFloat(visibleChartModels.count) * oneLine
+        rectHeight = rectHeight - CGFloat(max((visibleChartModels.count - 2), 0) * 1)
+        var xRect = xLine - rectWidth / 2
+        if xRect < 0 {
+            xRect = 0
+        }
+        if xRect > self.frame.size.width - rectWidth {
+            xRect = self.frame.size.width - rectWidth
+        }
+        let rect = CGRect(x: xRect, y: -dataSource.topSpace + space,
+                          width: rectWidth, height: rectHeight)
+        let corners: UIRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
+        let dotInfo = Painter.createRect(rect: rect, byRoundingCorners: corners,
+                                      fillColor: colorScheme.dotInfo.background,
+                                      cornerRadius: 4)
+        dataLayer.addSublayer(dotInfo)
+        
+        // Date and numbers.
+        var drawDate = true
+        let xdata: CGFloat = rect.origin.x + 8 + 80 * 0.6
+        var ydata: CGFloat = rect.origin.y + 5
+        let deltaY = oneLine - 3
+        for chartModel in visibleChartModels {
+            let data = chartModel.data[selectedIndex]
+            if drawDate {
+                let ydate = rect.origin.y + 5
+                let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text)
+                dateTextLayer.frame = CGRect(x: rect.origin.x + 8,
+                                         y: ydate, width: 50, height: 16)
+                dateTextLayer.string = data.dateDot
+                dotInfo.addSublayer(dateTextLayer)
+
+                let yaerTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text)
+                yaerTextLayer.frame = CGRect(x: rect.origin.x + 8,
+                                             y: ydate + deltaY, width: 50, height: 16)
+                yaerTextLayer.string = data.year
+                dotInfo.addSublayer(yaerTextLayer)
+                drawDate = false
+            }
+            
+            let dataTextLayer = Painter.createText(textColor: chartModel.color)
+            dataTextLayer.frame = CGRect(x: xdata,
+                                         y: ydata, width: 50, height: 16)
+            dataTextLayer.string = data.value.format
+            dotInfo.addSublayer(dataTextLayer)
+            ydata += deltaY
+        }
+        self.dotInfo = dotInfo
+
     }
     
     func prepareForReuse() {
@@ -510,7 +613,7 @@ class ChartView: UIView, Reusable, Updatable {
                 $0.removeFromSuperlayer()
             }
         }
-
+        
         dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
         gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
     }

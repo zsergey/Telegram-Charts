@@ -186,11 +186,9 @@ class ChartDataSource: Updatable {
     private func convertDataEntriesToPoints(entries: [PointModel]) -> [CGPoint] {
         var result: [CGPoint] = []
         let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
-        let startFrom: CGFloat = 0 // isPreviewMode ? 0 : 20 // TODO: + 40
-        
         for i in 0..<entries.count {
             let height = calcHeight(for: entries[i].value, with: minMaxGap)
-            let point = CGPoint(x: CGFloat(i) * lineGap + startFrom, y: height)
+            let point = CGPoint(x: CGFloat(i) * lineGap, y: height)
             result.append(point)
         }
         return result
@@ -212,7 +210,7 @@ class ChartDataSource: Updatable {
             // Ease-in-out function from
             // https://math.stackexchange.com/questions/121720/ease-in-out-function
             var prevy: CGFloat = 0
-            // TODO: вот это попробовать не циклом сделать
+            
             for time in 0..<framesInAnimationDuration {
                 let x = CGFloat(time) / CGFloat(framesInAnimationDuration - 1)
                 let y = (x * x) / (x * x + (1.0 - x) * (1.0 - x))

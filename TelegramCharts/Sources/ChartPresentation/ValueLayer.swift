@@ -58,13 +58,8 @@ class ValueLayer: CALayer {
         addSublayer(lineLayer)
         self.lineLayer = lineLayer
         
-        let textLayer = CATextLayer()
+        let textLayer = Painter.createText(textColor: textColor)
         textLayer.frame = CGRect(x: 0, y: height - 18, width: 50, height: 16)
-        textLayer.foregroundColor = textColor.cgColor
-        textLayer.backgroundColor = UIColor.clear.cgColor
-        textLayer.contentsScale = UIScreen.main.scale
-        textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
-        textLayer.fontSize = 12
         textLayer.string = lineValue.format
         addSublayer(textLayer)
         self.textLayer = textLayer

@@ -42,7 +42,7 @@ struct ChartModelFactory {
                         for index in 0..<count {
                             if let date = dataX[index] as? Date,
                                 let value = dataY[index] as? Int {
-                                let pointModel = PointModel(value: value, date: date.format)
+                                let pointModel = PointModel(value: value, date: date.format, dateDot: date.formatDot, year: date.year)
                                 pointModels.append(pointModel)
                             }
                         }

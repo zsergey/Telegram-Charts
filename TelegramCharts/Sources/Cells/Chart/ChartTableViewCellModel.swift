@@ -40,7 +40,9 @@ extension ChartTableViewCellModel: CellViewModelType {
     
     func setupChartView(on cell: ChartTableViewCell) {
         cell.chartView.dataSource = chartDataSource
-        
+        self.chartDataSource.selectedIndex = nil
+        cell.chartView.cleanDots()
+
         chartDataSource.onChangeMaxValue = {
             self.calcProperties(of: self.chartDataSource, for: cell.chartView)
              self.chartDataSource.selectedIndex = nil

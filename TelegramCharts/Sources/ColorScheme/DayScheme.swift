@@ -55,4 +55,9 @@ struct DayScheme: ColorSchemeProtocol {
                            background: UIColor(hex: "#F7F8FA", alpha: 0.8)!,
                            arrow: UIColor(hex: "#FFFFFF")!)
     }
+
+    var dotInfo: DotInfo {
+        return DotInfo(background: UIColor(hex: "#F4F4F9")!,
+                       text: UIColor(hex: "#6D6D72")!)
+    }
 }
