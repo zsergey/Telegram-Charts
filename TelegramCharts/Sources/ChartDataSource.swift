@@ -46,8 +46,6 @@ class ChartDataSource: Updatable {
     
     var isPreviewMode: Bool = false
 
-    var changeMaxValueOnChangeRange = true
-    
     private(set) var lineGap: CGFloat = 60.0
     
     private(set) var topSpace: CGFloat = 0.0
@@ -86,7 +84,7 @@ class ChartDataSource: Updatable {
         self.chartModels = chartModels
     }
 
-    func calcProperties(changeMaxValue: Bool) {
+    func calcProperties() {
         self.findMaxRangePoints()
         let animateMaxValue = maxValue == 0 ? false : true
         if isPreviewMode {
@@ -100,15 +98,13 @@ class ChartDataSource: Updatable {
             } else {
                 lineGap = viewSize.width / (CGFloat(countPoints) - 1)
             }
-            if changeMaxValue {
-                let max: CGFloat = chartModels.map { chartModel in
-                    if chartModel.isHidden {
-                        return 0
-                    } else {
-                        return CGFloat(chartModel.data.max()?.value ?? 0)
-                    }}.compactMap { $0 }.max() ?? 0
-                setMaxValue(max, animated: animateMaxValue)
-            }
+            let max: CGFloat = chartModels.map { chartModel in
+                if chartModel.isHidden {
+                    return 0
+                } else {
+                    return CGFloat(chartModel.data.max()?.value ?? 0)
+                }}.compactMap { $0 }.max() ?? 0
+            setMaxValue(max, animated: animateMaxValue)
         } else {
             topSpace = 40.0
             bottomSpace = 20.0
@@ -119,22 +115,20 @@ class ChartDataSource: Updatable {
             } else {
                 lineGap = viewSize.width / value
             }
-            if changeMaxValue {
-                var max: CGFloat = 0
-                for chartModel in chartModels {
-                    if chartModel.isHidden { continue }
-                    for i in 0..<chartModel.data.count {
-                        let x = (CGFloat(i) - range.start) * lineGap
-                        if x >= 0, x <= viewSize.width {
-                            let value = CGFloat(chartModel.data[i].value)
-                            if value > max {
-                                max = value
-                            }
+            var max: CGFloat = 0
+            for chartModel in chartModels {
+                if chartModel.isHidden { continue }
+                for i in 0..<chartModel.data.count {
+                    let x = (CGFloat(i) - range.start) * lineGap
+                    if x >= 0, x <= viewSize.width {
+                        let value = CGFloat(chartModel.data[i].value)
+                        if value > max {
+                            max = value
                         }
                     }
                 }
-                setMaxValue(max, animated: animateMaxValue)
             }
+            setMaxValue(max, animated: animateMaxValue)
         }
         viewDataSize = CGSize(width: viewSize.width,
                               height: viewSize.height - topSpace - bottomSpace)

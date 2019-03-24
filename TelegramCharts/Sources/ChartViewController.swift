@@ -140,6 +140,40 @@ class ChartViewController: UIViewController {
             cell.calcProperties()
         }
     }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrollingStarted()
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if decelerate {
+            scrollingStarted()
+        } else {
+            scrollingFinished()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        scrollingFinished()
+    }
+    
+    func scrollingFinished() {
+        for cell in tableView.visibleCells {
+            if let cell = cell as? ChartTableViewCell {
+                cell.chartView.isScrolling = false
+                cell.chartView.drawLabels(byScroll: true)
+            }
+        }
+    }
+    
+    func scrollingStarted() {
+        for cell in tableView.visibleCells {
+            if let cell = cell as? ChartTableViewCell {
+                cell.chartView.isScrolling = true
+            }
+        }
+    }
+
 }
 
 extension ChartViewController: UITableViewDelegate {

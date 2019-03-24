@@ -19,6 +19,8 @@ class ChartView: UIView, Reusable, Updatable {
         }
     }
     
+    var isScrolling = false
+
     var sliderDirection: SliderDirection = .right
     
     private var setFinishedSliderDirection = true
@@ -94,7 +96,10 @@ class ChartView: UIView, Reusable, Updatable {
             isJustReused = false
         }
         self.drawCharts()
-        //self.drawLables()
+        
+        if !isScrolling {
+            drawLabels(byScroll: false)
+        }
     }
     
     private func drawCharts() {
@@ -136,7 +141,7 @@ class ChartView: UIView, Reusable, Updatable {
         }
     }
         
-    private func drawLables() {
+    func drawLabels(byScroll: Bool) {
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {
@@ -166,6 +171,8 @@ class ChartView: UIView, Reusable, Updatable {
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
                 textLayer.fontSize = 11
                 textLayer.string = dataSource.maxRangePoints[index].date
+                textLayer.opacity = 0
+                textLayer.toOpacity = 0
                 mainLayer.addSublayer(textLayer)
                 newLabels!.append(textLayer)
             }
@@ -174,16 +181,16 @@ class ChartView: UIView, Reusable, Updatable {
         if !isUpdating {
             labels = newLabels
         }
-
-        hideWrongLabels(isFirstCall: true)
-        if setFinishedSliderDirection {
-            sliderDirection = .finished
-            hideWrongLabels(isFirstCall: true)
-            setFinishedSliderDirection = false
+        
+        self.hideWrongLabels(isFirstCall: true, byScroll: byScroll)
+        if self.setFinishedSliderDirection {
+            self.sliderDirection = .finished
+            self.hideWrongLabels(isFirstCall: true, byScroll: byScroll)
+            self.setFinishedSliderDirection = false
         }
     }
     
-    func hideWrongLabels(isFirstCall: Bool) {
+    func hideWrongLabels(isFirstCall: Bool, byScroll: Bool) {
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {
@@ -196,7 +203,10 @@ class ChartView: UIView, Reusable, Updatable {
         if isFirstCall && setFinishedSliderDirection {
             if sliderDirection == .left || sliderDirection == .right {
                 _ = labels?.map { label in
-                    label.opacity = 1
+                    label.toOpacity = 1
+                    if !isScrolling {
+                        label.opacity = 1
+                    }
                 }
             }
         }
@@ -224,7 +234,7 @@ class ChartView: UIView, Reusable, Updatable {
                 theIndex = staticIndex
             } else {
                 if setFinishedSliderDirection {
-                    let x = sliderDirection == .left ? self.frame.size.height - labelWidth / 2 : labelWidth / 2
+                    let x = sliderDirection == .left ? self.frame.size.width - labelWidth / 2 : labelWidth / 2
                     theIndex = Int((x + dataSource.range.start * dataSource.lineGap + labelWidth / 2) / dataSource.lineGap)
                     let textLayer = labels![theIndex]
                     textLayer.isStatic = true
@@ -233,10 +243,13 @@ class ChartView: UIView, Reusable, Updatable {
                     for index in range {
                         let aIndex = sliderDirection == .left ? range.endIndex - index - 1 : index
                         let textLayer = labels![aIndex]
-                        if textLayer.opacity == 1 {
-                            textLayer.isStatic = true
-                            theIndex = aIndex
-                            break
+                        if textLayer.toOpacity == 1 {
+                            let textLayerX = (CGFloat(aIndex) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2
+                            if textLayerX > -labelWidth / 2 && textLayerX < self.frame.size.width - labelWidth / 2 {
+                                textLayer.isStatic = true
+                                theIndex = aIndex
+                                break
+                            }
                         }
                     }
                 }
@@ -244,29 +257,31 @@ class ChartView: UIView, Reusable, Updatable {
             
             if sliderDirection == .left {
                 let inverseRange = 0..<theIndex + 1
-                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true)
+                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true, byScroll: byScroll)
                 
                 let indexRange = theIndex..<dataSource.maxRangePoints.count
-                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false)
+                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false, byScroll: byScroll)
             } else {
                 let indexRange = theIndex..<dataSource.maxRangePoints.count
-                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false)
+                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false, byScroll: byScroll)
                 
                 let inverseRange = 0..<theIndex + 1
-                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true)
+                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true, byScroll: byScroll)
             }
         } else if sliderDirection == .finished {
-            _ = labels?.map { textLayer in
-                if textLayer.opacity < 1 {
-                    textLayer.opacity = 0
-                    textLayer.changeOpacity(from: textLayer.opacity, to: 0,
-                                            animationDuration: UIView.animationDuration)
+            if let labels = labels {
+                for textLayer in labels {
+                    if textLayer.toOpacity == 1 {
+                        textLayer.opacity = textLayer.toOpacity
+                    } else {
+                        textLayer.opacity = 0
+                    }
                 }
             }
         }
     }
     
-    func doMagic(in range: Range<Int>, skipHidden: Bool, inverse: Bool) {
+    func doMagic(in range: Range<Int>, skipHidden: Bool, inverse: Bool, byScroll: Bool) {
         var lastFrame: CGRect = .zero
         
         var wereHiddenLayers = false
@@ -275,25 +290,34 @@ class ChartView: UIView, Reusable, Updatable {
             let textLayer = inverse ? labels![inverseIndex] : labels![index]
             let coef: CGFloat = inverse ? -1 : 1
             
-            if skipHidden, textLayer.opacity == 0 {
+            if skipHidden, textLayer.toOpacity == 0 {
                 continue
             }
             
             let startXFrame = textLayer.frame.origin.x - textLayer.frame.size.width * coef / 2
             
             if lastFrame == .zero {
-                textLayer.opacity = 1
+                textLayer.toOpacity = 1
+                if !isScrolling {
+                    textLayer.opacity = 1
+                }
                 lastFrame = textLayer.frame
             } else {
                 let endXLastFrame = lastFrame.origin.x + lastFrame.size.width * coef / 2 + labelWidth * coef
                 let condition = inverse ? startXFrame < endXLastFrame : startXFrame > endXLastFrame
                 if condition {
-                    textLayer.opacity = 1
+                    textLayer.toOpacity = 1
+                    if !isScrolling {
+                        textLayer.opacity = 1
+                    }
                     lastFrame = textLayer.frame
                 } else {
                     let delta = inverse ? startXFrame - endXLastFrame : endXLastFrame - startXFrame
                     let opacity = max(Float(1 - delta / textLayer.frame.size.width), 0)
-                    textLayer.opacity = opacity
+                    textLayer.toOpacity = opacity
+                    if !isScrolling {
+                        textLayer.opacity = opacity
+                    }
                     if opacity == 0 {
                         lastFrame = .zero
                         wereHiddenLayers = true
@@ -303,7 +327,7 @@ class ChartView: UIView, Reusable, Updatable {
         }
         
         if wereHiddenLayers {
-            hideWrongLabels(isFirstCall: false)
+            hideWrongLabels(isFirstCall: false, byScroll: byScroll)
         }
     }
     
@@ -463,7 +487,8 @@ class ChartView: UIView, Reusable, Updatable {
         
         sliderDirection = .right
         setFinishedSliderDirection = true
-
+        isScrolling = true
+        
         mainLayer.sublayers?.forEach {
             if $0 is TextLayer {
                 $0.removeFromSuperlayer()

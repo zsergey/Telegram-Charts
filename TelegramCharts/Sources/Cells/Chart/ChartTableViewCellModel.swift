@@ -42,7 +42,7 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.chartView.dataSource = chartDataSource
         
         chartDataSource.onChangeMaxValue = {
-            self.calcProperties(of: self.chartDataSource, for: cell.chartView, changeMaxValue: false)
+            self.calcProperties(of: self.chartDataSource, for: cell.chartView)
              self.chartDataSource.selectedIndex = nil
              cell.chartView.cleanDots()
         }
@@ -56,7 +56,7 @@ extension ChartTableViewCellModel: CellViewModelType {
     func setupPreviewChartView(on cell: ChartTableViewCell) {
         cell.previewChartView.dataSource = previewChartDataSource
         previewChartDataSource.onChangeMaxValue = {
-            self.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, changeMaxValue: false)
+            self.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView)
         }
     }
     
@@ -74,8 +74,7 @@ extension ChartTableViewCellModel: CellViewModelType {
             self.chartDataSource.selectedIndex = nil
             cell.chartView.cleanDots()
             
-            self.calcProperties(of: self.chartDataSource, for: cell.chartView,
-                                changeMaxValue: self.chartDataSource.changeMaxValueOnChangeRange)
+            self.calcProperties(of: self.chartDataSource, for: cell.chartView)
         }
         cell.sliderView.onBeganTouch = { sliderDirection in
             cell.chartView.sliderDirection = sliderDirection
@@ -85,7 +84,7 @@ extension ChartTableViewCellModel: CellViewModelType {
             cell.chartView.sliderDirection = sliderDirection
             cell.chartView.setNeedsLayout()
             
-            self.calcProperties(of: self.chartDataSource, for: cell.chartView, changeMaxValue: true)
+            self.calcProperties(of: self.chartDataSource, for: cell.chartView)
         }
     }
     
@@ -93,9 +92,9 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.updateColors(animated: false)
     }
     
-    func calcProperties(of dataSource: ChartDataSource, for view: UIView, changeMaxValue value: Bool) {
+    func calcProperties(of dataSource: ChartDataSource, for view: UIView) {
         DispatchQueue.global(qos: .background).async {
-            dataSource.calcProperties(changeMaxValue: value)
+            dataSource.calcProperties()
             DispatchQueue.main.async {
                 view.setNeedsLayout()
             }

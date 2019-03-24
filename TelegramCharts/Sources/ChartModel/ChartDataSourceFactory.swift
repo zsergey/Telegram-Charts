@@ -19,8 +19,6 @@ struct ChartDataSourceFactory {
             let chartModels = charts[index]
 
             let main = ChartDataSource(chartModels: chartModels)
-            let maxCount = chartModels.map { $0.data.count }.max() ?? 0
-            main.changeMaxValueOnChangeRange = maxCount <= 150
             chartDataSource.append(main)
             
             let preview = ChartDataSource(chartModels: chartModels)

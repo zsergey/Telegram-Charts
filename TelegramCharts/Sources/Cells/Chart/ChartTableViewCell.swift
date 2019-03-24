@@ -23,12 +23,12 @@ class ChartTableViewCell: UITableViewCell {
         previewChartView.prepareForReuse()
         sliderView.prepareForReuse()
     }
-    
+        
     func calcProperties() {
         if let model = model {
             DispatchQueue.global(qos: .background).async {
-                model.chartDataSource.calcProperties(changeMaxValue: true)
-                model.previewChartDataSource.calcProperties(changeMaxValue: true)
+                model.chartDataSource.calcProperties()
+                model.previewChartDataSource.calcProperties()
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     self.setNeedsLayout()
