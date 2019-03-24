@@ -20,7 +20,12 @@ class ChartView: UIView, Reusable, Updatable {
 //        }
 //    }
     
-    var colorScheme: ColorSchemeProtocol = DayScheme() { didSet { setNeedsLayout() } }
+    var colorScheme: ColorSchemeProtocol = DayScheme() {
+        didSet {
+            //setNeedsLayout()
+            updateColorHorizontalLines()
+        }
+    }
     
     var sliderDirection: SliderDirection = .finished
     
@@ -73,12 +78,12 @@ class ChartView: UIView, Reusable, Updatable {
     }
     
     override func layoutSubviews() {
-        backgroundColor = colorScheme.chart.background
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
             return
         }
-        
+        self.backgroundColor = .clear
+
         let width = CGFloat(dataSource.countPoints) * dataSource.lineGap
         let height = self.frame.size.height
         self.mainLayer.frame = CGRect(x: 0, y: 0, width: width, height: height)
@@ -115,13 +120,13 @@ class ChartView: UIView, Reusable, Updatable {
             let lineLayer = isUpdating ? chartLines![index] : CAShapeLayer()
             let path = paths[index]
             if isUpdating {
-                lineLayer.changePath(to: path, animationDuration: dataSource.animationDuration)
+                lineLayer.changePath(to: path, animationDuration: UIView.animationDuration)
                 CATransaction.setDisableActions(true)
                 if chartModel.opacity != lineLayer.opacity {
                     let toValue: Float = chartModel.opacity
                     let fromValue: Float = lineLayer.opacity
                     lineLayer.changeOpacity(from: fromValue, to: toValue,
-                                            animationDuration: dataSource.animationDuration)
+                                            animationDuration: UIView.animationDuration)
                 }
             } else {
                 lineLayer.path = path.cgPath
@@ -245,9 +250,16 @@ class ChartView: UIView, Reusable, Updatable {
                 for textLayer in layersToHide {
                     let toOpacity: Float = textLayer.opacity >= 0.5 ? 1 : 0
                     textLayer.changeOpacity(from: textLayer.opacity, to: toOpacity,
-                                            animationDuration: animated ? dataSource.animationDuration : 0)
+                                            animationDuration: animated ? UIView.animationDuration : 0)
                 }
             }
+        }
+    }
+    
+    func updateColorHorizontalLines() {
+        if let gridLines = gridLines {
+            _ = gridLines.map { $0.updateColors(lineColor: colorScheme.chart.grid,
+                                                textColor: colorScheme.chart.text)}
         }
     }
     
@@ -273,7 +285,7 @@ class ChartView: UIView, Reusable, Updatable {
             let value = gridValues[index]
             var duration: CFTimeInterval = 0
             if animated {
-                duration = value == 1 ? 0 : dataSource.animationDuration
+                duration = value == 1 ? 0 : UIView.animationDuration
             }
 
             let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap)

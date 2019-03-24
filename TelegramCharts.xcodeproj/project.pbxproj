@@ -18,6 +18,7 @@
 		AD17FF41224646FA0073F0BB /* ChartDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF40224646FA0073F0BB /* ChartDataSource.swift */; };
 		AD17FF44224687E90073F0BB /* chart_data_max.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF42224687E90073F0BB /* chart_data_max.json */; };
 		AD17FF45224687E90073F0BB /* chart_data_min.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF43224687E90073F0BB /* chart_data_min.json */; };
+		AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */; };
 		AD68E210223D255700576C20 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68E20F223D255700576C20 /* SliderView.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
@@ -72,6 +73,7 @@
 		AD17FF40224646FA0073F0BB /* ChartDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDataSource.swift; sourceTree = "<group>"; };
 		AD17FF42224687E90073F0BB /* chart_data_max.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_max.json; sourceTree = "<group>"; };
 		AD17FF43224687E90073F0BB /* chart_data_min.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_min.json; sourceTree = "<group>"; };
+		AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		AD68E20F223D255700576C20 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotLayer.swift; sourceTree = "<group>"; };
@@ -127,6 +129,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AD2AD4742247430500B16492 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AD17FF3C224613DD0073F0BB /* TapticFeedback.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		AD9226C62238BEC100A5B7D6 /* ChartPresentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -253,6 +263,7 @@
 		ADE5770B2236E8920006200D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				AD2AD4742247430500B16492 /* Services */,
 				ADB3E9F022441D24007CC2F2 /* Protocols */,
 				ADE577232236FE500006200D /* Extensions */,
 				AD9226D8223A12D300A5B7D6 /* DrawingStyle */,
@@ -285,13 +296,13 @@
 			isa = PBXGroup;
 			children = (
 				ADE577242236FE620006200D /* UIColor+Initializer.swift */,
+				AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */,
 				ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */,
 				AD9226DD223A286E00A5B7D6 /* Int+Format.swift */,
 				AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */,
 				ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */,
 				ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */,
 				ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */,
-				AD17FF3C224613DD0073F0BB /* TapticFeedback.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -406,6 +417,7 @@
 				AD17FF35224498AA0073F0BB /* ButtonTableViewCellModel.swift in Sources */,
 				AD17FF33224498730073F0BB /* TitleTableViewCellModel.swift in Sources */,
 				AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */,
+				AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */,
 				ADFF33B32245272F0019A4D4 /* SectionTableViewCellModel.swift in Sources */,
 				ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */,
 				AD94517C223D90EF00E8CD9D /* CGFloatExtension.swift in Sources */,

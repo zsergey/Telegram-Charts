@@ -11,9 +11,12 @@ import UIKit
 class ValueLayer: CALayer {
     
     var lineValue: Int = 0 { didSet { setNeedsLayout() } }
-    var lineColor: UIColor = .gray { didSet { setNeedsLayout() } }
-    var textColor: UIColor = .black { didSet { setNeedsLayout() } }
+    var lineColor: UIColor = .gray
+    var textColor: UIColor = .black
     
+    var lineLayer: CAShapeLayer?
+    var textLayer: CATextLayer?
+
     override init() {
         super.init()
     }
@@ -24,6 +27,17 @@ class ValueLayer: CALayer {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    func updateColors(lineColor: UIColor, textColor: UIColor) {
+        if let lineLayer = lineLayer {
+            lineLayer.changeColor(to: lineColor, keyPath: "strokeColor",
+                                  animationDuration: UIView.animationDuration)
+        }
+        if let textLayer = textLayer {
+            textLayer.changeColor(to: textColor, keyPath: "foregroundColor",
+                                  animationDuration: UIView.animationDuration)
+        }
     }
     
     override func layoutSublayers() {
@@ -42,6 +56,7 @@ class ValueLayer: CALayer {
         lineLayer.strokeColor = lineColor.cgColor
         lineLayer.lineWidth = 0.5
         addSublayer(lineLayer)
+        self.lineLayer = lineLayer
         
         let textLayer = CATextLayer()
         textLayer.frame = CGRect(x: 0, y: height - 18, width: 50, height: 16)
@@ -52,6 +67,7 @@ class ValueLayer: CALayer {
         textLayer.fontSize = 12
         textLayer.string = lineValue.format
         addSublayer(textLayer)
+        self.textLayer = textLayer
     }
 
 }

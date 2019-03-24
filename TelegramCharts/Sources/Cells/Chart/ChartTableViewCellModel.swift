@@ -91,11 +91,7 @@ extension ChartTableViewCellModel: CellViewModelType {
     }
     
     func setupColors(on cell: ChartTableViewCell) {
-        cell.chartView.colorScheme = colorScheme
-        cell.previewChartView.colorScheme = colorScheme
-        cell.sliderView.colorScheme = colorScheme
-        cell.backgroundColor = colorScheme.chart.background
-        cell.selectedBackgroundView = colorScheme.selectedCellView
+        cell.updateColors(animated: false)
     }
     
     func calcProperties(of dataSource: ChartDataSource, for view: UIView) {

@@ -6,18 +6,23 @@
 //  Copyright © 2019 @zsergey. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-struct SectionTableViewCellModel {
+class SectionTableViewCellModel {
     var text: String
     var colorScheme: ColorSchemeProtocol
+    
+    init(text: String, colorScheme: ColorSchemeProtocol) {
+        self.text = text
+        self.colorScheme = colorScheme
+    }
 }
 
 extension SectionTableViewCellModel: CellViewModelType {
     
     func setup(on cell: SectionTableViewCell) {
+        cell.model = self
         cell.label.text = text
-        cell.label.textColor = colorScheme.section.text
-        cell.backgroundColor = colorScheme.section.background
+        cell.updateColors(animated: false)
     }
 }

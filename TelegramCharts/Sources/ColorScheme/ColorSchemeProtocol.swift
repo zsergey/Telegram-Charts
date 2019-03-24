@@ -10,7 +10,6 @@ import UIKit
 
 struct SliderColor {
     let thumb: UIColor
-    let line: UIColor
     let background: UIColor
     let arrow: UIColor
 }
@@ -50,4 +49,9 @@ extension ColorSchemeProtocol {
         view.backgroundColor = color
         return view
     }
+    
+    func next() -> ColorSchemeProtocol {
+        return self is DayScheme ? NightScheme() : DayScheme()
+    }
 }
+

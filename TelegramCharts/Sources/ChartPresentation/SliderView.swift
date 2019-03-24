@@ -62,8 +62,12 @@ class SliderView: UIView, Reusable {
     private let thumbWidth: CGFloat = 11
 
     private let arrowWidth: CGFloat = 6
+
+    private let arrowHeight: CGFloat = 1
     
-    private let thumbCornerRadius: CGFloat = 0.25
+    private let arrowCornerRadius: CGFloat = 0.25
+
+    private let thumbCornerRadius: CGFloat = 1
 
     private let arrowAngle: CGFloat = 60
 
@@ -73,6 +77,26 @@ class SliderView: UIView, Reusable {
     
     private var sliderDirection: SliderDirection = .finished
     
+    private var leftBackground: CAShapeLayer?
+
+    private var rightBackground: CAShapeLayer?
+
+    private var leftThumb: CAShapeLayer?
+    
+    private var rightThumb: CAShapeLayer?
+
+    private var topLine: CAShapeLayer?
+    
+    private var bottomLine: CAShapeLayer?
+
+    private var arrow1: CAShapeLayer?
+    
+    private var arrow2: CAShapeLayer?
+
+    private var arrow3: CAShapeLayer?
+    
+    private var arrow4: CAShapeLayer?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -97,8 +121,8 @@ class SliderView: UIView, Reusable {
     }
     
     override func layoutSubviews() {
+        self.backgroundColor = .clear
         self.calcProperties()
-        self.clean()
         self.drawSlider()
     }
     
@@ -200,67 +224,128 @@ class SliderView: UIView, Reusable {
         onChangeRange?(currentRange, sliderWidth)
     }
     
-    private func clean() {
-        layer.backgroundColor = colorScheme.chart.background.cgColor
-        mainLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
-    }
-
     private func drawSlider() {
+        CATransaction.setDisableActions(true)
         drawBackgrounds()
-        drawThumb(with: CGRect(x: startX + trailingSpace, y: 1, width: thumbWidth, height: self.frame.size.height - 2))
-        drawThumb(with: CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: 1, width: thumbWidth, height: self.frame.size.height - 2))
+        drawThumbs()
         drawLines()
         drawArrows()
     }
+    
+    private func drawThumbs() {
+        // Left Thumb.
+        let color = colorScheme.slider.thumb
+        var rect = CGRect(x: startX + trailingSpace, y: -1, width: thumbWidth, height: self.frame.size.height + 2)
+        var corners: UIRectCorner = [.topLeft, .bottomLeft]
+        if let leftThumb = leftThumb {
+            let path = createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: thumbCornerRadius)
+            leftThumb.path = path.cgPath
+            leftThumb.changeColor(to: color, keyPath: "fillColor",
+                                  animationDuration: UIView.animationDuration)
+        } else {
+            let leftThumb = drawRect(rect: rect, byRoundingCorners: corners, fillColor: color, cornerRadius: thumbCornerRadius)
+            self.leftThumb = leftThumb
+        }
 
-    private func drawThumb(with rect: CGRect) {
-        let thumb = CAShapeLayer()
-        thumb.path = UIBezierPath(rect: rect).cgPath
-        thumb.strokeColor = UIColor.clear.cgColor
-        thumb.fillColor = colorScheme.slider.thumb.cgColor
-        thumb.lineWidth = 2.0
-        mainLayer.addSublayer(thumb)
+        // Right Thumb.
+        corners = [.topRight, .bottomRight]
+        rect = CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: -1, width: thumbWidth, height: self.frame.size.height + 2)
+        if let rightThumb = rightThumb {
+            let path = createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: thumbCornerRadius)
+            rightThumb.path = path.cgPath
+            rightThumb.changeColor(to: color, keyPath: "fillColor",
+                                   animationDuration: UIView.animationDuration)
+        } else {
+            let rightThumb = drawRect(rect: rect, byRoundingCorners: corners, fillColor: color, cornerRadius: thumbCornerRadius)
+            self.rightThumb = rightThumb
+        }
     }
     
     private func drawLines() {
         let height = self.frame.size.height
-        var x1 = startX + trailingSpace
-        var x2 = startX + sliderWidth + trailingSpace
-        var rect = CGRect(x: x1 + 1, y: 0, width: sliderWidth - 2, height: 1)
-        drawRect(rect: rect, byRoundingCorners: [.topLeft, .topRight], strokeColor: colorScheme.slider.line)
+        let x = startX + trailingSpace + thumbWidth
         
-        rect = CGRect(x: x1 + 1, y: height - 1, width: sliderWidth - 2, height: 1)
-        drawRect(rect: rect, byRoundingCorners: [.bottomLeft, .bottomRight], strokeColor: colorScheme.slider.line)
+        // Top Line.
+        let lineWidth = sliderWidth - 1 - 2 * thumbWidth
+        var rect = CGRect(x: x + 0.5, y: -0.5, width: lineWidth, height: 1)
+        let color = colorScheme.slider.thumb
+        if let topLine = topLine {
+            let path = createRectPath(rect: rect)
+            topLine.path = path.cgPath
+            topLine.changeColor(to: color, keyPath: "strokeColor",
+                                animationDuration: UIView.animationDuration)
+        } else {
+            let topLine = drawRect(rect: rect, strokeColor: color, lineWidth: 1.0)
+            self.topLine = topLine
+        }
         
-        x1 = x1 + thumbWidth
-        x2 = x2 - thumbWidth
-        
-        drawLine(from: CGPoint(x: x1, y: 1), to: CGPoint(x: x2, y: 1), color: colorScheme.chart.background)
-        drawLine(from: CGPoint(x: x1, y: height - 1), to: CGPoint(x: x2, y: height - 1), color: colorScheme.chart.background)
+        // Bottom Line.
+        rect = CGRect(x: x + 0.5, y: height - 0.5, width: lineWidth, height: 1)
+        if let bottomLine = bottomLine {
+            let path = createRectPath(rect: rect)
+            bottomLine.path = path.cgPath
+            bottomLine.changeColor(to: color, keyPath: "strokeColor",
+                                   animationDuration: UIView.animationDuration)
+        } else {
+            let bottomLine = drawRect(rect: rect, strokeColor: color, lineWidth: 1.0)
+            self.bottomLine = bottomLine
+        }
     }
     
     private func drawBackgrounds() {
         let height = self.frame.size.height
         let width = self.frame.size.width - leadingSpace
         let x = startX + trailingSpace
+        
+        // Left background.
+        var rect = CGRect(x: trailingSpace, y: 1, width: 0, height: height - 2) // .zero
         if x > 0 {
-            let rect = CGRect(x: trailingSpace, y: 1, width: startX, height: height - 2)
-            drawRect(rect: rect, fillColor: colorScheme.slider.background)
+            rect = CGRect(x: trailingSpace, y: 1, width: startX, height: height - 2)
         }
+        if let leftBackground = leftBackground {
+            let path = createRectPath(rect: rect)
+            leftBackground.path = path.cgPath
+            leftBackground.changeColor(to: colorScheme.slider.background, keyPath: "fillColor",
+                                       animationDuration: UIView.animationDuration)
+
+        } else {
+            let leftBackground = drawRect(rect: rect, fillColor: colorScheme.slider.background)
+            self.leftBackground = leftBackground
+        }
+        
+        // Right background.
+        rect = CGRect(x: width, y: 1, width: 0, height: height - 2) // .zero
         if x + sliderWidth < width {
             let x = x + sliderWidth
-            let rect = CGRect(x: x, y: 1, width: width - x, height: height - 2)
-            drawRect(rect: rect, fillColor: colorScheme.slider.background)
+            rect = CGRect(x: x, y: 1, width: width - x, height: height - 2)
+        }
+        if let rightBackground = rightBackground {
+            let path = createRectPath(rect: rect)
+            rightBackground.path = path.cgPath
+            rightBackground.changeColor(to: colorScheme.slider.background, keyPath: "fillColor",
+                                        animationDuration: UIView.animationDuration)
+        } else {
+            let rightBackground = drawRect(rect: rect, fillColor: colorScheme.slider.background)
+            self.rightBackground = rightBackground
+        }
+    }
+    
+    func createRectPath(rect: CGRect, byRoundingCorners corners: UIRectCorner = [], cornerRadius: CGFloat = 0.0) -> UIBezierPath {
+        let cornerRadii = CGSize(width: cornerRadius, height: cornerRadius)
+        if corners == [] {
+            let path = UIBezierPath(rect: rect)
+            return path
+        } else {
+            let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: cornerRadii)
+            return path
         }
     }
     
     @discardableResult
     private func drawRect(rect: CGRect, byRoundingCorners corners: UIRectCorner = [],
                           strokeColor: UIColor = UIColor.clear, fillColor: UIColor = UIColor.clear,
-                          lineWidth: CGFloat = 2.0) -> CAShapeLayer {
-        let cornerRadii = CGSize(width: thumbCornerRadius, height: thumbCornerRadius)
-        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: cornerRadii)
-        
+                          lineWidth: CGFloat = 2.0, cornerRadius: CGFloat = 0.0) -> CAShapeLayer {
+        let path = createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: cornerRadius)
         let rect = CAShapeLayer()
         rect.path = path.cgPath
         rect.strokeColor = strokeColor.cgColor
@@ -270,11 +355,16 @@ class SliderView: UIView, Reusable {
         return rect
     }
     
+    private func createLinePath(from point1: CGPoint, to point2: CGPoint) -> UIBezierPath {
+        let path = UIBezierPath()
+        path.move(to: point1)
+        path.addLine(to: point2)
+        return path
+    }
+    
     private func drawLine(from point1: CGPoint, to point2: CGPoint,
-                          color: UIColor, lineWidth: CGFloat = 2.0) {
-        let pathLine = UIBezierPath()
-        pathLine.move(to: point1)
-        pathLine.addLine(to: point2)
+                          color: UIColor, lineWidth: CGFloat = 2.0) -> CAShapeLayer {
+        let pathLine = createLinePath(from: point1, to: point2)
         
         let line = CAShapeLayer()
         line.path = pathLine.cgPath
@@ -282,42 +372,66 @@ class SliderView: UIView, Reusable {
         line.fillColor = UIColor.clear.cgColor
         line.lineWidth = lineWidth
         mainLayer.addSublayer(line)
+        return line
     }
     
     private func drawArrows() {
         let height = self.frame.size.height
-        drawArrow(at: CGPoint(x: startX + trailingSpace + thumbWidth / 2, y: height / 2), left: true)
-        drawArrow(at: CGPoint(x: startX + trailingSpace + sliderWidth - thumbWidth / 2, y: height / 2), left: false)
+        let point1 = CGPoint(x: startX + trailingSpace + thumbWidth / 2, y: height / 2)
+        let point2 = CGPoint(x: startX + trailingSpace + sliderWidth - thumbWidth / 2, y: height / 2)
+        drawArrow(at: point1, left: true)
+        drawArrow(at: point2, left: false)
     }
     
     private func drawArrow(at point: CGPoint, left: Bool) {
         let corners: UIRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
 
-        let heightArrow: CGFloat = 1
         let lineWidth: CGFloat = 0.75
-        let rect = CGRect(x: 0, y: 0, width: arrowWidth, height: heightArrow)
+        let rect = CGRect(x: 0, y: 0, width: arrowWidth, height: arrowHeight)
         
-        let line = drawRect(rect: rect, byRoundingCorners: corners,
-                            strokeColor: colorScheme.slider.arrow,
-                            fillColor: colorScheme.slider.arrow,
-                            lineWidth: lineWidth)
+        // Bottom arrow.
+        var bottomArrow = left ? arrow1 : arrow2
+        if bottomArrow == nil {
+            let line = drawRect(rect: rect, byRoundingCorners: corners,
+                                strokeColor: colorScheme.slider.arrow,
+                                fillColor: colorScheme.slider.arrow,
+                                lineWidth: lineWidth, cornerRadius: arrowCornerRadius)
+            if left {
+                self.arrow1 = line
+            } else {
+                self.arrow2 = line
+            }
+            bottomArrow = line
+        }
         
         var radians = left ? arrowAngle.radians : (180 - arrowAngle).radians
         let deltaX: CGFloat = left ? 1.25 : -1.25 - lineWidth
         var transform = CATransform3DMakeTranslation(point.x - deltaX,
-                                                     point.y - heightArrow / 4, 0)
+                                                     point.y - arrowHeight / 4, 0)
         transform = CATransform3DRotate(transform, radians, 0.0, 0.0, 1.0)
-        line.transform = transform
-        
-        let line2 = drawRect(rect: rect, byRoundingCorners: corners,
-                             strokeColor: colorScheme.slider.arrow,
-                             fillColor: colorScheme.slider.arrow,
-                             lineWidth: lineWidth)
+        CATransaction.setDisableActions(true)
+        bottomArrow!.transform = transform
+
+        // Top arrow.
+        var topArrow = left ? arrow3 : arrow4
+        if topArrow == nil {
+            let line2 = drawRect(rect: rect, byRoundingCorners: corners,
+                                 strokeColor: colorScheme.slider.arrow,
+                                 fillColor: colorScheme.slider.arrow,
+                                 lineWidth: lineWidth)
+            if left {
+                self.arrow3 = line2
+            } else {
+                self.arrow4 = line2
+            }
+            topArrow = line2
+        }
+
         radians = left ? (360 - arrowAngle).radians : (180 + arrowAngle).radians
         var transform2 = CATransform3DMakeTranslation(point.x - lineWidth - deltaX,
-                                                      point.y - heightArrow / 4, 0)
+                                                      point.y - arrowHeight / 4, 0)
         transform2 = CATransform3DRotate(transform2, radians, 0.0, 0.0, 1.0)
-        line2.transform = transform2
+        topArrow!.transform = transform2
     }
     
     private func setSliderWidth(to value: CGFloat) {

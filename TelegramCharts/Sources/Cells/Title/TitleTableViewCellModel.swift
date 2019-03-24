@@ -8,20 +8,25 @@
 
 import UIKit
 
-struct TitleTableViewCellModel {
+class TitleTableViewCellModel {
     var text: String
     var color: UIColor
     var colorScheme: ColorSchemeProtocol
+    
+    init(text: String, color: UIColor, colorScheme: ColorSchemeProtocol) {
+        self.text = text
+        self.color = color
+        self.colorScheme = colorScheme
+    }
 }
 
 extension TitleTableViewCellModel: CellViewModelType {
     
     func setup(on cell: TitleTableViewCell) {
+        cell.model = self
         cell.label.text = text
-        cell.label.textColor = colorScheme.title
         cell.iconView.layer.cornerRadius = 3
         cell.iconView.layer.backgroundColor = color.cgColor
-        cell.backgroundColor = colorScheme.chart.background
-        cell.selectedBackgroundView = colorScheme.selectedCellView
+        cell.updateColors(animated: false)
     }
 }

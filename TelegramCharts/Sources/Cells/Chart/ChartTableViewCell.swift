@@ -23,14 +23,6 @@ class ChartTableViewCell: UITableViewCell {
         previewChartView.prepareForReuse()
         sliderView.prepareForReuse()
     }
-}
-
-extension ChartTableViewCell: Updatable {
-
-    func update() {
-        chartView.update()
-        previewChartView.update()
-    }
     
     func calcProperties() {
         if let model = model {
@@ -56,6 +48,39 @@ extension ChartTableViewCell: Updatable {
                 model.previewChartDataSource.viewSize = self.previewChartView.frame.size
                 
                 calcProperties()
+            }
+        }
+    }
+
+}
+
+extension ChartTableViewCell: Updatable {
+
+    func update() {
+        chartView.update()
+        previewChartView.update()
+    }
+}
+
+extension ChartTableViewCell: ColorUpdatable {
+    
+    func updateColors(animated: Bool) {
+        if let model = model {
+            if animated {
+                model.colorScheme = model.colorScheme.next()
+            }
+            let animations = {
+                self.backgroundColor = model.colorScheme.chart.background
+                self.selectedBackgroundView = model.colorScheme.selectedCellView
+            }
+            self.chartView.colorScheme = model.colorScheme
+            self.previewChartView.colorScheme = model.colorScheme
+            self.sliderView.colorScheme = model.colorScheme
+            
+            if animated {
+                UIView.animateEaseInOut(with: UIView.animationDuration, animations: animations)
+            } else {
+                animations()
             }
         }
     }

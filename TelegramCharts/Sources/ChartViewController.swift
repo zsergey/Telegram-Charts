@@ -21,14 +21,23 @@ class ChartViewController: UIViewController {
         }
     }
     
+    var needsLayoutNavigationBar = false
+    
     var colorScheme: ColorSchemeProtocol! {
         didSet {
-            navigationController?.navigationBar.barTintColor = colorScheme.background
-            navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: colorScheme.title]
             (navigationController as? NavigationViewController)?.colorScheme = colorScheme
-
-            tableView.backgroundColor = colorScheme.section.background
-            tableView.separatorColor = colorScheme.separator
+            
+            let navigationBar = self.navigationController?.navigationBar
+            UIView.animateEaseInOut(with: UIView.animationDuration) {
+                self.tableView.layer.backgroundColor = self.colorScheme.section.background.cgColor
+                self.tableView.separatorColor = self.colorScheme.separator
+                
+                navigationBar?.barTintColor = self.colorScheme.background
+                navigationBar?.titleTextAttributes = [.foregroundColor: self.colorScheme.title]
+                if self.needsLayoutNavigationBar {
+                    navigationBar?.layoutIfNeeded()
+                }
+            }
         }
     }
 
@@ -36,9 +45,8 @@ class ChartViewController: UIViewController {
         super.viewDidLoad()
         
         navigationController?.navigationBar.isTranslucent = false
-
-        colorScheme = NightScheme()
         
+        colorScheme = DayScheme()
         let dataSource = ChartDataSourceFactory.make()
         displayCollection = ChartDisplayCollection(dataSource: dataSource,
                                                    colorScheme: colorScheme,
@@ -57,12 +65,18 @@ class ChartViewController: UIViewController {
         displayCollection.onChangeColorScheme = { [weak self] in
             guard let self = self else { return }
             self.colorScheme = self.displayCollection.colorScheme
-            self.tableView.reloadData()
+            for cell in self.tableView.visibleCells {
+                if let cell = cell as? ColorUpdatable {
+                    cell.updateColors(animated: true)
+                }
+            }
         }
         tableView.registerNibs(from: displayCollection)
 
         let displayLink = CADisplayLink(target: self, selector: #selector(update))
         displayLink.add(to: .current, forMode: .common)
+        
+        needsLayoutNavigationBar = true
     }
     
     @objc func update() {

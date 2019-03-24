@@ -138,7 +138,8 @@ class ChartDisplayCollection: DisplayCollection {
         switch type {
         case .colorScheme:
             FeedbackGenerator.impactOccurred(style: .medium)
-            colorScheme = colorScheme is DayScheme ? NightScheme() : DayScheme()
+            colorScheme = colorScheme.next()
+            
             createRows()
             onChangeColorScheme?()
         case .drawingStyle:

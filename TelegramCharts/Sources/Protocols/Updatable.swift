@@ -11,3 +11,7 @@ import UIKit
 protocol Updatable {
     func update()
 }
+
+protocol ColorUpdatable {
+    func updateColors(animated: Bool)
+}

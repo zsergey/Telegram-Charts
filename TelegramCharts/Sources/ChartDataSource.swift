@@ -34,8 +34,6 @@ class ChartDataSource: Updatable {
         }
     }
     
-    var animationDuration: CFTimeInterval = 0.5
-
     var selectedIndex: Int?
 
     var onChangeMaxValue: (() ->())?
@@ -77,7 +75,7 @@ class ChartDataSource: Updatable {
     private var viewDataSize: CGSize = .zero
 
     public var framesInAnimationDuration: Int {
-        return Int(CFTimeInterval(60) * animationDuration)
+        return Int(CFTimeInterval(60) * UIView.animationDuration)
     }
     
     init(chartModels: [ChartModel]) {
