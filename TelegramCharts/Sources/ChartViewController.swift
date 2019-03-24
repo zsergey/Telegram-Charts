@@ -11,7 +11,9 @@ import UIKit
 class ChartViewController: UIViewController {
     
     var displayCollection: ChartDisplayCollection!
-
+    
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    
     @IBOutlet var tableView: UITableView! {
         didSet {
             tableView.delegate = self
@@ -40,18 +42,48 @@ class ChartViewController: UIViewController {
             }
         }
     }
-
+    
+    var drawingStyleProtocol: DrawingStyleProtocol!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationController?.navigationBar.isTranslucent = false
         
+        createDisplayCollection()
+
+        self.activityIndicator.startAnimating()
+        self.tableView.separatorStyle = .none
+
+        DispatchQueue.global(qos: .background).async {
+            let dataSource = ChartDataSourceFactory.make()
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.displayCollection = ChartDisplayCollection(dataSource: dataSource,
+                                                                colorScheme: self.colorScheme,
+                                                                drawingStyle: self.drawingStyleProtocol)
+                self.tableView.separatorStyle = .singleLine
+                self.activityIndicator.stopAnimating()
+                self.tableView.reloadData()
+            }
+        }
+
+        let displayLink = CADisplayLink(target: self, selector: #selector(update))
+        displayLink.add(to: .current, forMode: .common)
+        
+        needsLayoutNavigationBar = true
+    }
+    
+    func createDisplayCollection() {
         colorScheme = DayScheme()
-        let dataSource = ChartDataSourceFactory.make()
+        drawingStyleProtocol = StandardDrawingStyle()
+        let dataSource = СoupleChartDataSource(main: [ChartDataSource](),
+                                                preview: [ChartDataSource]())
+
         displayCollection = ChartDisplayCollection(dataSource: dataSource,
                                                    colorScheme: colorScheme,
-                                                   drawingStyle: StandardDrawingStyle())
-
+                                                   drawingStyle: drawingStyleProtocol)
+        
         displayCollection.onChangeDrawingStyle = { [weak self] in
             guard let self = self else { return }
             let cells = self.tableView.visibleCells
@@ -72,11 +104,6 @@ class ChartViewController: UIViewController {
             }
         }
         tableView.registerNibs(from: displayCollection)
-
-        let displayLink = CADisplayLink(target: self, selector: #selector(update))
-        displayLink.add(to: .current, forMode: .common)
-        
-        needsLayoutNavigationBar = true
     }
     
     @objc func update() {

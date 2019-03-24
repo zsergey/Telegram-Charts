@@ -73,11 +73,11 @@ extension ChartTableViewCellModel: CellViewModelType {
             self.chartDataSource.range.start = range.start
             self.chartDataSource.range.end = range.end
             self.chartDataSource.sliderWidth = sliderWidth
-            
+
             self.previewChartDataSource.range.start = range.start
             self.previewChartDataSource.range.end = range.end
             self.previewChartDataSource.sliderWidth = sliderWidth
-            
+
             self.calcProperties(of: self.chartDataSource, for: cell.chartView)
         }
         cell.sliderView.onBeganTouch = { sliderDirection in
