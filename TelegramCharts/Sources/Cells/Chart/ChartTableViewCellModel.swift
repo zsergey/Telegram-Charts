@@ -43,6 +43,8 @@ extension ChartTableViewCellModel: CellViewModelType {
         
         chartDataSource.onChangeMaxValue = {
             self.calcProperties(of: self.chartDataSource, for: cell.chartView)
+            self.chartDataSource.selectedIndex = nil
+            cell.chartView.cleanDots()
         }
         chartDataSource.onSetNewTargetMaxValue = {
             DispatchQueue.main.async {
@@ -73,6 +75,8 @@ extension ChartTableViewCellModel: CellViewModelType {
             self.chartDataSource.range.start = range.start
             self.chartDataSource.range.end = range.end
             self.chartDataSource.sliderWidth = sliderWidth
+            self.chartDataSource.selectedIndex = nil
+            cell.chartView.cleanDots()
 
             self.previewChartDataSource.range.start = range.start
             self.previewChartDataSource.range.end = range.end

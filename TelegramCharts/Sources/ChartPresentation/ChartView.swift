@@ -11,18 +11,10 @@ import UIKit
 class ChartView: UIView, Reusable, Updatable {
     
     var dataSource: ChartDataSource?
-
-    // TODO:
-//    var range: IndexRange = (0, 0) {
-//        didSet {
-//            self.dataSource?.selectedIndex = nil
-//            cleanDots()
-//        }
-//    }
     
     var colorScheme: ColorSchemeProtocol = DayScheme() {
         didSet {
-            //setNeedsLayout()
+            setNeedsLayout()
             updateColorHorizontalLines()
         }
     }
@@ -360,7 +352,7 @@ class ChartView: UIView, Reusable, Updatable {
         }
     }
     
-    private func cleanDots() {
+    func cleanDots() {
         CATransaction.setDisableActions(true)
         dataLayer.sublayers?.forEach {
             if $0 is DotLayer {
