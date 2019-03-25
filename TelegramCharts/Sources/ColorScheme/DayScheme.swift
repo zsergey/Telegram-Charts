@@ -15,7 +15,7 @@ struct DayScheme: ColorSchemeProtocol {
     }
     
     var selectedCellView: UIView {
-        return view(by: UIColor(hex: "#EFEFF4")!)
+        return view(by: UIColor(hex: "#F6F8FA")!)
     }
 
     var title: UIColor {

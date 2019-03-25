@@ -34,13 +34,18 @@ struct Painter {
         return rect
     }
     
-    static func createText(textColor: UIColor) -> CATextLayer{
+    static func createText(textColor: UIColor, bold: Bool = false) -> CATextLayer{
         let textLayer = CATextLayer()
         textLayer.foregroundColor = textColor.cgColor
         textLayer.backgroundColor = UIColor.clear.cgColor
         textLayer.contentsScale = UIScreen.main.scale
         let font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
-        textLayer.font = font
+        if bold {
+            let boldFont = CTFontCreateCopyWithSymbolicTraits(font, 0.0, nil, .boldTrait, .boldTrait)
+            textLayer.font = boldFont
+        } else {
+            textLayer.font = font
+        }
         textLayer.fontSize = 12
         return textLayer
     }

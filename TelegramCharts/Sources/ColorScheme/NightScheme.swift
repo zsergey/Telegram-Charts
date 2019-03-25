@@ -15,7 +15,7 @@ struct NightScheme: ColorSchemeProtocol {
     }
     
     var selectedCellView: UIView {
-        return view(by: UIColor(hex: "#1A222C")!)
+        return view(by: UIColor(hex: "#1F2A39")!)
     }
 
     var title: UIColor {

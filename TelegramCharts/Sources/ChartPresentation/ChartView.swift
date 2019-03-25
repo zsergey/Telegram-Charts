@@ -573,7 +573,7 @@ class ChartView: UIView, Reusable, Updatable {
             let data = chartModel.data[selectedIndex]
             if drawDate {
                 let ydate = rect.origin.y + 5
-                let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text)
+                let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
                 dateTextLayer.frame = CGRect(x: rect.origin.x + 8,
                                          y: ydate, width: 50, height: 16)
                 dateTextLayer.string = data.dateDot
@@ -587,7 +587,7 @@ class ChartView: UIView, Reusable, Updatable {
                 drawDate = false
             }
             
-            let dataTextLayer = Painter.createText(textColor: chartModel.color)
+            let dataTextLayer = Painter.createText(textColor: chartModel.color, bold: true)
             dataTextLayer.frame = CGRect(x: xdata,
                                          y: ydata, width: 50, height: 16)
             dataTextLayer.string = data.value.format

@@ -137,6 +137,8 @@ class ChartViewController: UIViewController {
         }
         if let chartIndexPath = chartIndexPath,
             let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {
+            cell.model?.chartDataSource.selectedIndex = nil
+            cell.chartView.cleanDots()
             cell.calcProperties()
         }
     }
