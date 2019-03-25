@@ -51,6 +51,14 @@ class ChartView: UIView, Reusable, Updatable {
 
     private var dotInfo: CAShapeLayer?
     
+    private var dateTextLayer: CATextLayer?
+
+    private var yearTextLayer: CATextLayer?
+    
+    private var valueTextLayers: [CATextLayer]?
+
+    private var dotsTextLayers: [DotLayer]?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -374,7 +382,6 @@ class ChartView: UIView, Reusable, Updatable {
                                             animationDuration: UIView.animationDuration) }
         }
         if dataSource?.selectedIndex != nil {
-            cleanDots()
             drawDots()
         }
     }
@@ -476,18 +483,25 @@ class ChartView: UIView, Reusable, Updatable {
         }
         if isUpdating {
             dataSource.selectedIndex = newSelectedIndex
-            cleanDots()
             drawDots()
         }
     }
     
     func cleanDots() {
-        if let verticalLine = verticalLine {
-            verticalLine.removeFromSuperlayer()
-        }
-        if let dotInfo = dotInfo {
-            dotInfo.removeFromSuperlayer()
-        }
+        verticalLine?.removeFromSuperlayer()
+        dotInfo?.removeFromSuperlayer()
+        dateTextLayer?.removeFromSuperlayer()
+        yearTextLayer?.removeFromSuperlayer()
+        _ = valueTextLayers?.map { $0.removeFromSuperlayer() }
+        _ = dotsTextLayers?.map { $0.removeFromSuperlayer() }
+        
+        dotInfo = nil
+        verticalLine = nil
+        dateTextLayer = nil
+        yearTextLayer = nil
+        valueTextLayers = nil
+        dotsTextLayers = nil
+
         dataLayer.sublayers?.forEach {
             if $0 is DotLayer {
                 $0.removeFromSuperlayer()
@@ -514,43 +528,63 @@ class ChartView: UIView, Reusable, Updatable {
         guard visibleChartModels.count > 0 else {
             return
         }
+        
+        CATransaction.setDisableActions(true)
 
         // Line.
         let path = UIBezierPath()
-        let lineLayer = CAShapeLayer()
-        lineLayer.path = path.cgPath
-        lineLayer.fillColor = UIColor.clear.cgColor
-        lineLayer.strokeColor = colorScheme.chart.accentGrid.cgColor
-        lineLayer.lineWidth = 0.5
-        dataLayer.addSublayer(lineLayer)
-        self.verticalLine = lineLayer
         
+        let isUpdating = verticalLine != nil
+        let lineLayer = isUpdating ? verticalLine! : CAShapeLayer()
+        if !isUpdating {
+            lineLayer.fillColor = UIColor.clear.cgColor
+            lineLayer.lineWidth = 0.5
+            dataLayer.addSublayer(lineLayer)
+        }
+        
+        // Dots.
         var xLine: CGFloat = 0
+        var dotIndex = 0
         for index in 0..<dataSource.chartModels.count {
             let chartModel = dataSource.chartModels[index]
             if chartModel.isHidden { continue }
             
-            var dotLayers: [DotLayer] = []
             var points = dataPoints[index]
             
             let dataPoint = points[selectedIndex]
             let xValue = (CGFloat(selectedIndex) - dataSource.range.start) * dataSource.lineGap - outerRadius / 2
             let yValue = dataPoint.y  - outerRadius / 2
-
-            let dotLayer = DotLayer()
-            dotLayer.dotInnerColor = colorScheme.chart.background
-            dotLayer.innerRadius = innerRadius
-            dotLayer.backgroundColor = chartModel.color.cgColor
-            dotLayer.cornerRadius = outerRadius / 2
-            dotLayer.frame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
-            dotLayers.append(dotLayer)
-            dataLayer.addSublayer(dotLayer)
+            let dotFrame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
+            
+            if let dotsTextLayers = dotsTextLayers, dotIndex < dotsTextLayers.count {
+                dotsTextLayers[dotIndex].dotInnerColor = colorScheme.chart.background
+                dotsTextLayers[dotIndex].backgroundColor = chartModel.color.cgColor
+                dotsTextLayers[dotIndex].frame = dotFrame
+            } else {
+                let dotLayer = DotLayer()
+                dotLayer.dotInnerColor = colorScheme.chart.background
+                dotLayer.innerRadius = innerRadius
+                dotLayer.backgroundColor = chartModel.color.cgColor
+                dotLayer.cornerRadius = outerRadius / 2
+                dotLayer.frame = dotFrame
+                dataLayer.addSublayer(dotLayer)
+                if dotsTextLayers == nil {
+                    dotsTextLayers = [DotLayer]()
+                }
+                dotsTextLayers!.append(dotLayer)
+            }
+            dotIndex += 1
             xLine = xValue + outerRadius / 2
         }
         
+        // Path line.
         path.move(to: CGPoint(x: xLine, y: -dataSource.topSpace / 2))
         path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace))
         lineLayer.path = path.cgPath
+        lineLayer.strokeColor = colorScheme.chart.accentGrid.cgColor
+        if !isUpdating {
+            self.verticalLine = lineLayer
+        }
 
         // Rect.
         var rectWidth: CGFloat = 80
@@ -579,42 +613,78 @@ class ChartView: UIView, Reusable, Updatable {
         let rect = CGRect(x: xRect, y: -dataSource.topSpace + space,
                           width: rectWidth, height: rectHeight)
         let corners: UIRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
-        let dotInfo = Painter.createRect(rect: rect, byRoundingCorners: corners,
-                                      fillColor: colorScheme.dotInfo.background,
-                                      cornerRadius: 4)
-        dataLayer.addSublayer(dotInfo)
         
+        if isUpdating {
+            self.dotInfo?.path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: 4).cgPath
+            self.dotInfo?.fillColor = colorScheme.dotInfo.background.cgColor
+        } else {
+            let dotInfo = Painter.createRect(rect: rect, byRoundingCorners: corners,
+                                             fillColor: colorScheme.dotInfo.background,
+                                             cornerRadius: 4)
+            dataLayer.addSublayer(dotInfo)
+            self.dotInfo = dotInfo
+        }
+
         // Date and numbers.
         var drawDate = true
         let xdata: CGFloat = rect.origin.x + 8 + 80 * 0.6
         var ydata: CGFloat = rect.origin.y + 5
         let deltaY = oneLine - 3
-        for chartModel in visibleChartModels {
+        for index in 0..<visibleChartModels.count {
+            let chartModel = visibleChartModels[index]
             let data = chartModel.data[selectedIndex]
             if drawDate {
                 let ydate = rect.origin.y + 5
-                let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
-                dateTextLayer.frame = CGRect(x: rect.origin.x + 8,
-                                         y: ydate, width: 50, height: 16)
-                dateTextLayer.string = data.dateDot
-                dotInfo.addSublayer(dateTextLayer)
+                let isUpdating = self.dateTextLayer != nil
+                let dateFrame = CGRect(x: rect.origin.x + 8,
+                                       y: ydate, width: 50, height: 16)
+                if isUpdating {
+                    self.dateTextLayer?.frame = dateFrame
+                    self.dateTextLayer?.string = data.dateDot
+                } else {
+                    let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
+                    dateTextLayer.frame = dateFrame
+                    dateTextLayer.string = data.dateDot
+                    dataLayer.addSublayer(dateTextLayer)
+                    self.dateTextLayer = dateTextLayer
+                }
 
-                let yaerTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text)
-                yaerTextLayer.frame = CGRect(x: rect.origin.x + 8,
-                                             y: ydate + deltaY, width: 50, height: 16)
-                yaerTextLayer.string = data.year
-                dotInfo.addSublayer(yaerTextLayer)
+                let yearFrame = CGRect(x: rect.origin.x + 8,
+                                       y: ydate + deltaY, width: 50, height: 16)
+                if isUpdating {
+                    self.yearTextLayer?.frame = yearFrame
+                    self.yearTextLayer?.string = data.year
+                } else {
+                    let yaerTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text)
+                    yaerTextLayer.frame = yearFrame
+                        yaerTextLayer.string = data.year
+                    dataLayer.addSublayer(yaerTextLayer)
+                    self.yearTextLayer = yaerTextLayer
+                }
+
                 drawDate = false
             }
             
-            let dataTextLayer = Painter.createText(textColor: chartModel.color, bold: true)
-            dataTextLayer.frame = CGRect(x: xdata,
-                                         y: ydata, width: 50, height: 16)
-            dataTextLayer.string = data.value.format
-            dotInfo.addSublayer(dataTextLayer)
+            let valueFrame = CGRect(x: xdata,
+                                    y: ydata, width: 50, height: 16)
+            
+            if let valueTextLayers = valueTextLayers, index < valueTextLayers.count {
+                valueTextLayers[index].frame = valueFrame
+                valueTextLayers[index].string = data.value.format
+            } else {
+                let dataTextLayer = Painter.createText(textColor: chartModel.color, bold: true)
+                dataTextLayer.frame = valueFrame
+                dataTextLayer.string = data.value.format
+                dataLayer.addSublayer(dataTextLayer)
+                if self.valueTextLayers == nil {
+                    self.valueTextLayers = [CATextLayer]()
+                }
+                self.valueTextLayers!.append(dataTextLayer)
+            }
             ydata += deltaY
+
         }
-        self.dotInfo = dotInfo
+        CATransaction.setDisableActions(false)
 
     }
     

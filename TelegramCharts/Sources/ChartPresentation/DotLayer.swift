@@ -11,8 +11,10 @@ import UIKit
 class DotLayer: CALayer {
 
     var innerRadius: CGFloat = 6
-    var dotInnerColor = UIColor.black
+    var dotInnerColor = UIColor.black { didSet { setNeedsLayout() } }
 
+    private var innerDotLayer: CALayer?
+    
     override init() {
         super.init()
     }
@@ -29,11 +31,20 @@ class DotLayer: CALayer {
         super.layoutSublayers()
         
         let inset = self.bounds.size.width - innerRadius
-        let innerDotLayer = CALayer()
-        innerDotLayer.frame = self.bounds.insetBy(dx: inset / 2, dy: inset / 2)
-        innerDotLayer.backgroundColor = dotInnerColor.cgColor
-        innerDotLayer.cornerRadius = innerRadius / 2
-        self.addSublayer(innerDotLayer)
+        let dotFrame = self.bounds.insetBy(dx: inset / 2, dy: inset / 2)
+        
+        if let innerDotLayer = self.innerDotLayer {
+            innerDotLayer.frame = dotFrame
+            innerDotLayer.backgroundColor = dotInnerColor.cgColor
+            innerDotLayer.cornerRadius = innerRadius / 2
+        } else {
+            let innerDotLayer = CALayer()
+            innerDotLayer.frame = dotFrame
+            innerDotLayer.backgroundColor = dotInnerColor.cgColor
+            innerDotLayer.cornerRadius = innerRadius / 2
+            self.addSublayer(innerDotLayer)
+            self.innerDotLayer = innerDotLayer
+        }
     }
 
 }
