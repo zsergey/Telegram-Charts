@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChartView: UIView, Reusable, Updatable {
+class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
     var dataSource: ChartDataSource?
     
@@ -83,6 +83,21 @@ class ChartView: UIView, Reusable, Updatable {
         layer.addSublayer(gridLayer)
         layer.addSublayer(mainLayer)
         clipsToBounds = true
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+        panGesture.maximumNumberOfTouches = 1
+        panGesture.minimumNumberOfTouches = 1
+        panGesture.delegate = self
+        addGestureRecognizer(panGesture)
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
+        let point = recognizer.location(in: self)
+        drawDotsIfNeeded(location: point)
     }
     
     override func layoutSubviews() {
@@ -454,23 +469,12 @@ class ChartView: UIView, Reusable, Updatable {
         gridLinesToRemove = newGridLinesToRemove
     }
 
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        drawDotsIfNeeded(touches)
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesMoved(touches, with: event)
-        drawDotsIfNeeded(touches)
-    }
-    
-    private func drawDotsIfNeeded(_ touches: Set<UITouch>) {
+    private func drawDotsIfNeeded(location: CGPoint) {
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
-            !dataSource.isPreviewMode, let touch = touches.first else {
+            !dataSource.isPreviewMode else {
                 return
         }
-        let location = touch.location(in: self)
         guard location.x >= 0, location.x <= frame.size.width else {
             return
         }

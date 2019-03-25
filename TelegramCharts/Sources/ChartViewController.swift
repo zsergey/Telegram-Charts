@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChartViewController: UIViewController {
+class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var displayCollection: ChartDisplayCollection!
     

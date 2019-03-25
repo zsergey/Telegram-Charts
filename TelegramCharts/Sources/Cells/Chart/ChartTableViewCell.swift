@@ -26,7 +26,8 @@ class ChartTableViewCell: UITableViewCell {
         
     func calcProperties() {
         if let model = model {
-            if chartView.isScrolling || previewChartView.isScrolling {
+            // TODO: Calc in background.
+            /* if chartView.isScrolling || previewChartView.isScrolling {
                 DispatchQueue.global(qos: .background).async {
                     model.chartDataSource.calcProperties()
                     model.previewChartDataSource.calcProperties()
@@ -37,13 +38,13 @@ class ChartTableViewCell: UITableViewCell {
                         self.previewChartView.setNeedsLayout()
                     }
                 }
-            } else {
+            } else {*/
                 model.chartDataSource.calcProperties()
                 model.previewChartDataSource.calcProperties()
                 self.setNeedsLayout()
                 self.chartView.setNeedsLayout()
                 self.previewChartView.setNeedsLayout()
-            }
+            /*} */
         }
     }
     

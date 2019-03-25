@@ -16,7 +16,7 @@ enum SliderDirection {
     case finished
 }
 
-class SliderView: UIView, Reusable {
+class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     
     var onChangeRange: ((IndexRange, CGFloat, CGFloat) ->())?
     var onBeganTouch: ((SliderDirection) ->())?
@@ -112,9 +112,15 @@ class SliderView: UIView, Reusable {
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
+        panGesture.minimumNumberOfTouches = 1
+        panGesture.delegate = self
         addGestureRecognizer(panGesture)
     }
     
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
         

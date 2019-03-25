@@ -95,16 +95,17 @@ extension ChartTableViewCellModel: CellViewModelType {
     }
     
     func calcProperties(of dataSource: ChartDataSource, for view: ChartView) {
-        if view.isScrolling {
+        // TODO: Calc in background.
+        /*if view.isScrolling {
             DispatchQueue.global(qos: .background).async {
                 dataSource.calcProperties()
                 DispatchQueue.main.async {
                     view.setNeedsLayout()
                 }
             }
-        } else {
+        } else { */
             dataSource.calcProperties()
             view.setNeedsLayout()
-        }
+        /*} */
     }
 }
