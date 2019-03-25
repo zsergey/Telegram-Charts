@@ -170,6 +170,7 @@ class ChartViewController: UIViewController {
         for cell in tableView.visibleCells {
             if let cell = cell as? ChartTableViewCell {
                 cell.chartView.isScrolling = false
+                cell.previewChartView.isScrolling = false
                 cell.chartView.drawLabels(byScroll: true)
             }
         }
@@ -179,6 +180,7 @@ class ChartViewController: UIViewController {
         for cell in tableView.visibleCells {
             if let cell = cell as? ChartTableViewCell {
                 cell.chartView.isScrolling = true
+                cell.previewChartView.isScrolling = true
             }
         }
     }

@@ -26,15 +26,23 @@ class ChartTableViewCell: UITableViewCell {
         
     func calcProperties() {
         if let model = model {
-            DispatchQueue.global(qos: .background).async {
+            if chartView.isScrolling || previewChartView.isScrolling {
+                DispatchQueue.global(qos: .background).async {
+                    model.chartDataSource.calcProperties()
+                    model.previewChartDataSource.calcProperties()
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        self.setNeedsLayout()
+                        self.chartView.setNeedsLayout()
+                        self.previewChartView.setNeedsLayout()
+                    }
+                }
+            } else {
                 model.chartDataSource.calcProperties()
                 model.previewChartDataSource.calcProperties()
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.setNeedsLayout()
-                    self.chartView.setNeedsLayout()
-                    self.previewChartView.setNeedsLayout()
-                }
+                self.setNeedsLayout()
+                self.chartView.setNeedsLayout()
+                self.previewChartView.setNeedsLayout()
             }
         }
     }

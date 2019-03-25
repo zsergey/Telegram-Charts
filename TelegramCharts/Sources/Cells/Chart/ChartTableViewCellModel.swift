@@ -94,12 +94,17 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.updateColors(animated: false)
     }
     
-    func calcProperties(of dataSource: ChartDataSource, for view: UIView) {
-        DispatchQueue.global(qos: .background).async {
-            dataSource.calcProperties()
-            DispatchQueue.main.async {
-                view.setNeedsLayout()
+    func calcProperties(of dataSource: ChartDataSource, for view: ChartView) {
+        if view.isScrolling {
+            DispatchQueue.global(qos: .background).async {
+                dataSource.calcProperties()
+                DispatchQueue.main.async {
+                    view.setNeedsLayout()
+                }
             }
+        } else {
+            dataSource.calcProperties()
+            view.setNeedsLayout()
         }
     }
 }
