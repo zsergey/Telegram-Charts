@@ -116,6 +116,8 @@ class SliderView: UIView, Reusable {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
+        
         self.backgroundColor = .clear
         self.calcProperties()
         self.drawSlider()

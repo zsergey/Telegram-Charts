@@ -40,6 +40,8 @@ class ChartTableViewCell: UITableViewCell {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
+        
         if let model = model {
             if model.chartDataSource.viewSize != chartView.frame.size ||
                 model.previewChartDataSource.viewSize != previewChartView.frame.size {

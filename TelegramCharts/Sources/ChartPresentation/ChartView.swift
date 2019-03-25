@@ -78,6 +78,8 @@ class ChartView: UIView, Reusable, Updatable {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
+        
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
             return
