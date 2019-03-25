@@ -145,7 +145,6 @@ class ChartDisplayCollection: DisplayCollection {
     }
     
     func didSelect(indexPath: IndexPath) -> IndexPath? {
-        var result: IndexPath?
         let type = rows[indexPath.row]
         switch type {
         case .colorScheme:
@@ -163,6 +162,12 @@ class ChartDisplayCollection: DisplayCollection {
         case .title(let model):
             FeedbackGenerator.impactOccurred(style: .medium)
             model.isHidden = !model.isHidden
+        default: break
+        }
+
+        var result: IndexPath?
+        switch type {
+        case .colorScheme, .title:
             var row = indexPath.row
             while row > 0 {
                 row -= 1
@@ -176,6 +181,7 @@ class ChartDisplayCollection: DisplayCollection {
             }
         default: break
         }
+        
         return result
     }
 
