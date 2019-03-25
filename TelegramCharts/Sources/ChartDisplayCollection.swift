@@ -107,7 +107,7 @@ class ChartDisplayCollection: DisplayCollection {
         }
     }
     
-    func updateColorSchemeButtonText(for indexPath: IndexPath, in cell: ButtonTableViewCell) {
+    func updateButtonText(for indexPath: IndexPath, in cell: ButtonTableViewCell) {
         let type = rows[indexPath.row]
         switch type {
         case .colorScheme:

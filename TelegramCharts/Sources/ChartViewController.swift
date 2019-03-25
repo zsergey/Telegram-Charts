@@ -131,8 +131,15 @@ class ChartViewController: UIViewController {
             if cell is TitleTableViewCell {
                 reloadRows([indexPath])
             } else if cell is ButtonTableViewCell {
-                displayCollection.updateColorSchemeButtonText(for: indexPath,
-                                                              in: cell as! ButtonTableViewCell)
+                // Update all buttons.
+                for visibleCell in tableView.visibleCells {
+                    if let cell = visibleCell as? ButtonTableViewCell {
+                        if let indexPath = tableView.indexPath(for: cell) {
+                            displayCollection.updateButtonText(for: indexPath,
+                                                               in: cell)
+                        }
+                    }
+                }
             }
         }
         if let chartIndexPath = chartIndexPath,
