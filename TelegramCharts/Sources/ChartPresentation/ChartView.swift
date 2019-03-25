@@ -446,6 +446,11 @@ class ChartView: UIView, Reusable, Updatable {
         gridLines = newGridLines
         gridLinesToRemove = newGridLinesToRemove
     }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        drawDotsIfNeeded(touches)
+    }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)

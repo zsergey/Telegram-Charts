@@ -136,9 +136,9 @@ class ChartDataSource: Updatable {
                               height: viewSize.height - topSpace - bottomSpace)
 
         // Calc points and paths.
-        let isUpdating = dataPoints != nil
-        var newDataPoints = isUpdating ? self.dataPoints! : [[CGPoint]]()
-        var newPaths = isUpdating ? self.paths! : [UIBezierPath]()
+        let isUpdating = dataPoints != nil && self.paths != nil
+        var newDataPoints = isUpdating ? nil : [[CGPoint]]()
+        var newPaths = isUpdating ? nil : [UIBezierPath]()
         
         for index in 0..<chartModels.count {
             var points = self.convertDataEntriesToPoints(entries: chartModels[index].data)
@@ -151,19 +151,21 @@ class ChartDataSource: Updatable {
             
             if let path = drawingStyle.createPath(dataPoints: points) {
                 if isUpdating {
-                    newPaths[index] = path
+                    self.paths?[index] = path
                 } else {
-                    newPaths.append(path)
+                    newPaths!.append(path)
                 }
             }
             if isUpdating {
-                newDataPoints[index] = points
+                self.dataPoints?[index] = points
             } else {
-                newDataPoints.append(points)
+                newDataPoints!.append(points)
             }
         }
-        self.dataPoints = newDataPoints
-        self.paths = newPaths
+        if !isUpdating {
+            self.dataPoints = newDataPoints
+            self.paths = newPaths
+        }
     }
     
     func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
