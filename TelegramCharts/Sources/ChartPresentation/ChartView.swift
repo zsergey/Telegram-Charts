@@ -94,7 +94,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
-    
+
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
         let point = recognizer.location(in: self)
         drawDotsIfNeeded(location: point)
