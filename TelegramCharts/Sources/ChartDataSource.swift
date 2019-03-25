@@ -32,6 +32,8 @@ class ChartDataSource: Updatable {
 
     var chartModels: [ChartModel] {
         didSet {
+            dataPoints = nil
+            paths = nil
             findMaxRangePoints()
         }
     }
@@ -134,8 +136,10 @@ class ChartDataSource: Updatable {
                               height: viewSize.height - topSpace - bottomSpace)
 
         // Calc points and paths.
-        var dataPoints = [[CGPoint]]()
-        var paths = [UIBezierPath]()
+        let isUpdating = dataPoints != nil
+        var newDataPoints = isUpdating ? self.dataPoints! : [[CGPoint]]()
+        var newPaths = isUpdating ? self.paths! : [UIBezierPath]()
+        
         for index in 0..<chartModels.count {
             var points = self.convertDataEntriesToPoints(entries: chartModels[index].data)
             
@@ -146,12 +150,20 @@ class ChartDataSource: Updatable {
             }
             
             if let path = drawingStyle.createPath(dataPoints: points) {
-                paths.append(path)
+                if isUpdating {
+                    newPaths[index] = path
+                } else {
+                    newPaths.append(path)
+                }
             }
-            dataPoints.append(points)
+            if isUpdating {
+                newDataPoints[index] = points
+            } else {
+                newDataPoints.append(points)
+            }
         }
-        self.dataPoints = dataPoints
-        self.paths = paths
+        self.dataPoints = newDataPoints
+        self.paths = newPaths
     }
     
     func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {

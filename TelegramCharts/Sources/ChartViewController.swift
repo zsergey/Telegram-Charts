@@ -173,7 +173,6 @@ class ChartViewController: UIViewController {
             }
         }
     }
-
 }
 
 extension ChartViewController: UITableViewDelegate {
