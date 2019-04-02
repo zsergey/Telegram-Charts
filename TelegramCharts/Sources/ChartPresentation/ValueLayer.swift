@@ -54,12 +54,20 @@ class ValueLayer: CALayer {
         lineLayer.path = path.cgPath
         lineLayer.fillColor = UIColor.clear.cgColor
         lineLayer.strokeColor = lineColor.cgColor
+        #if os(iOS)
         lineLayer.lineWidth = 0.5
+        #else
+        lineLayer.lineWidth = 1
+        #endif
         addSublayer(lineLayer)
         self.lineLayer = lineLayer
         
         let textLayer = Painter.createText(textColor: textColor)
+        #if os(iOS)
         textLayer.frame = CGRect(x: 0, y: height - 18, width: 50, height: 16)
+        #else
+        textLayer.frame = CGRect(x: 0, y: height - 36, width: 100, height: 32)
+        #endif
         textLayer.string = lineValue.format
         addSublayer(textLayer)
         self.textLayer = textLayer

@@ -44,8 +44,6 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
 
     private var tapSliderWidth: CGFloat = 0
 
-    private let tapSize: CGFloat = 34
-    
     private var minValueSliderWidth: CGFloat = 0
     
     private var countPoints: Int = 0
@@ -54,21 +52,48 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
 
     private let mainLayer: CALayer = CALayer()
     
+    #if os(iOS)
+    
+    private let tapSize: CGFloat = 34
+    
     private let thumbWidth: CGFloat = 11
-
+    
     private let arrowWidth: CGFloat = 6
-
+    
     private let arrowHeight: CGFloat = 1
     
     private let arrowCornerRadius: CGFloat = 0.25
-
+    
     private let thumbCornerRadius: CGFloat = 1.5
-
+    
     private let arrowAngle: CGFloat = 60
-
+    
     private let trailingSpace: CGFloat = 16
-
+    
     private let leadingSpace: CGFloat = 16
+
+    #else
+
+    private let tapSize: CGFloat = 64
+
+    private let thumbWidth: CGFloat = 22
+    
+    private let arrowWidth: CGFloat = 12
+    
+    private let arrowHeight: CGFloat = 2
+    
+    private let arrowCornerRadius: CGFloat = 0.5
+    
+    private let thumbCornerRadius: CGFloat = 3
+    
+    private let arrowAngle: CGFloat = 120
+    
+    private let trailingSpace: CGFloat = 32
+    
+    private let leadingSpace: CGFloat = 32
+
+    #endif
+    
     
     private var sliderDirection: SliderDirection = .finished
     
@@ -111,8 +136,10 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         layer.addSublayer(mainLayer)
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+        #if os(iOS)
         panGesture.maximumNumberOfTouches = 1
         panGesture.minimumNumberOfTouches = 1
+        #endif
         panGesture.delegate = self
         addGestureRecognizer(panGesture)
     }
@@ -147,22 +174,34 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         setNeedsLayout()
     }
     
+    override var canBecomeFocused : Bool {
+        return true
+    }
+
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
         case .began:
             tapStartX = startX
             tapSliderWidth = sliderWidth
+            #if os(iOS)
             let point = recognizer.location(in: self)
             detectSliderTap(from: point)
             onBeganTouch?(sliderDirection)
+            #else
+            onBeganTouch?(.center)
+            #endif
         case .changed:
             let translation = recognizer.translation(in: self)
+            #if os(iOS)
             switch sliderDirection {
             case .center: processCenter(translation)
             case .left: processLeft(translation)
             case .right: processRight(translation)
             default: break
             }
+            #else
+            processCenter(translation)
+            #endif
         case .ended:
             onEndTouch?(.finished)
         default: break
@@ -245,7 +284,9 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         drawBackgrounds()
         drawThumbs()
         drawLines()
+        #if os(iOS)
         drawArrows()
+        #endif
     }
     
     private func drawThumbs() {
@@ -288,7 +329,8 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         
         // Top Line.
         let lineWidth = sliderWidth - 2 * thumbWidth
-        var rect = CGRect(x: x, y: -0.25, width: lineWidth, height: 0.5)
+        let lineHeight: CGFloat = 0.5
+        var rect = CGRect(x: x, y: -lineHeight / 2.0, width: lineWidth, height: lineHeight)
         let color = colorScheme.slider.thumb
         if let topLine = topLine {
             let path = Painter.createRectPath(rect: rect)
@@ -296,20 +338,20 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
             topLine.changeColor(to: color, keyPath: "strokeColor",
                                 animationDuration: UIView.animationDuration)
         } else {
-            let topLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: 0.5)
+            let topLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: lineHeight)
             mainLayer.addSublayer(topLine)
             self.topLine = topLine
         }
         
         // Bottom Line.
-        rect = CGRect(x: x, y: height - 0.25, width: lineWidth, height: 0.5)
+        rect = CGRect(x: x, y: height - lineHeight / 2.0, width: lineWidth, height: lineHeight)
         if let bottomLine = bottomLine {
             let path = Painter.createRectPath(rect: rect)
             bottomLine.path = path.cgPath
             bottomLine.changeColor(to: color, keyPath: "strokeColor",
                                    animationDuration: UIView.animationDuration)
         } else {
-            let bottomLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: 0.5)
+            let bottomLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: lineHeight)
             mainLayer.addSublayer(bottomLine)
             self.bottomLine = bottomLine
         }

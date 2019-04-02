@@ -39,7 +39,9 @@ protocol ColorSchemeProtocol {
     var background: UIColor { get }
     var selectedCellView: UIView { get }
     var title: UIColor { get }
+    #if os(iOS)
     var statusBarStyle: UIStatusBarStyle { get }
+    #endif
     var separator: UIColor { get }
     var separatorImageName: String { get }
     var button: ButtonColor { get }

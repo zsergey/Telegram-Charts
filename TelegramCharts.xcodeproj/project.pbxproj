@@ -21,6 +21,42 @@
 		AD2AD4762247B15600B16492 /* TextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4752247B15600B16492 /* TextLayer.swift */; };
 		AD2AD4782248207300B16492 /* Painter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4772248207300B16492 /* Painter.swift */; };
 		AD2AD47A22483D2800B16492 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AD2AD47922483D2800B16492 /* README.md */; };
+		AD2AD4C5224AA87700B16492 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4C4224AA87700B16492 /* AppDelegate.swift */; };
+		AD2AD4C7224AA87700B16492 /* ChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4C6224AA87700B16492 /* ChartViewController.swift */; };
+		AD2AD4CA224AA87700B16492 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AD2AD4C8224AA87700B16492 /* Main.storyboard */; };
+		AD2AD4CC224AA87800B16492 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AD2AD4CB224AA87800B16492 /* Assets.xcassets */; };
+		AD2AD4D1224AA91E00B16492 /* ChartDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF40224646FA0073F0BB /* ChartDataSource.swift */; };
+		AD2AD4DF224AA93600B16492 /* ChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CF2238CBA800A5B7D6 /* ChartModel.swift */; };
+		AD2AD4E0224AA93600B16492 /* ChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3622449EBF0073F0BB /* ChartModelFactory.swift */; };
+		AD2AD4E1224AA93600B16492 /* DataChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577202236EDB20006200D /* DataChartModelFactory.swift */; };
+		AD2AD4E2224AA93600B16492 /* DataChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE57726223702C50006200D /* DataChartModel.swift */; };
+		AD2AD4E3224AA93600B16492 /* ChartDataSourceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3E224619950073F0BB /* ChartDataSourceFactory.swift */; };
+		AD2AD4E4224AA93A00B16492 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartView.swift */; };
+		AD2AD4E5224AA93A00B16492 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68E20F223D255700576C20 /* SliderView.swift */; };
+		AD2AD4E6224AA93A00B16492 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
+		AD2AD4E7224AA93A00B16492 /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
+		AD2AD4E8224AA93A00B16492 /* TextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4752247B15600B16492 /* TextLayer.swift */; };
+		AD2AD4E9224AA93E00B16492 /* ColorSchemeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */; };
+		AD2AD4EA224AA93E00B16492 /* DayScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D4223A12A900A5B7D6 /* DayScheme.swift */; };
+		AD2AD4EB224AA93E00B16492 /* NightScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D6223A12B800A5B7D6 /* NightScheme.swift */; };
+		AD2AD4EC224AA94200B16492 /* DrawingStyleProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D1223A122B00A5B7D6 /* DrawingStyleProtocol.swift */; };
+		AD2AD4ED224AA94200B16492 /* StandardDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */; };
+		AD2AD4EE224AA94200B16492 /* CurveDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */; };
+		AD2AD4EF224AA94600B16492 /* UIColor+Initializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577242236FE620006200D /* UIColor+Initializer.swift */; };
+		AD2AD4F0224AA94600B16492 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */; };
+		AD2AD4F1224AA94600B16492 /* Date+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */; };
+		AD2AD4F2224AA94600B16492 /* Int+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DD223A286E00A5B7D6 /* Int+Format.swift */; };
+		AD2AD4F3224AA94600B16492 /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */; };
+		AD2AD4F4224AA94600B16492 /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
+		AD2AD4F5224AA94600B16492 /* UITableViewCellExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */; };
+		AD2AD4F6224AA94600B16492 /* UITableViewExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */; };
+		AD2AD4F7224AA94A00B16492 /* CellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F122441D56007CC2F2 /* CellViewModel.swift */; };
+		AD2AD4F8224AA94A00B16492 /* DisplayCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F322441D6D007CC2F2 /* DisplayCollection.swift */; };
+		AD2AD4F9224AA94A00B16492 /* ReusableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F522441D85007CC2F2 /* ReusableCell.swift */; };
+		AD2AD4FA224AA94A00B16492 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF382244A1250073F0BB /* Reusable.swift */; };
+		AD2AD4FB224AA94A00B16492 /* Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3A2244A9CC0073F0BB /* Updatable.swift */; };
+		AD2AD4FC224AA94E00B16492 /* TapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3C224613DD0073F0BB /* TapticFeedback.swift */; };
+		AD2AD4FD224AA94E00B16492 /* Painter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4772248207300B16492 /* Painter.swift */; };
 		AD68E210223D255700576C20 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68E20F223D255700576C20 /* SliderView.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
@@ -46,6 +82,8 @@
 		ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */; };
 		ADB3E9FC22441F4F007CC2F2 /* ChartTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9FB22441F4F007CC2F2 /* ChartTableViewCellModel.swift */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
+		ADD68253224AB49A0038B39A /* chart_data.json in Resources */ = {isa = PBXBuildFile; fileRef = ADE577042236E8920006200D /* chart_data.json */; };
+		ADD68254224AB4A30038B39A /* chart_data_max.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF42224687E90073F0BB /* chart_data_max.json */; };
 		ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
 		ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
 		ADDBBDC92241F2210090E2AD /* Date+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */; };
@@ -78,6 +116,12 @@
 		AD2AD4752247B15600B16492 /* TextLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLayer.swift; sourceTree = "<group>"; };
 		AD2AD4772248207300B16492 /* Painter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Painter.swift; sourceTree = "<group>"; };
 		AD2AD47922483D2800B16492 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
+		AD2AD4C2224AA87700B16492 /* TelegramCharts (tvOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TelegramCharts (tvOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD2AD4C4224AA87700B16492 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AD2AD4C6224AA87700B16492 /* ChartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
+		AD2AD4C9224AA87700B16492 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		AD2AD4CB224AA87800B16492 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AD2AD4CD224AA87800B16492 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AD68E20F223D255700576C20 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* ChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotLayer.swift; sourceTree = "<group>"; };
@@ -123,6 +167,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AD2AD4BF224AA87700B16492 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ADE576E92236E59B0006200D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -140,6 +191,18 @@
 				AD2AD4772248207300B16492 /* Painter.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		AD2AD4C3224AA87700B16492 /* TelegramCharts (tvOS) */ = {
+			isa = PBXGroup;
+			children = (
+				AD2AD4C4224AA87700B16492 /* AppDelegate.swift */,
+				AD2AD4C6224AA87700B16492 /* ChartViewController.swift */,
+				AD2AD4C8224AA87700B16492 /* Main.storyboard */,
+				AD2AD4CB224AA87800B16492 /* Assets.xcassets */,
+				AD2AD4CD224AA87800B16492 /* Info.plist */,
+			);
+			path = "TelegramCharts (tvOS)";
 			sourceTree = "<group>";
 		};
 		AD9226C62238BEC100A5B7D6 /* ChartPresentation */ = {
@@ -231,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				ADE576EE2236E59B0006200D /* TelegramCharts */,
+				AD2AD4C3224AA87700B16492 /* TelegramCharts (tvOS) */,
 				ADE576ED2236E59B0006200D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -239,6 +303,7 @@
 			isa = PBXGroup;
 			children = (
 				ADE576EC2236E59B0006200D /* TelegramCharts.app */,
+				AD2AD4C2224AA87700B16492 /* TelegramCharts (tvOS).app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -326,6 +391,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AD2AD4C1224AA87700B16492 /* TelegramCharts (tvOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AD2AD4D0224AA87800B16492 /* Build configuration list for PBXNativeTarget "TelegramCharts (tvOS)" */;
+			buildPhases = (
+				AD2AD4BE224AA87700B16492 /* Sources */,
+				AD2AD4BF224AA87700B16492 /* Frameworks */,
+				AD2AD4C0224AA87700B16492 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "TelegramCharts (tvOS)";
+			productName = "TelegramCharts (tvOS)";
+			productReference = AD2AD4C2224AA87700B16492 /* TelegramCharts (tvOS).app */;
+			productType = "com.apple.product-type.application";
+		};
 		ADE576EB2236E59B0006200D /* TelegramCharts */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = ADE576FE2236E59E0006200D /* Build configuration list for PBXNativeTarget "TelegramCharts" */;
@@ -353,6 +435,9 @@
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "@zsergey";
 				TargetAttributes = {
+					AD2AD4C1224AA87700B16492 = {
+						CreatedOnToolsVersion = 10.1;
+					};
 					ADE576EB2236E59B0006200D = {
 						CreatedOnToolsVersion = 10.1;
 					};
@@ -372,11 +457,23 @@
 			projectRoot = "";
 			targets = (
 				ADE576EB2236E59B0006200D /* TelegramCharts */,
+				AD2AD4C1224AA87700B16492 /* TelegramCharts (tvOS) */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AD2AD4C0224AA87700B16492 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD2AD4CC224AA87800B16492 /* Assets.xcassets in Resources */,
+				AD2AD4CA224AA87700B16492 /* Main.storyboard in Resources */,
+				ADD68253224AB49A0038B39A /* chart_data.json in Resources */,
+				ADD68254224AB4A30038B39A /* chart_data_max.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ADE576EA2236E59B0006200D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -397,6 +494,47 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AD2AD4BE224AA87700B16492 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AD2AD4E7224AA93A00B16492 /* ValueLayer.swift in Sources */,
+				AD2AD4F4224AA94600B16492 /* CALayer+Animations.swift in Sources */,
+				AD2AD4FA224AA94A00B16492 /* Reusable.swift in Sources */,
+				AD2AD4ED224AA94200B16492 /* StandardDrawingStyle.swift in Sources */,
+				AD2AD4E1224AA93600B16492 /* DataChartModelFactory.swift in Sources */,
+				AD2AD4DF224AA93600B16492 /* ChartModel.swift in Sources */,
+				AD2AD4E4224AA93A00B16492 /* ChartView.swift in Sources */,
+				AD2AD4EE224AA94200B16492 /* CurveDrawingStyle.swift in Sources */,
+				AD2AD4F3224AA94600B16492 /* CGFloatExtension.swift in Sources */,
+				AD2AD4FD224AA94E00B16492 /* Painter.swift in Sources */,
+				AD2AD4F2224AA94600B16492 /* Int+Format.swift in Sources */,
+				AD2AD4FB224AA94A00B16492 /* Updatable.swift in Sources */,
+				AD2AD4E9224AA93E00B16492 /* ColorSchemeProtocol.swift in Sources */,
+				AD2AD4C7224AA87700B16492 /* ChartViewController.swift in Sources */,
+				AD2AD4D1224AA91E00B16492 /* ChartDataSource.swift in Sources */,
+				AD2AD4E0224AA93600B16492 /* ChartModelFactory.swift in Sources */,
+				AD2AD4F0224AA94600B16492 /* UIViewExtensions.swift in Sources */,
+				AD2AD4F7224AA94A00B16492 /* CellViewModel.swift in Sources */,
+				AD2AD4E6224AA93A00B16492 /* DotLayer.swift in Sources */,
+				AD2AD4E2224AA93600B16492 /* DataChartModel.swift in Sources */,
+				AD2AD4F1224AA94600B16492 /* Date+Formatter.swift in Sources */,
+				AD2AD4F5224AA94600B16492 /* UITableViewCellExtenions.swift in Sources */,
+				AD2AD4FC224AA94E00B16492 /* TapticFeedback.swift in Sources */,
+				AD2AD4EF224AA94600B16492 /* UIColor+Initializer.swift in Sources */,
+				AD2AD4C5224AA87700B16492 /* AppDelegate.swift in Sources */,
+				AD2AD4E3224AA93600B16492 /* ChartDataSourceFactory.swift in Sources */,
+				AD2AD4EC224AA94200B16492 /* DrawingStyleProtocol.swift in Sources */,
+				AD2AD4F6224AA94600B16492 /* UITableViewExtenions.swift in Sources */,
+				AD2AD4EB224AA93E00B16492 /* NightScheme.swift in Sources */,
+				AD2AD4F8224AA94A00B16492 /* DisplayCollection.swift in Sources */,
+				AD2AD4EA224AA93E00B16492 /* DayScheme.swift in Sources */,
+				AD2AD4E8224AA93A00B16492 /* TextLayer.swift in Sources */,
+				AD2AD4E5224AA93A00B16492 /* SliderView.swift in Sources */,
+				AD2AD4F9224AA94A00B16492 /* ReusableCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ADE576E82236E59B0006200D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -451,6 +589,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		AD2AD4C8224AA87700B16492 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AD2AD4C9224AA87700B16492 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		ADE577062236E8920006200D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -470,6 +616,48 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AD2AD4CE224AA87800B16492 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = G9N53683T3;
+				INFOPLIST_FILE = "TelegramCharts (tvOS)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.zsergey.TelegramCharts--tvOS-";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+			};
+			name = Debug;
+		};
+		AD2AD4CF224AA87800B16492 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = G9N53683T3;
+				INFOPLIST_FILE = "TelegramCharts (tvOS)/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.zsergey.TelegramCharts--tvOS-";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+			};
+			name = Release;
+		};
 		ADE576FC2236E59E0006200D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -627,6 +815,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AD2AD4D0224AA87800B16492 /* Build configuration list for PBXNativeTarget "TelegramCharts (tvOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AD2AD4CE224AA87800B16492 /* Debug */,
+				AD2AD4CF224AA87800B16492 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		ADE576E72236E59B0006200D /* Build configuration list for PBXProject "TelegramCharts" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

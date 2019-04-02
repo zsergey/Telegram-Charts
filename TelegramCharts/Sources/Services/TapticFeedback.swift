@@ -23,6 +23,7 @@ struct FeedbackGenerator {
     }
     
     static func notificationOccurred(_ type: FeedbackType) {
+        #if os(iOS)
         if #available(iOS 10.0, *) {
             let feedbackGenerator = UINotificationFeedbackGenerator()
             switch type {
@@ -31,17 +32,20 @@ struct FeedbackGenerator {
             case.error: feedbackGenerator.notificationOccurred(.error)
             }
         }
+        #endif
     }
     
     static func impactOccurred(style: FeedbackStyle) {
+        #if os(iOS)
         if #available(iOS 10.0, *) {
             var feedbackGenerator: UIImpactFeedbackGenerator?
             switch style {
-                case .light: feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-                case .medium: feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
-                case .heavy: feedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
+            case .light: feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+            case .medium: feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+            case .heavy: feedbackGenerator = UIImpactFeedbackGenerator(style: .heavy)
             }
             feedbackGenerator?.impactOccurred()
         }
+        #endif
     }
 }

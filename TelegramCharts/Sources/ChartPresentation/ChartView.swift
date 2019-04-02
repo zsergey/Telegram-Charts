@@ -27,7 +27,11 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
     private var isJustReused = true
     
+    #if os(iOS)
     private let labelWidth: CGFloat = 36
+    #else
+    private let labelWidth: CGFloat = 72
+    #endif
     
     private let dataLayer: CALayer = CALayer()
     
@@ -78,17 +82,23 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         dataSource?.update()
     }
     
+    override var canBecomeFocused : Bool {
+        return false
+    }
+
     private func setupView() {
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(gridLayer)
         layer.addSublayer(mainLayer)
         clipsToBounds = true
         
+        #if os(iOS)
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
         panGesture.minimumNumberOfTouches = 1
         panGesture.delegate = self
         addGestureRecognizer(panGesture)
+        #endif
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -159,7 +169,11 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
                 lineLayer.fillColor = UIColor.clear.cgColor
+                #if os(iOS)
                 lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
+                #else
+                lineLayer.lineWidth = dataSource.isPreviewMode ? 2.0 : 4.0
+                #endif
                 dataLayer.addSublayer(lineLayer)
                 newChartLines!.append(lineLayer)
             }
@@ -186,17 +200,28 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2
             
             CATransaction.setDisableActions(true)
+            
+            #if os(iOS)
+            let labelHeight: CGFloat = 16
+            #else
+            let labelHeight: CGFloat = 32
+            #endif
+
             textLayer.frame = CGRect(x: x,
                                      y: mainLayer.frame.size.height - dataSource.bottomSpace / 2 - 4,
                                      width: labelWidth,
-                                     height: 16)
+                                     height: labelHeight)
             if !isUpdating {
                 textLayer.foregroundColor = colorScheme.chart.text.cgColor
                 textLayer.backgroundColor = UIColor.clear.cgColor
                 textLayer.alignmentMode = .center
                 textLayer.contentsScale = UIScreen.main.scale
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
+                #if os(iOS)
                 textLayer.fontSize = 11
+                #else
+                textLayer.fontSize = 22
+                #endif
                 textLayer.string = dataSource.maxRangePoints[index].date
                 textLayer.opacity = 0
                 textLayer.toOpacity = 0
@@ -229,7 +254,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     func hideWrongLabels(isFirstCall: Bool, byScroll: Bool) {
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
-            !dataSource.isPreviewMode else {
+            !dataSource.isPreviewMode, dataSource.lineGap != 0 else {
                 return
         }
         

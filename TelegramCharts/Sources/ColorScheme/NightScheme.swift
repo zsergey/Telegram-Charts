@@ -21,11 +21,13 @@ struct NightScheme: ColorSchemeProtocol {
     var title: UIColor {
         return UIColor(hex: "#FEFEFE")!
     }
-    
+
+    #if os(iOS)
     var statusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
+    #endif
+
     var separator: UIColor {
         return UIColor(hex: "#131A22")!
     }

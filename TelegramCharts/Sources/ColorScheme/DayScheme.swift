@@ -22,9 +22,11 @@ struct DayScheme: ColorSchemeProtocol {
         return UIColor(hex: "#000000")!
     }
 
+    #if os(iOS)
     var statusBarStyle: UIStatusBarStyle {
         return .default
     }
+    #endif
     
     var separator: UIColor {
         return UIColor(hex: "#C8C7CC")!

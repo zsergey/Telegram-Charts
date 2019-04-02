@@ -46,7 +46,11 @@ struct Painter {
         } else {
             textLayer.font = font
         }
+        #if os(iOS)
         textLayer.fontSize = 12
+        #else
+        textLayer.fontSize = 24
+        #endif
         return textLayer
     }
 }

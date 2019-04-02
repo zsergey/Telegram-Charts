@@ -108,8 +108,15 @@ class ChartDataSource: Updatable {
                 }}.compactMap { $0 }.max() ?? 0
             setMaxValue(max, animated: animateMaxValue)
         } else {
+            
+            #if os(iOS)
             topSpace = 40.0
             bottomSpace = 20.0
+            #else
+            topSpace = 80.0
+            bottomSpace = 40.0
+            #endif
+            
             topHorizontalLine = 98 / 100.0
             let value = range.end - range.start - 1
             if value <= 0 {
