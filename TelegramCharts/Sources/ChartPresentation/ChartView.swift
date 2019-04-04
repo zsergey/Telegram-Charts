@@ -126,9 +126,10 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         }
         self.drawCharts()
         
-        if !isScrolling {
-            drawLabels(byScroll: false)
-        }
+        // TODO: пока закомментировал.
+//        if !isScrolling {
+//            drawLabels(byScroll: false)
+//        }
     }
     
     private func drawCharts() {
@@ -160,6 +161,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 lineLayer.strokeColor = chartModel.color.cgColor
                 lineLayer.fillColor = UIColor.clear.cgColor
                 lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
+                lineLayer.lineCap = .round
+                lineLayer.lineJoin = .round
                 dataLayer.addSublayer(lineLayer)
                 newChartLines!.append(lineLayer)
             }
