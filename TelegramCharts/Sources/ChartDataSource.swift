@@ -210,8 +210,10 @@ class ChartDataSource: Updatable {
 
     private func findMaxRangePoints() {
         var points: [PointModel] = []
-        _ = chartModels.map {
-            if $0.data.count > points.count { points = $0.data }
+        chartModels.forEach {
+            if $0.data.count > points.count {
+                points = $0.data
+            }
         }
         self.maxRangePoints = points
     }

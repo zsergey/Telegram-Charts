@@ -173,6 +173,9 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
         
     func drawLabels(byScroll: Bool) {
+        // TODO:
+        return
+        
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {
@@ -240,7 +243,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         // It's really the first call of the func.
         if isFirstCall && setFinishedSliderDirection {
             if sliderDirection == .left || sliderDirection == .right {
-                _ = labels?.map { label in
+                labels?.forEach { label in
                     label.toOpacity = 1
                     if !isScrolling {
                         label.opacity = 1
@@ -251,9 +254,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
 
         // Drop isStatic. We'll find another one next time.
         if sliderDirection != .left && sliderDirection != .right {
-            _ = labels?.map { label in
-                label.isStatic = false
-            }
+            labels?.forEach { $0.isStatic = false }
         }
         
         if sliderDirection == .left || sliderDirection == .right {
@@ -390,13 +391,17 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
     func updateColors() {
         if let gridLines = gridLines {
-            _ = gridLines.map {
+            gridLines.forEach {
                 let color = $0.lineValue == 0 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
-                $0.updateColors(lineColor: color, textColor: colorScheme.chart.text)}
+                $0.updateColors(lineColor: color, textColor: colorScheme.chart.text)
+            }
         }
         if let labels = labels {
-            _ = labels.map { $0.changeColor(to: colorScheme.chart.text, keyPath: "foregroundColor",
-                                            animationDuration: UIView.animationDuration) }
+            labels.forEach {
+                $0.changeColor(to: colorScheme.chart.text,
+                               keyPath: "foregroundColor",
+                               animationDuration: UIView.animationDuration)
+            }
         }
         if dataSource?.selectedIndex != nil {
             drawDots()
@@ -418,7 +423,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         var newGridLines = [ValueLayer]()
         var newGridLinesToRemove = [ValueLayer]()
 
-        _ = gridLinesToRemove?.map { $0.removeFromSuperlayer() }
+        gridLinesToRemove?.forEach { $0.removeFromSuperlayer() }
         
         let gridValues: [CGFloat] = [0, 0.2, 0.4, 0.6, 0.8, 1]
         for index in 0..<gridValues.count {
@@ -498,8 +503,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         dotInfo?.removeFromSuperlayer()
         dateTextLayer?.removeFromSuperlayer()
         yearTextLayer?.removeFromSuperlayer()
-        _ = valueTextLayers?.map { $0.removeFromSuperlayer() }
-        _ = dotsTextLayers?.map { $0.removeFromSuperlayer() }
+        valueTextLayers?.forEach { $0.removeFromSuperlayer() }
+        dotsTextLayers?.forEach { $0.removeFromSuperlayer() }
         
         dotInfo = nil
         verticalLine = nil

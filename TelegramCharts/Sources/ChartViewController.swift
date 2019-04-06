@@ -112,8 +112,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         lastTime = link.timestamp
         
-        // TODO:
-        _ = tableView.visibleCells.map { ($0 as? ChartTableViewCell)?.update() }
+        tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 
     func reloadRows(_ rows: [IndexPath]) {

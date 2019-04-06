@@ -66,7 +66,7 @@ class ChartDisplayCollection: DisplayCollection {
             let preview = dataSource.preview[index]
             rows.append(.section(main.name))
             rows.append(.chart(main, preview))
-            _ = main.chartModels.map { rows.append(.title($0)) }
+            main.chartModels.forEach { rows.append(.title($0)) }
             rows.append(.section(""))
             rows.append(.colorScheme(titleColorSchemeButton))
             // If you want to be able change drawing style uncomment this:
@@ -75,8 +75,8 @@ class ChartDisplayCollection: DisplayCollection {
     }
     
     func changeDrawingStyle(to drawingStyle: DrawingStyleProtocol) {
-        _ = self.dataSource.main.map { $0.drawingStyle = drawingStyle}
-        _ = self.dataSource.preview.map { $0.drawingStyle = drawingStyle}
+        dataSource.main.forEach { $0.drawingStyle = drawingStyle }
+        dataSource.preview.forEach { $0.drawingStyle = drawingStyle }
     }
     
     func numberOfRows(in section: Int) -> Int {
