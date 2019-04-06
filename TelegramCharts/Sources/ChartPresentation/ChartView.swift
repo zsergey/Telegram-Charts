@@ -126,10 +126,9 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         }
         self.drawCharts()
         
-        // TODO: пока закомментировал.
-//        if !isScrolling {
-//            drawLabels(byScroll: false)
-//        }
+        if !isScrolling {
+            drawLabels(byScroll: false)
+        }
     }
     
     private func drawCharts() {
@@ -200,7 +199,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 textLayer.contentsScale = UIScreen.main.scale
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
                 textLayer.fontSize = 11
-                textLayer.string = dataSource.maxRangePoints[index].date
+                textLayer.string = dataSource.maxRangePoints[index].stringDate
                 textLayer.opacity = 0
                 textLayer.toOpacity = 0
                 mainLayer.addSublayer(textLayer)

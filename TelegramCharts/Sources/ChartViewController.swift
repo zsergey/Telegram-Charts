@@ -12,8 +12,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var displayCollection: ChartDisplayCollection!
     
-    @IBOutlet var activityIndicator: UIActivityIndicatorView!
-    
     @IBOutlet var tableView: UITableView! {
         didSet {
             tableView.delegate = self
@@ -54,21 +52,11 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
                                            preview: [ChartDataSource]())
         self.displayCollection = createDisplayCollection(dataSource: empty)
 
-        self.activityIndicator.startAnimating()
-        self.tableView.separatorStyle = .none
+        let dataSource = ChartDataSourceFactory.make()
+        self.displayCollection = self.createDisplayCollection(dataSource: dataSource)
+        self.tableView.reloadData()
 
-        DispatchQueue.global(qos: .background).async {
-            let dataSource = ChartDataSourceFactory.make()
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.displayCollection = self.createDisplayCollection(dataSource: dataSource)
-                self.tableView.separatorStyle = .singleLine
-                self.activityIndicator.stopAnimating()
-                self.tableView.reloadData()
-            }
-        }
-
-        let displayLink = CADisplayLink(target: self, selector: #selector(update))
+        let displayLink = CADisplayLink(target: self, selector: #selector(update(link:)))
         displayLink.add(to: .current, forMode: .common)
         
         needsLayoutNavigationBar = true
@@ -105,8 +93,27 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         return displayCollection
     }
     
-    @objc func update() {
-         _ = tableView.visibleCells.map { ($0 as? ChartTableViewCell)?.update() }
+    var lastTime: CFTimeInterval = 0.0
+    var firstTime: CFTimeInterval = 0.0
+
+    @objc func update(link: CADisplayLink) {
+        
+        if lastTime == 0.0 {
+            firstTime = link.timestamp
+            lastTime = link.timestamp
+        }
+        
+        let currentTime = link.timestamp
+        let elapsedTime = floor((currentTime - lastTime) * 10_000) / 10
+        let totalElapsedTime = currentTime - firstTime
+        
+        if elapsedTime > 16.7 {
+            print("Frame was dropped with elapsed time of \(elapsedTime) at \(totalElapsedTime)")
+        }
+        lastTime = link.timestamp
+        
+        // TODO:
+        _ = tableView.visibleCells.map { ($0 as? ChartTableViewCell)?.update() }
     }
 
     func reloadRows(_ rows: [IndexPath]) {

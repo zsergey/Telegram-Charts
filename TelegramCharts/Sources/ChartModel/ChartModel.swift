@@ -10,9 +10,19 @@ import UIKit
 
 struct PointModel {
     let value: Int
-    let date: String
-    let dateDot: String
-    let year: String
+    let date: Date
+    
+    var stringDate: String {
+        return date.format
+    }
+    
+    var dateDot: String {
+        return date.formatDot
+    }
+    
+    var year: String {
+        return date.year
+    }
 }
 
 extension PointModel: Comparable {

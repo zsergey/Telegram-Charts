@@ -14,6 +14,7 @@ struct ChartModelFactory {
         var result: [[ChartModel]] = []
         
         if let data = DataChartModelFactory.make() {
+            let start = Date()
             for index in 0..<data.count {
                 
                 let chartData = data[index]
@@ -42,7 +43,7 @@ struct ChartModelFactory {
                         for index in 0..<count {
                             if let date = dataX[index] as? Date,
                                 let value = dataY[index] as? Int {
-                                let pointModel = PointModel(value: value, date: date.format, dateDot: date.formatDot, year: date.year)
+                                let pointModel = PointModel(value: value, date: date)
                                 pointModels.append(pointModel)
                             }
                         }
@@ -58,6 +59,8 @@ struct ChartModelFactory {
                 
                 result.append(chartModels)
             }
+            let end = Date()
+            print("ChartModelFactory Total time is \(end.timeIntervalSince1970 - start.timeIntervalSince1970)")
         }
         
         return result

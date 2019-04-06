@@ -22,15 +22,10 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1An-fA-0tP">
-                                <rect key="frame" x="177.5" y="323.5" width="20" height="20"/>
-                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="1An-fA-0tP" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="C5z-wg-LVo"/>
                             <constraint firstItem="cdQ-b2-keg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="DH7-74-eBW"/>
-                            <constraint firstItem="1An-fA-0tP" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="DMR-r1-z3p"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="cdQ-b2-keg" secondAttribute="trailing" id="FVt-Vn-2ZI"/>
                             <constraint firstAttribute="bottom" secondItem="cdQ-b2-keg" secondAttribute="bottom" id="Goz-X0-VV0"/>
                             <constraint firstItem="cdQ-b2-keg" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="f6o-hI-76g"/>
@@ -39,7 +34,6 @@
                     </view>
                     <navigationItem key="navigationItem" title="Statistics" id="Fzy-ih-vEs"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="1An-fA-0tP" id="bSP-dp-or3"/>
                         <outlet property="tableView" destination="cdQ-b2-keg" id="prQ-Dd-kfR"/>
                     </connections>
                 </viewController>

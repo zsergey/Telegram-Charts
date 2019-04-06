@@ -70,7 +70,7 @@ class ChartDisplayCollection: DisplayCollection {
             rows.append(.section(""))
             rows.append(.colorScheme(titleColorSchemeButton))
             // If you want to be able change drawing style uncomment this:
-            // rows.append(.drawingStyle(titleDrawingStyleButton))
+            rows.append(.drawingStyle(titleDrawingStyleButton))
         }
     }
     
