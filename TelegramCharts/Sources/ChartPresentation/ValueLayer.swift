@@ -13,7 +13,8 @@ class ValueLayer: CALayer {
     var lineValue: Int = 0 { didSet { setNeedsLayout() } }
     var lineColor: UIColor = .gray
     var textColor: UIColor = .black
-    
+    var contentBackground: UIColor = .white
+
     var lineLayer: CAShapeLayer?
     var textLayer: CATextLayer?
 
@@ -52,7 +53,7 @@ class ValueLayer: CALayer {
         
         let lineLayer = CAShapeLayer()
         lineLayer.path = path.cgPath
-        lineLayer.fillColor = UIColor.clear.cgColor
+        lineLayer.fillColor = contentBackground.cgColor
         lineLayer.strokeColor = lineColor.cgColor
         lineLayer.lineWidth = 0.5
         addSublayer(lineLayer)

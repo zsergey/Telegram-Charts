@@ -79,6 +79,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     private func setupView() {
+        
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(gridLayer)
         layer.addSublayer(mainLayer)
@@ -146,8 +147,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             let lineLayer = isUpdating ? chartLines![index] : CAShapeLayer()
             let path = paths[index]
             if isUpdating {
-                lineLayer.changePath(to: path, animationDuration: UIView.animationDuration)
                 CATransaction.setDisableActions(true)
+                lineLayer.path = path.cgPath
                 if chartModel.opacity != lineLayer.opacity {
                     let toValue: Float = chartModel.opacity
                     let fromValue: Float = lineLayer.opacity
@@ -438,7 +439,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             
             let oldValueLayer = isUpdating ? gridLines![index] : nil
             let newValueLayer = ValueLayer()
-
+            newValueLayer.contentBackground = colorScheme.chart.background
+            
             let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
             let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
             let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2

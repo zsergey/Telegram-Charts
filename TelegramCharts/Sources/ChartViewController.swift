@@ -95,9 +95,8 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var lastTime: CFTimeInterval = 0.0
     var firstTime: CFTimeInterval = 0.0
-
-    @objc func update(link: CADisplayLink) {
-        
+    
+    func calcPerformance(_ link: CADisplayLink) {
         if lastTime == 0.0 {
             firstTime = link.timestamp
             lastTime = link.timestamp
@@ -111,7 +110,10 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
             print("Frame was dropped with elapsed time of \(elapsedTime) at \(totalElapsedTime)")
         }
         lastTime = link.timestamp
-        
+    }
+    
+    @objc func update(link: CADisplayLink) {
+        calcPerformance(link)
         tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 
