@@ -32,7 +32,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Statistics" id="Fzy-ih-vEs"/>
+                    <navigationItem key="navigationItem" title="Statistics" id="Fzy-ih-vEs">
+                        <barButtonItem key="rightBarButtonItem" title="Night Mode" id="4ca-2v-xhS">
+                            <connections>
+                                <action selector="tapChangeColorSchemeButton:" destination="BYZ-38-t0r" id="zfk-ZX-lf1"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="cdQ-b2-keg" id="prQ-Dd-kfR"/>
                     </connections>

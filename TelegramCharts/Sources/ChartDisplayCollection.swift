@@ -24,27 +24,18 @@ class ChartDisplayCollection: DisplayCollection {
         self.createRows()
     }
     
-    var onChangeColorScheme: (() -> ())?
     var onChangeDrawingStyle: (() -> ())?
 
     private enum `Type` {
         case section(String)
         case chart(ChartDataSource, ChartDataSource)
         case title(ChartModel)
-        case colorScheme(String)
         case drawingStyle(String)
         case button(String)
     }
     
     private var rows: [Type] = []
     
-    private var titleColorSchemeButton: String {
-        var text = "Switch to "
-        let nextMode = colorScheme is DayScheme ? "Night" : "Day"
-        text = text + nextMode + " Mode"
-        return text
-    }
-
     private var titleDrawingStyleButton: String {
         var text = "Switch to "
         let nextStyle = drawingStyle is StandardDrawingStyle ? "Curve" : "Standard"
@@ -68,9 +59,8 @@ class ChartDisplayCollection: DisplayCollection {
             rows.append(.chart(main, preview))
             main.chartModels.forEach { rows.append(.title($0)) }
             rows.append(.section(""))
-            rows.append(.colorScheme(titleColorSchemeButton))
             // If you want to be able change drawing style uncomment this:
-            rows.append(.drawingStyle(titleDrawingStyleButton))
+            // rows.append(.drawingStyle(titleDrawingStyleButton))
         }
     }
     
@@ -94,7 +84,7 @@ class ChartDisplayCollection: DisplayCollection {
             case .title: left = 45
             default: left = 0
             }
-        case .button, .colorScheme, .drawingStyle: left = 0
+        case .button, .drawingStyle: left = 0
         }
         return UIEdgeInsets(top: 0, left: left, bottom: 0, right: 0)
     }
@@ -110,8 +100,6 @@ class ChartDisplayCollection: DisplayCollection {
     func updateButtonText(for indexPath: IndexPath, in cell: ButtonTableViewCell) {
         let type = rows[indexPath.row]
         switch type {
-        case .colorScheme:
-            cell.label.text = titleColorSchemeButton
         case .drawingStyle:
             cell.label.text = titleDrawingStyleButton
         default: break
@@ -129,7 +117,7 @@ class ChartDisplayCollection: DisplayCollection {
                                            colorScheme: colorScheme, drawingStyle: drawingStyle)
         case .title(let model):
             return TitleTableViewCellModel(text: model.name, color: model.color, colorScheme: colorScheme)
-        case .button(let text), .colorScheme(let text), .drawingStyle(let text):
+        case .button(let text), .drawingStyle(let text):
             return ButtonTableViewCellModel(text: text, colorScheme: colorScheme)
         }
     }
@@ -140,19 +128,13 @@ class ChartDisplayCollection: DisplayCollection {
         case .section(let name): return name.count > 0 ? 55 : 35
         case .chart: return 372
         case .title: return 45
-        case .button, .colorScheme, .drawingStyle: return 46
+        case .button, .drawingStyle: return 46
         }
     }
     
     func didSelect(indexPath: IndexPath) -> IndexPath? {
         let type = rows[indexPath.row]
         switch type {
-        case .colorScheme:
-            FeedbackGenerator.impactOccurred(style: .medium)
-            colorScheme = colorScheme.next()
-            
-            createRows()
-            onChangeColorScheme?()
         case .drawingStyle:
             FeedbackGenerator.impactOccurred(style: .medium)
             drawingStyle = drawingStyle is StandardDrawingStyle ? CurveDrawingStyle() : StandardDrawingStyle()
@@ -167,7 +149,7 @@ class ChartDisplayCollection: DisplayCollection {
 
         var result: IndexPath?
         switch type {
-        case .colorScheme, .title:
+        case .title:
             var row = indexPath.row
             while row > 0 {
                 row -= 1

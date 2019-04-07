@@ -80,15 +80,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         
-        displayCollection.onChangeColorScheme = { [weak self] in
-            guard let self = self else { return }
-            self.colorScheme = self.displayCollection.colorScheme
-            for cell in self.tableView.visibleCells {
-                if let cell = cell as? ColorUpdatable {
-                    cell.updateColors(animated: true)
-                }
-            }
-        }
         tableView.registerNibs(from: displayCollection)
         return displayCollection
     }
@@ -224,5 +215,18 @@ extension ChartViewController: UITableViewDataSource {
         cell.separatorInset = displayCollection.separatorInset(for: indexPath, view: view)
         cell.accessoryType = displayCollection.accessoryType(for: indexPath)
         return cell
+    }
+    
+    @IBAction func tapChangeColorSchemeButton(_ sender: UIBarButtonItem) {
+        FeedbackGenerator.impactOccurred(style: .medium)
+        displayCollection.colorScheme = colorScheme.next()
+        colorScheme = displayCollection.colorScheme
+        for cell in self.tableView.visibleCells {
+            if let cell = cell as? ColorUpdatable {
+                cell.updateColors(animated: true)
+            }
+        }
+        let nextMode = colorScheme is DayScheme ? "Night Mode" : "Day Mode"
+        sender.title = nextMode
     }
 }
