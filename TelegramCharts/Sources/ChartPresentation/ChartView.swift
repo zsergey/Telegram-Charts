@@ -79,6 +79,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     private func setupView() {
+        layer.cornerRadius = SliderView.thumbCornerRadius // TODO: fix
         
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(gridLayer)
@@ -721,5 +722,4 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
         gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
     }
-
 }

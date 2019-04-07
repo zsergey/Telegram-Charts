@@ -51,7 +51,7 @@ struct DayScheme: ColorSchemeProtocol {
     }
 
     var slider: SliderColor {
-        return SliderColor(thumb: UIColor(hex: "#CAD5DF", alpha: 0.9)!,
+        return SliderColor(thumb: UIColor(hex: "#C3D1DF")!,
                            background: UIColor(hex: "#F7F8FA", alpha: 0.8)!,
                            arrow: UIColor(hex: "#FFFFFF")!)
     }

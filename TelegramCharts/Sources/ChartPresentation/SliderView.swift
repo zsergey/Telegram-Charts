@@ -56,15 +56,15 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     
     private let thumbWidth: CGFloat = 11
 
-    private let arrowWidth: CGFloat = 6
+    private let arrowWidth: CGFloat = 5
 
-    private let arrowHeight: CGFloat = 1
+    private let arrowHeight: CGFloat = 0.75
     
     private let arrowCornerRadius: CGFloat = 0.25
 
-    private let thumbCornerRadius: CGFloat = 1.5
+    static let thumbCornerRadius: CGFloat = 6
 
-    private let arrowAngle: CGFloat = 60
+    private let arrowAngle: CGFloat = 55
 
     private let trailingSpace: CGFloat = 16
 
@@ -255,13 +255,13 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         var rect = CGRect(x: startX + trailingSpace, y: -0.5, width: thumbWidth, height: height)
         var corners: UIRectCorner = [.topLeft, .bottomLeft]
         if let leftThumb = leftThumb {
-            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: thumbCornerRadius)
+            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: SliderView.thumbCornerRadius)
             leftThumb.path = path.cgPath
             leftThumb.changeColor(to: color, keyPath: "fillColor",
                                   animationDuration: UIView.animationDuration)
         } else {
             let leftThumb = Painter.createRect(rect: rect, byRoundingCorners: corners,
-                                     fillColor: color, lineWidth: 1.0, cornerRadius: thumbCornerRadius)
+                                     fillColor: color, lineWidth: 1.0, cornerRadius: SliderView.thumbCornerRadius)
             mainLayer.addSublayer(leftThumb)
             self.leftThumb = leftThumb
         }
@@ -270,13 +270,13 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         corners = [.topRight, .bottomRight]
         rect = CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: -0.5, width: thumbWidth, height: height)
         if let rightThumb = rightThumb {
-            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: thumbCornerRadius)
+            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: SliderView.thumbCornerRadius)
             rightThumb.path = path.cgPath
             rightThumb.changeColor(to: color, keyPath: "fillColor",
                                    animationDuration: UIView.animationDuration)
         } else {
             let rightThumb = Painter.createRect(rect: rect, byRoundingCorners: corners,
-                                      fillColor: color, lineWidth: 1.0, cornerRadius: thumbCornerRadius)
+                                      fillColor: color, lineWidth: 1.0, cornerRadius: SliderView.thumbCornerRadius)
             mainLayer.addSublayer(rightThumb)
             self.rightThumb = rightThumb
         }
@@ -323,16 +323,20 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         // Left background.
         var rect = CGRect(x: trailingSpace, y: 1, width: 0, height: height - 2) // .zero
         if x > 0 {
-            rect = CGRect(x: trailingSpace, y: 1, width: startX, height: height - 2)
+            rect = CGRect(x: trailingSpace, y: 1, width: startX + thumbWidth / 2, height: height - 2)
         }
+        
+        let leftСorners: UIRectCorner = [.topLeft, .bottomLeft]
         if let leftBackground = leftBackground {
-            let path = Painter.createRectPath(rect: rect)
+            let path = Painter.createRectPath(rect: rect, byRoundingCorners: leftСorners, cornerRadius: SliderView.thumbCornerRadius)
             leftBackground.path = path.cgPath
             leftBackground.changeColor(to: colorScheme.slider.background, keyPath: "fillColor",
                                        animationDuration: UIView.animationDuration)
 
         } else {
-            let leftBackground = Painter.createRect(rect: rect, fillColor: colorScheme.slider.background)
+            let leftBackground = Painter.createRect(rect: rect, byRoundingCorners: leftСorners,
+                                                    fillColor: colorScheme.slider.background,
+                                                    cornerRadius: SliderView.thumbCornerRadius)
             mainLayer.addSublayer(leftBackground)
             self.leftBackground = leftBackground
         }
@@ -340,16 +344,20 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         // Right background.
         rect = CGRect(x: width, y: 1, width: 0, height: height - 2) // .zero
         if x + sliderWidth < width {
-            let x = x + sliderWidth
+            let x = x + sliderWidth - thumbWidth / 2
             rect = CGRect(x: x, y: 1, width: width - x, height: height - 2)
         }
+        let rightСorners: UIRectCorner = [.topRight, .bottomRight]
         if let rightBackground = rightBackground {
-            let path = Painter.createRectPath(rect: rect)
+            let path = Painter.createRectPath(rect: rect, byRoundingCorners: rightСorners, cornerRadius: SliderView.thumbCornerRadius)
             rightBackground.path = path.cgPath
             rightBackground.changeColor(to: colorScheme.slider.background, keyPath: "fillColor",
                                         animationDuration: UIView.animationDuration)
         } else {
-            let rightBackground = Painter.createRect(rect: rect, fillColor: colorScheme.slider.background)
+            let rightBackground = Painter.createRect(rect: rect,
+                                                     byRoundingCorners: rightСorners,
+                                                     fillColor: colorScheme.slider.background,
+                                                     cornerRadius: SliderView.thumbCornerRadius)
             mainLayer.addSublayer(rightBackground)
             self.rightBackground = rightBackground
         }
@@ -425,5 +433,4 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         startX = 0
         currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
     }
-
 }
