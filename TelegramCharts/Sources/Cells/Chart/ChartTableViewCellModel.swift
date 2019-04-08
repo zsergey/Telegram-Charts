@@ -36,6 +36,10 @@ extension ChartTableViewCellModel: CellViewModelType {
         setupChartView(on: cell)
         setupPreviewChartView(on: cell)
         setupColors(on: cell)
+        setupButtons(on: cell)
+    }
+    
+    func setupButtons(on cell: ChartTableViewCell) {
     }
     
     func setupChartView(on cell: ChartTableViewCell) {

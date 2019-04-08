@@ -57,8 +57,8 @@ class ChartDisplayCollection: DisplayCollection {
             let preview = dataSource.preview[index]
             rows.append(.section(main.name))
             rows.append(.chart(main, preview))
-            main.chartModels.forEach { rows.append(.title($0)) }
-            rows.append(.section(""))
+            //main.chartModels.forEach { rows.append(.title($0)) }
+            //rows.append(.section(""))
             // If you want to be able change drawing style uncomment this:
             // rows.append(.drawingStyle(titleDrawingStyleButton))
         }
@@ -126,7 +126,7 @@ class ChartDisplayCollection: DisplayCollection {
         let type = rows[indexPath.row]
         switch type {
         case .section(let name): return name.count > 0 ? 55 : 35
-        case .chart: return 372
+        case .chart: return 372 + 45
         case .title: return 45
         case .button, .drawingStyle: return 46
         }
