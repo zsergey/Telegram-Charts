@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -43,18 +43,30 @@
                             <constraint firstAttribute="height" constant="42" id="mKI-0B-dR9"/>
                         </constraints>
                     </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Data" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zPe-1h-dVe">
+                        <rect key="frame" x="161" y="222" width="62.5" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="SCr-fA-AqT"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="D1j-Q1-j7B" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="52v-qY-cB5"/>
                     <constraint firstItem="D1j-Q1-j7B" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="766-7f-U3w"/>
                     <constraint firstAttribute="trailing" secondItem="D1j-Q1-j7B" secondAttribute="trailing" constant="16" id="Pqe-US-T1a"/>
+                    <constraint firstItem="zPe-1h-dVe" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="UDZ-EK-3Ui"/>
                     <constraint firstItem="p4w-D1-gJH" firstAttribute="top" secondItem="D1j-Q1-j7B" secondAttribute="bottom" constant="18" id="dXN-Is-qay"/>
                     <constraint firstAttribute="trailing" secondItem="p4w-D1-gJH" secondAttribute="trailing" id="eCI-f4-KhL"/>
+                    <constraint firstItem="zPe-1h-dVe" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="191" id="m24-de-DYb"/>
                     <constraint firstItem="p4w-D1-gJH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="nRQ-Mq-Hbo"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="chartNoDataLabel" destination="zPe-1h-dVe" id="6cc-9V-uau"/>
                 <outlet property="chartView" destination="D1j-Q1-j7B" id="obu-hQ-fto"/>
                 <outlet property="previewChartView" destination="dld-po-VIh" id="Qqy-jN-qha"/>
                 <outlet property="sliderView" destination="p4w-D1-gJH" id="K4O-WS-da9"/>

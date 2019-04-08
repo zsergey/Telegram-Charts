@@ -11,11 +11,6 @@ import UIKit
 struct DataChartModelFactory {
     
     @discardableResult
-    static func make() -> [DataChartModel]? {
-        return make(fromResource: "chart_data")
-    }
-    
-    @discardableResult
     static func make(fromResource name: String) -> [DataChartModel]? {
         guard let path = Bundle.main.path(forResource: name, ofType: "json") else {
             return nil
@@ -45,6 +40,12 @@ struct DataChartModelFactory {
             }
             
             var chartModel = DataChartModel()
+            
+            // It's chart with 2 Y axes.
+            if let value = dictionary["y_scaled"] as? Bool {
+                chartModel.yScaled = value
+            }
+            
             for column in columns {
                 readColumn(column, to: &chartModel, types, names, colors)
             }

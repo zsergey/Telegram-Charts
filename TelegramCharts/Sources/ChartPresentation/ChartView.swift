@@ -82,8 +82,9 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         layer.cornerRadius = SliderView.thumbCornerRadius // TODO: fix
         
         mainLayer.addSublayer(dataLayer)
-        layer.addSublayer(gridLayer)
         layer.addSublayer(mainLayer)
+        layer.addSublayer(gridLayer)
+        
         clipsToBounds = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTouch))
@@ -132,7 +133,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                                       height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
         
         if isJustReused {
-            self.drawHorizontalLines(animated: false)
+            drawHorizontalLines(animated: false)
             isJustReused = false
         }
         self.drawCharts()
@@ -184,8 +185,6 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
         
     func drawLabels(byScroll: Bool) {
-//        // TODO:
-//        return
         
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
@@ -401,17 +400,16 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     func updateColors() {
+        // TODO: here you should update colors.
         if let gridLines = gridLines {
             gridLines.forEach {
                 let color = $0.lineValue == 0 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
-                $0.updateColors(lineColor: color, textColor: colorScheme.chart.text)
+                $0.updateColors(lineColor: color, textColor: colorScheme.chart.text, background: colorScheme.chart.background)
             }
         }
         if let labels = labels {
             labels.forEach {
-                $0.changeColor(to: colorScheme.chart.text,
-                               keyPath: "foregroundColor",
-                               animationDuration: UIView.animationDuration)
+                $0.foregroundColor = colorScheme.chart.text.cgColor
             }
         }
         if dataSource?.selectedIndex != nil {
@@ -425,67 +423,92 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 return
         }
 
-        let minMaxGap = CGFloat(dataSource.maxValue - dataSource.minValue) * dataSource.topHorizontalLine
-        let newMinMaxGap = CGFloat(dataSource.targetMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
-        
-        let heightGrid: CGFloat = 30
-        let widthGrid: CGFloat = self.frame.size.width
-        let isUpdating = self.gridLines != nil
+        gridLinesToRemove?.forEach { $0.removeFromSuperlayer() }
         var newGridLines = [ValueLayer]()
         var newGridLinesToRemove = [ValueLayer]()
 
-        gridLinesToRemove?.forEach { $0.removeFromSuperlayer() }
-        
-        let gridValues: [CGFloat] = [0, 0.2, 0.4, 0.6, 0.8, 1]
-        for index in 0..<gridValues.count {
-            let value = gridValues[index]
-            var duration: CFTimeInterval = 0
-            if animated {
-                duration = value == 1 ? 0 : UIView.animationDuration
-            }
+        for i in 0..<dataSource.maxValues.count {
+            
+            let maxValue = dataSource.maxValues[i]
+            let newMaxValue = dataSource.targetMaxValues[i]
+            
+            let minMaxGap = CGFloat(maxValue - dataSource.minValue) * dataSource.topHorizontalLine
+            let newMinMaxGap = CGFloat(newMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
+            
+            let heightGrid: CGFloat = 30
+            let widthGrid: CGFloat = self.frame.size.width
+            let isUpdating = self.gridLines != nil
+            
+            let gridValues: [CGFloat] = [0.0, 0.2, 0.4, 0.6, 0.8, 1]
+            for index in 0..<gridValues.count {
+                
+                let value = gridValues[index]
+                var duration: CFTimeInterval = 0
+                if animated {
+                    duration = value == 1 ? 0 : UIView.animationDuration
+                }
+                
+                let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap)
+                let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
+                
+                let indexOldValue = index + i * gridValues.count
+                var oldValueLayer: ValueLayer? = nil
+                if isUpdating {
+                    if indexOldValue < gridLines!.count {
+                        oldValueLayer = gridLines![indexOldValue]
+                    }
+                }
+                
+                let newValueLayer = ValueLayer()
+                newValueLayer.alignment = i == 0 ? .left : .right
+                newValueLayer.contentBackground = colorScheme.chart.background
+                
+                let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
+                let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
+                let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
+                let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
+                newValueLayer.lineColor = index == gridValues.count - 1 ? colorScheme.chart.accentGrid : colorScheme.chart.grid
+                newValueLayer.textColor = dataSource.yScaled ? dataSource.chartModels[i].color : colorScheme.chart.text
 
-            let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap)
-            let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
-            
-            let oldValueLayer = isUpdating ? gridLines![index] : nil
-            let newValueLayer = ValueLayer()
-            newValueLayer.contentBackground = colorScheme.chart.background
-            
-            let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
-            let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
-            let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
-            let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
-            newValueLayer.lineColor = index == gridValues.count - 1 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
-            newValueLayer.textColor = colorScheme.chart.text
-            gridLayer.addSublayer(newValueLayer)
-            newGridLines.append(newValueLayer)
-            
-            if let oldValueLayer = oldValueLayer {
-                let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
-                let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
-                CATransaction.setDisableActions(true)
-                oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
-                oldValueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
-                newGridLinesToRemove.append(oldValueLayer)
-            }
-            
-            if isUpdating {
-                newValueLayer.lineValue = newLineValue
-                newValueLayer.opacity = 0
-                newValueLayer.frame = fromNewFrame
-                newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
-                newValueLayer.changeOpacity(from: 0, to: 1, animationDuration: duration)
-            } else {
-                newValueLayer.lineValue = lineValue
-                newValueLayer.opacity = 1
-                let height = dataSource.calcHeight(for: lineValue, with: minMaxGap)
-                let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
-                newValueLayer.frame = rect
+                if newLineValue == 0 {
+                    let isHidden = dataSource.yScaled ? dataSource.chartModels[i].isHidden : dataSource.isAllChartsHidden
+                    if index == gridValues.count - 1, !isHidden {
+                        // Add zero line only if a chart is showing.
+                        gridLayer.addSublayer(newValueLayer)
+                    }
+                } else {
+                    gridLayer.addSublayer(newValueLayer)
+                }
+                newGridLines.append(newValueLayer)
+
+                if let oldValueLayer = oldValueLayer {
+                    let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
+                    let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
+                    CATransaction.setDisableActions(true)
+                    oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
+                    oldValueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
+                    newGridLinesToRemove.append(oldValueLayer)
+                }
+                
+                if isUpdating {
+                    newValueLayer.lineValue = newLineValue
+                    newValueLayer.opacity = 0
+                    newValueLayer.frame = fromNewFrame
+                    newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
+                    newValueLayer.changeOpacity(from: 0, to: 1, animationDuration: duration)
+                } else {
+                    newValueLayer.lineValue = lineValue
+                    newValueLayer.opacity = 1
+                    let height = dataSource.calcHeight(for: lineValue, with: minMaxGap)
+                    let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
+                    newValueLayer.frame = rect
+                }
             }
         }
         
         gridLines = newGridLines
         gridLinesToRemove = newGridLinesToRemove
+
     }
 
     private func drawDotsIfNeeded(location: CGPoint) {
@@ -562,7 +585,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         if !isUpdating {
             lineLayer.fillColor = UIColor.clear.cgColor
             lineLayer.lineWidth = 0.5
-            dataLayer.addSublayer(lineLayer)
+            gridLayer.addSublayer(lineLayer)
         }
         
         // Dots.
@@ -590,7 +613,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 dotLayer.backgroundColor = chartModel.color.cgColor
                 dotLayer.cornerRadius = outerRadius / 2
                 dotLayer.frame = dotFrame
-                dataLayer.addSublayer(dotLayer)
+                gridLayer.addSublayer(dotLayer)
                 if dotsTextLayers == nil {
                     dotsTextLayers = [DotLayer]()
                 }
@@ -644,7 +667,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             let dotInfo = Painter.createRect(rect: rect, byRoundingCorners: corners,
                                              fillColor: colorScheme.dotInfo.background,
                                              cornerRadius: 4)
-            dataLayer.addSublayer(dotInfo)
+            gridLayer.addSublayer(dotInfo)
             self.dotInfo = dotInfo
         }
 
@@ -664,11 +687,12 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 if isUpdating {
                     self.dateTextLayer?.frame = dateFrame
                     self.dateTextLayer?.string = data.dateDot
+                    self.dateTextLayer?.foregroundColor = colorScheme.dotInfo.text.cgColor
                 } else {
                     let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
                     dateTextLayer.frame = dateFrame
                     dateTextLayer.string = data.dateDot
-                    dataLayer.addSublayer(dateTextLayer)
+                    gridLayer.addSublayer(dateTextLayer)
                     self.dateTextLayer = dateTextLayer
                 }
 
@@ -677,11 +701,12 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 if isUpdating {
                     self.yearTextLayer?.frame = yearFrame
                     self.yearTextLayer?.string = data.year
+                    self.yearTextLayer?.foregroundColor = colorScheme.dotInfo.text.cgColor
                 } else {
                     let yaerTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text)
                     yaerTextLayer.frame = yearFrame
                         yaerTextLayer.string = data.year
-                    dataLayer.addSublayer(yaerTextLayer)
+                    gridLayer.addSublayer(yaerTextLayer)
                     self.yearTextLayer = yaerTextLayer
                 }
 
@@ -698,7 +723,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 let dataTextLayer = Painter.createText(textColor: chartModel.color, bold: true)
                 dataTextLayer.frame = valueFrame
                 dataTextLayer.string = data.value.format
-                dataLayer.addSublayer(dataTextLayer)
+                gridLayer.addSublayer(dataTextLayer)
                 if self.valueTextLayers == nil {
                     self.valueTextLayers = [CATextLayer]()
                 }

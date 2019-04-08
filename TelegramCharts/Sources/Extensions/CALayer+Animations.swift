@@ -39,18 +39,4 @@ extension CALayer {
         }
     }
 
-    func changeColor(to color: UIColor, keyPath: String, animationDuration: CFTimeInterval) {
-        if animationDuration == 0 {
-            setValue(color.cgColor, forKey: keyPath)
-        } else {
-            let animation = CABasicAnimation(keyPath: keyPath)
-            animation.fromValue = value(forKey: keyPath)
-            animation.toValue = color.cgColor
-            animation.duration = animationDuration
-            animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            self.add(animation, forKey: keyPath)
-            setValue(color.cgColor, forKey: keyPath)
-        }
-    }
-
 }

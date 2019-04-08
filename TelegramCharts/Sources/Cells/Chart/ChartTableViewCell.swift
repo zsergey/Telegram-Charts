@@ -15,6 +15,12 @@ class ChartTableViewCell: UITableViewCell {
     @IBOutlet var chartView: ChartView!
     @IBOutlet var previewChartView: ChartView!
     @IBOutlet var sliderView: SliderView!
+    @IBOutlet var chartNoDataLabel: UILabel! {
+        didSet {
+            chartNoDataLabel.alpha = 0
+        }
+    }
+    
     var buttons: [CheckButton] = []
 
     override func prepareForReuse() {
@@ -28,6 +34,19 @@ class ChartTableViewCell: UITableViewCell {
         buttons.removeAll()
     }
         
+    func hideViewsIfNeeded() {
+        if let model = model {
+            let alphaViews: CGFloat = model.chartDataSource.isAllChartsHidden ? 0 : 1
+            let alphaLabels: CGFloat = 1 - alphaViews
+            UIView.animateEaseInOut(with: UIView.animationDuration) {
+                self.chartView.alpha = alphaViews
+                self.previewChartView.alpha = alphaViews
+                self.sliderView.alpha = alphaViews
+                self.chartNoDataLabel.alpha = alphaLabels
+            }
+        }
+    }
+    
     func calcProperties() {
         if let model = model {
             // TODO: Calc in background.
@@ -82,27 +101,20 @@ extension ChartTableViewCell: Updatable {
 
 extension ChartTableViewCell: ColorUpdatable {
     
-    func updateColors(animated: Bool) {
+    func updateColors(changeColorScheme: Bool) {
         if let model = model {
-            if animated {
+            if changeColorScheme {
                 model.colorScheme = model.colorScheme.next()
             }
-            let animations = {
-                self.backgroundColor = model.colorScheme.chart.background
-                self.selectedBackgroundView = model.colorScheme.selectedCellView
-                self.buttons.forEach {
-                    $0.unCheckedBackgroundColor = model.colorScheme.chart.background
-                }
+            self.backgroundColor = model.colorScheme.chart.background
+            self.selectedBackgroundView = model.colorScheme.selectedCellView
+            self.chartNoDataLabel.textColor = model.colorScheme.chart.text
+            self.buttons.forEach {
+                $0.unCheckedBackgroundColor = model.colorScheme.chart.background
             }
             self.chartView.colorScheme = model.colorScheme
             self.previewChartView.colorScheme = model.colorScheme
             self.sliderView.colorScheme = model.colorScheme
-            
-            if animated {
-                UIView.animateEaseInOut(with: UIView.animationDuration, animations: animations)
-            } else {
-                animations()
-            }
         }
     }
 }

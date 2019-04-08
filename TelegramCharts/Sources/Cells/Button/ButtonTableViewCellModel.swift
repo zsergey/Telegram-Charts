@@ -23,6 +23,6 @@ extension ButtonTableViewCellModel: CellViewModelType {
     func setup(on cell: ButtonTableViewCell) {
         cell.model = self
         cell.label.text = text
-        cell.updateColors(animated: false)
+        cell.updateColors(changeColorScheme: false)
     }
 }

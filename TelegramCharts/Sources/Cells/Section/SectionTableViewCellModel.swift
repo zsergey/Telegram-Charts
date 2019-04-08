@@ -23,6 +23,6 @@ extension SectionTableViewCellModel: CellViewModelType {
     func setup(on cell: SectionTableViewCell) {
         cell.model = self
         cell.label.text = text
-        cell.updateColors(animated: false)
+        cell.updateColors(changeColorScheme: false)
     }
 }

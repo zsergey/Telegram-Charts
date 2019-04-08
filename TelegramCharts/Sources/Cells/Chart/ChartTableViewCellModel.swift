@@ -62,16 +62,38 @@ extension ChartTableViewCellModel: CellViewModelType {
                 cell.model?.chartDataSource.selectedIndex = nil
                 cell.chartView.cleanDots()
                 cell.calcProperties()
+                cell.hideViewsIfNeeded()
             }
-            button.onLongTapButton = { model in
-                FeedbackGenerator.impactOccurred(style: .heavy)
-                self.chartDataSource.chartModels.forEach { $0.isHidden = true }
-                cell.buttons.forEach { $0.style = .unChecked }
-                model.isHidden = false
-                button.style = .checked
-                cell.model?.chartDataSource.selectedIndex = nil
-                cell.chartView.cleanDots()
-                cell.calcProperties()
+            button.onLongTapButton = { model, processedLongPressGesture in
+                var needsUpdate = false
+                self.chartDataSource.chartModels.forEach {
+                    if $0 == model {
+                        if $0.isHidden == true {
+                            needsUpdate = needsUpdate || true
+                        }
+                        $0.isHidden = false
+                    } else {
+                        if $0.isHidden == false {
+                            needsUpdate = needsUpdate || true
+                        }
+                        $0.isHidden = true
+                    }
+                }
+                if needsUpdate {
+                    if !processedLongPressGesture {
+                        FeedbackGenerator.impactOccurred(style: .heavy)
+                    }
+                    cell.buttons.forEach { $0.style = .unChecked }
+                    button.style = .checked
+                    cell.model?.chartDataSource.selectedIndex = nil
+                    cell.chartView.cleanDots()
+                    cell.calcProperties()
+                    cell.hideViewsIfNeeded()
+                } else {
+                    if !processedLongPressGesture {
+                        FeedbackGenerator.notificationOccurred(.warning)
+                    }
+                }
             }
             cell.addSubview(button)
             if x > cell.frame.size.width - trailingSpace - button.frame.size.width {
@@ -140,7 +162,7 @@ extension ChartTableViewCellModel: CellViewModelType {
     }
     
     func setupColors(on cell: ChartTableViewCell) {
-        cell.updateColors(animated: false)
+        cell.updateColors(changeColorScheme: false)
     }
     
     func calcProperties(of dataSource: ChartDataSource, for view: ChartView) {

@@ -17,20 +17,13 @@ class SectionTableViewCell: UITableViewCell {
 
 extension SectionTableViewCell: ColorUpdatable {
     
-    func updateColors(animated: Bool) {
+    func updateColors(changeColorScheme: Bool) {
         if let model = model {
-            if animated {
+            if changeColorScheme {
                 model.colorScheme = model.colorScheme.next()
             }
-            let animations = {
-                self.label.textColor = model.colorScheme.section.text
-                self.backgroundColor = model.colorScheme.section.background
-            }
-            if animated {
-                UIView.animateEaseInOut(with: UIView.animationDuration, animations: animations)
-            } else {
-                animations()
-            }
+            self.label.textColor = model.colorScheme.section.text
+            self.backgroundColor = model.colorScheme.section.background
         }
     }
 }

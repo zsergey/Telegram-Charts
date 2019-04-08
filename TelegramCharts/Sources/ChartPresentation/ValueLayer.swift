@@ -10,9 +10,15 @@ import UIKit
 
 class ValueLayer: CALayer {
     
+    enum Alignment {
+        case left
+        case right
+    }
+    
     var lineValue: Int = 0 { didSet { setNeedsLayout() } }
     var lineColor: UIColor = .gray
     var textColor: UIColor = .black
+    var alignment: Alignment = .left
     var contentBackground: UIColor = .white
 
     var lineLayer: CAShapeLayer?
@@ -30,15 +36,10 @@ class ValueLayer: CALayer {
         super.init(coder: aDecoder)
     }
     
-    func updateColors(lineColor: UIColor, textColor: UIColor) {
-        if let lineLayer = lineLayer {
-            lineLayer.changeColor(to: lineColor, keyPath: "strokeColor",
-                                  animationDuration: UIView.animationDuration)
-        }
-        if let textLayer = textLayer {
-            textLayer.changeColor(to: textColor, keyPath: "foregroundColor",
-                                  animationDuration: UIView.animationDuration)
-        }
+    func updateColors(lineColor: UIColor, textColor: UIColor, background: UIColor) {
+        lineLayer?.strokeColor = lineColor.cgColor
+        lineLayer?.fillColor = background.cgColor
+        textLayer?.foregroundColor = textColor.cgColor
     }
     
     override func layoutSublayers() {
@@ -60,8 +61,12 @@ class ValueLayer: CALayer {
         self.lineLayer = lineLayer
         
         let textLayer = Painter.createText(textColor: textColor)
-        textLayer.frame = CGRect(x: 0, y: height - 18, width: 50, height: 16)
         textLayer.string = lineValue.format
+        var x: CGFloat = 0
+        if alignment == .right {
+            x = frame.size.width - textLayer.preferredFrameSize().width
+        }
+        textLayer.frame = CGRect(x: x, y: height - 18, width: 50, height: 16)
         addSublayer(textLayer)
         self.textLayer = textLayer
     }

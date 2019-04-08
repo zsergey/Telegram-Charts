@@ -17,7 +17,7 @@ extension UIControl.State: Hashable {
 class CheckButton: UIControl {
     
     var onTapButton: ((ChartModel) -> ())?
-    var onLongTapButton: ((ChartModel) -> ())?
+    var onLongTapButton: ((ChartModel, Bool) -> ())?
 
     var backgroundColors: [UIControl.State: UIColor] = [:]
     var titleColors: [UIControl.State: UIColor] = [:]
@@ -137,29 +137,33 @@ class CheckButton: UIControl {
         self.addSubview(self.titleLabel)
         font = UIFont(name: titleLabel.font.fontName, size: 13)
         self.addSubview(self.imageView)
-        addTarget(self, action: #selector(tapButton(_:)), for: .touchUpInside)
         addTarget(self, action: #selector(touchDownButton(_:)), for: .touchDown)
-
-        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(longTapButton(_:)))
-        gesture.minimumPressDuration = 0.2
-        addGestureRecognizer(gesture)
+        addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTapButton(_:)))
+        longPressGesture.minimumPressDuration = 0.2
+        addGestureRecognizer(longPressGesture)
         self.updateStyle()
     }
 
     @objc func touchDownButton(_ button: UIButton) {
         processedLongPressGesture = false
     }
-
-    @objc func longTapButton(_ button: UIButton) {
-        if !processedLongPressGesture {
-            onLongTapButton?(chartModel)
-            processedLongPressGesture = true
-        }
+    
+    @objc func touchUpOutside(_ button: UIButton) {
+        processedLongPressGesture = false
     }
 
-    @objc func tapButton(_ button: UIButton) {
+    @objc func touchUpInside(_ button: UIButton) {
+        processedLongPressGesture = false
         style = style == .checked ? .unChecked : .checked
         onTapButton?(chartModel)
+    }
+    
+    @objc func longTapButton(_ button: UIButton) {
+        onLongTapButton?(chartModel, processedLongPressGesture)
+        processedLongPressGesture = true
     }
     
     public override func layoutSubviews() {

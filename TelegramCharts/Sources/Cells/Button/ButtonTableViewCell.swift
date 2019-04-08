@@ -17,21 +17,14 @@ class ButtonTableViewCell: UITableViewCell {
 
 extension ButtonTableViewCell: ColorUpdatable {
     
-    func updateColors(animated: Bool) {
+    func updateColors(changeColorScheme: Bool) {
         if let model = model {
-            if animated {
+            if changeColorScheme {
                 model.colorScheme = model.colorScheme.next()
             }
-            let animations = {
-                self.label.textColor = model.colorScheme.button.normal
-                self.backgroundColor = model.colorScheme.chart.background
-            }
+            self.label.textColor = model.colorScheme.button.normal
+            self.backgroundColor = model.colorScheme.chart.background
             self.selectedBackgroundView = model.colorScheme.selectedCellView
-            if animated {
-                UIView.animateEaseInOut(with: UIView.animationDuration, animations: animations)
-            } else {
-                animations()
-            }
         }
     }
 }

@@ -19,4 +19,5 @@ struct DataChartModel {
     var names = [String: String]()
     var colors = [String: UIColor]()
     var data = [String: [Any]]()
+    var yScaled = false
 }

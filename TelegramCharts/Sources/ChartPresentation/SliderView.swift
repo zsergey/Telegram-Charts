@@ -257,8 +257,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         if let leftThumb = leftThumb {
             let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: SliderView.thumbCornerRadius)
             leftThumb.path = path.cgPath
-            leftThumb.changeColor(to: color, keyPath: "fillColor",
-                                  animationDuration: UIView.animationDuration)
+            leftThumb.fillColor = color.cgColor
         } else {
             let leftThumb = Painter.createRect(rect: rect, byRoundingCorners: corners,
                                      fillColor: color, lineWidth: 1.0, cornerRadius: SliderView.thumbCornerRadius)
@@ -272,8 +271,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         if let rightThumb = rightThumb {
             let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: SliderView.thumbCornerRadius)
             rightThumb.path = path.cgPath
-            rightThumb.changeColor(to: color, keyPath: "fillColor",
-                                   animationDuration: UIView.animationDuration)
+            rightThumb.fillColor = color.cgColor
         } else {
             let rightThumb = Painter.createRect(rect: rect, byRoundingCorners: corners,
                                       fillColor: color, lineWidth: 1.0, cornerRadius: SliderView.thumbCornerRadius)
@@ -293,8 +291,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         if let topLine = topLine {
             let path = Painter.createRectPath(rect: rect)
             topLine.path = path.cgPath
-            topLine.changeColor(to: color, keyPath: "strokeColor",
-                                animationDuration: UIView.animationDuration)
+            topLine.strokeColor = color.cgColor
         } else {
             let topLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: 0.5)
             mainLayer.addSublayer(topLine)
@@ -306,8 +303,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         if let bottomLine = bottomLine {
             let path = Painter.createRectPath(rect: rect)
             bottomLine.path = path.cgPath
-            bottomLine.changeColor(to: color, keyPath: "strokeColor",
-                                   animationDuration: UIView.animationDuration)
+            bottomLine.strokeColor = color.cgColor
         } else {
             let bottomLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: 0.5)
             mainLayer.addSublayer(bottomLine)
@@ -330,9 +326,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         if let leftBackground = leftBackground {
             let path = Painter.createRectPath(rect: rect, byRoundingCorners: leftСorners, cornerRadius: SliderView.thumbCornerRadius)
             leftBackground.path = path.cgPath
-            leftBackground.changeColor(to: colorScheme.slider.background, keyPath: "fillColor",
-                                       animationDuration: UIView.animationDuration)
-
+            leftBackground.fillColor = colorScheme.slider.background.cgColor
         } else {
             let leftBackground = Painter.createRect(rect: rect, byRoundingCorners: leftСorners,
                                                     fillColor: colorScheme.slider.background,
@@ -351,8 +345,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         if let rightBackground = rightBackground {
             let path = Painter.createRectPath(rect: rect, byRoundingCorners: rightСorners, cornerRadius: SliderView.thumbCornerRadius)
             rightBackground.path = path.cgPath
-            rightBackground.changeColor(to: colorScheme.slider.background, keyPath: "fillColor",
-                                        animationDuration: UIView.animationDuration)
+            rightBackground.fillColor = colorScheme.slider.background.cgColor
         } else {
             let rightBackground = Painter.createRect(rect: rect,
                                                      byRoundingCorners: rightСorners,

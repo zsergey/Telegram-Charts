@@ -13,5 +13,5 @@ protocol Updatable {
 }
 
 protocol ColorUpdatable {
-    func updateColors(animated: Bool)
+    func updateColors(changeColorScheme: Bool)
 }

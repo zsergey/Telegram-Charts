@@ -34,10 +34,15 @@ extension PointModel: Comparable {
     }
 }
 
+func == (lhs: ChartModel, rhs: ChartModel) -> Bool {
+    return lhs.name == rhs.name && lhs.color == rhs.color
+}
+
 class ChartModel {
     var name: String
     var color: UIColor
     var isHidden: Bool
+    var yScaled: Bool
     var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
     var opacity: Float {
@@ -48,12 +53,14 @@ class ChartModel {
          color: UIColor,
          isHidden: Bool,
          drawingStyle: DrawingStyleProtocol,
-         data: [PointModel]) {
+         data: [PointModel],
+         yScaled: Bool) {
         self.name = name
         self.color = color
         self.isHidden = isHidden
         self.drawingStyle = drawingStyle
         self.data = data
+        self.yScaled = yScaled
     }
 }
 

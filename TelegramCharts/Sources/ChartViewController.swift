@@ -28,10 +28,10 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
             (navigationController as? NavigationViewController)?.colorScheme = colorScheme
             
             let navigationBar = self.navigationController?.navigationBar
+            self.tableView.backgroundColor = self.colorScheme.section.background
             UIView.animateEaseInOut(with: UIView.animationDuration) {
-                self.tableView.layer.backgroundColor = self.colorScheme.section.background.cgColor
                 self.tableView.separatorColor = self.colorScheme.separator
-                
+
                 navigationBar?.barTintColor = self.colorScheme.background
                 navigationBar?.titleTextAttributes = [.foregroundColor: self.colorScheme.title]
                 if self.needsLayoutNavigationBar {
@@ -79,14 +79,17 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
         }
-        
+        tableView.backgroundColor = colorScheme.section.background
         tableView.registerNibs(from: displayCollection)
         return displayCollection
     }
     
-    var lastTime: CFTimeInterval = 0.0
-    var firstTime: CFTimeInterval = 0.0
-    
+    private var lastTime: CFTimeInterval = 0.0
+
+    private var firstTime: CFTimeInterval = 0.0
+
+    private var isChangingTheme = false
+
     func calcPerformance(_ link: CADisplayLink) {
         if lastTime == 0.0 {
             firstTime = link.timestamp
@@ -207,17 +210,39 @@ extension ChartViewController: UITableViewDataSource {
         cell.separatorInset = displayCollection.separatorInset(for: indexPath, view: view)
         return cell
     }
+}
+
+extension ChartViewController {
     
+    func animateThemeSwitch() {
+        if let snapshotView = self.view.snapshotView(afterScreenUpdates: false) {
+            self.view.addSubview(snapshotView)
+            self.isChangingTheme = true
+            UIView.animate(withDuration: UIView.animationDuration, animations: {
+                snapshotView.alpha = 0
+            }) { (_) in
+                snapshotView.removeFromSuperview()
+                self.isChangingTheme = false
+            }
+        }
+    }
+
     @IBAction func tapChangeColorSchemeButton(_ sender: UIBarButtonItem) {
+        guard !isChangingTheme else {
+            return
+        }
         FeedbackGenerator.impactOccurred(style: .medium)
+        animateThemeSwitch()
         displayCollection.colorScheme = colorScheme.next()
         colorScheme = displayCollection.colorScheme
         for cell in self.tableView.visibleCells {
             if let cell = cell as? ColorUpdatable {
-                cell.updateColors(animated: true)
+                cell.updateColors(changeColorScheme: true)
             }
         }
         let nextMode = colorScheme is DayScheme ? "Night Mode" : "Day Mode"
         sender.title = nextMode
     }
+
 }
+

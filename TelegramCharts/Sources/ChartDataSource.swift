@@ -44,9 +44,15 @@ class ChartDataSource: Updatable {
     
     var onSetNewTargetMaxValue: (() ->())?
     
-    var name: String = "FOLLOWERS"
+    var name: String
     
     var isPreviewMode: Bool = false
+
+    var isAllChartsHidden: Bool {
+        var result = true
+        chartModels.forEach { result = result && $0.isHidden }
+        return result
+    }
 
     private(set) var lineGap: CGFloat = 60.0
     
@@ -58,11 +64,11 @@ class ChartDataSource: Updatable {
     
     private(set) var minValue: CGFloat = 0
     
-    public var maxValue: CGFloat = 0
+    public var maxValues: [CGFloat] = []
+
+    private(set) var targetMaxValues: [CGFloat] = []
     
-    private(set) var targetMaxValue: CGFloat = 0
-    
-    private(set) var deltaToTargetValue: CGFloat = 0
+    private(set) var deltaToTargetValues: [CGFloat] = []
     
     private(set) var frameAnimation: Int = 0
     
@@ -78,17 +84,97 @@ class ChartDataSource: Updatable {
     
     private var viewDataSize: CGSize = .zero
 
+    private(set) var yScaled: Bool = false
+    
     public var framesInAnimationDuration: Int {
         return Int(CFTimeInterval(60) * UIView.animationDuration)
     }
     
-    init(chartModels: [ChartModel]) {
+    init(chartModels: [ChartModel], name: String) {
+        self.name = name
         self.chartModels = chartModels
+        chartModels.forEach { yScaled = $0.yScaled || yScaled }
+        if yScaled {
+            chartModels.forEach { _ in
+                maxValues.append(0)
+                targetMaxValues.append(0)
+                deltaToTargetValues.append(0)
+            }
+        } else {
+            maxValues.append(0)
+            targetMaxValues.append(0)
+            deltaToTargetValues.append(0)
+        }
     }
-
-    func calcProperties() {
-        self.findMaxRangePoints()
-        let animateMaxValue = maxValue == 0 ? false : true
+    
+    private func calcMaxValue(animateMaxValue value: Bool) {
+        if isPreviewMode {
+            if yScaled {
+                // Individual maximum in full range.
+                var newMaxValues = self.maxValues
+                for index in 0..<chartModels.count {
+                    let chartModel = chartModels[index]
+                    if chartModel.isHidden {
+                        newMaxValues[index] = 0
+                    } else {
+                        newMaxValues[index] = CGFloat(chartModel.data.max()?.value ?? 0)
+                    }
+                }
+                setMaxValues(newMaxValues, animated: value)
+            } else {
+                // One maximum in full range.
+                let max: CGFloat = chartModels.map { chartModel in
+                    if chartModel.isHidden {
+                        return 0
+                    } else {
+                        return CGFloat(chartModel.data.max()?.value ?? 0)
+                    }}.compactMap { $0 }.max() ?? 0
+                setMaxValues([max], animated: value)
+            }
+        } else {
+            if yScaled {
+                // Individual maximum in specific range.
+                var newMaxValues = self.maxValues
+                for index in 0..<chartModels.count {
+                    let chartModel = chartModels[index]
+                    if chartModel.isHidden {
+                        newMaxValues[index] = 0
+                    } else {
+                        var max: CGFloat = 0
+                        for i in 0..<chartModel.data.count {
+                            let x = (CGFloat(i) - range.start) * lineGap
+                            if x >= 0, x <= viewSize.width {
+                                let value = CGFloat(chartModel.data[i].value)
+                                if value > max {
+                                    max = value
+                                }
+                            }
+                        }
+                        newMaxValues[index] = max
+                    }
+                }
+                setMaxValues(newMaxValues, animated: value)
+            } else {
+                // One maximum in specific range.
+                var max: CGFloat = 0
+                for chartModel in chartModels {
+                    if chartModel.isHidden { continue }
+                    for i in 0..<chartModel.data.count {
+                        let x = (CGFloat(i) - range.start) * lineGap
+                        if x >= 0, x <= viewSize.width {
+                            let value = CGFloat(chartModel.data[i].value)
+                            if value > max {
+                                max = value
+                            }
+                        }
+                    }
+                }
+                setMaxValues([max], animated: value)
+            }
+        }
+    }
+    
+    private func calcConstants() {
         if isPreviewMode {
             topSpace = 0.0
             bottomSpace = 0.0
@@ -100,13 +186,6 @@ class ChartDataSource: Updatable {
             } else {
                 lineGap = viewSize.width / (CGFloat(countPoints) - 1)
             }
-            let max: CGFloat = chartModels.map { chartModel in
-                if chartModel.isHidden {
-                    return 0
-                } else {
-                    return CGFloat(chartModel.data.max()?.value ?? 0)
-                }}.compactMap { $0 }.max() ?? 0
-            setMaxValue(max, animated: animateMaxValue)
         } else {
             topSpace = 40.0
             bottomSpace = 20.0
@@ -117,31 +196,22 @@ class ChartDataSource: Updatable {
             } else {
                 lineGap = viewSize.width / value
             }
-            var max: CGFloat = 0
-            for chartModel in chartModels {
-                if chartModel.isHidden { continue }
-                for i in 0..<chartModel.data.count {
-                    let x = (CGFloat(i) - range.start) * lineGap
-                    if x >= 0, x <= viewSize.width {
-                        let value = CGFloat(chartModel.data[i].value)
-                        if value > max {
-                            max = value
-                        }
-                    }
-                }
-            }
-            setMaxValue(max, animated: animateMaxValue)
         }
-        viewDataSize = CGSize(width: viewSize.width,
-                              height: viewSize.height - topSpace - bottomSpace)
-
-        // Calc points and paths.
+    }
+    
+    private func calcPointsAndMakePaths() {
         let isUpdating = dataPoints != nil && self.paths != nil
         var newDataPoints = isUpdating ? nil : [[CGPoint]]()
         var newPaths = isUpdating ? nil : [UIBezierPath]()
         
         for index in 0..<chartModels.count {
-            var points = self.convertDataEntriesToPoints(entries: chartModels[index].data)
+            var maxValue: CGFloat = 0
+            if yScaled {
+                maxValue = maxValues[index]
+            } else if let firstMax = maxValues.first {
+                maxValue = firstMax
+            }
+            var points = self.convertDataEntriesToPoints(entries: chartModels[index].data, maxValue: maxValue)
             
             if !isPreviewMode {
                 for i in 0..<points.count {
@@ -168,6 +238,15 @@ class ChartDataSource: Updatable {
         }
     }
     
+    func calcProperties() {
+        findMaxRangePoints()
+        calcConstants()
+        calcMaxValue(animateMaxValue: true) // TODO: was maxValue == 0 ? false : true
+        viewDataSize = CGSize(width: viewSize.width,
+                              height: viewSize.height - topSpace - bottomSpace)
+        calcPointsAndMakePaths()
+    }
+    
     func calcHeight(for value: Int, with minMaxGap: CGFloat) -> CGFloat {
         if value == 0 {
             return viewDataSize.height
@@ -181,23 +260,39 @@ class ChartDataSource: Updatable {
     func calcLineValue(for value: CGFloat, with minMaxGap: CGFloat) -> Int {
         return Int((1 - value) * minMaxGap) + Int(minValue)
     }
-
-    private func setMaxValue(_ newMaxValue: CGFloat, animated: Bool = false) {
-        if animated {
-            guard newMaxValue != targetMaxValue else {
-                return
+    
+    private func isEqualArrays(_ values: [CGFloat], _ otherValues: [CGFloat]) -> Bool {
+        guard values.count == otherValues.count else {
+            return false
+        }
+        for index in 0..<maxValues.count {
+            if values[index] != otherValues[index] {
+                return false
             }
-            targetMaxValue = newMaxValue
-            deltaToTargetValue = newMaxValue - maxValue
+        }
+        return true
+    }
+    
+    private func setMaxValues(_ newMaxValues: [CGFloat], animated: Bool = false) {
+        if animated {
+            guard !isEqualArrays(newMaxValues, targetMaxValues),
+                !isEqualArrays(newMaxValues, maxValues) else {
+                    return
+            }
+            targetMaxValues = newMaxValues
+            for index in 0..<maxValues.count {
+                deltaToTargetValues[index] = newMaxValues[index] - maxValues[index]
+            }
             frameAnimation = 0
             runMaxValueAnimation = true
             onSetNewTargetMaxValue?()
         } else {
-            maxValue = newMaxValue
+            maxValues = newMaxValues
         }
     }
 
-    private func convertDataEntriesToPoints(entries: [PointModel]) -> [CGPoint] {
+    private func convertDataEntriesToPoints(entries: [PointModel], maxValue: CGFloat) -> [CGPoint] {
+        
         var result: [CGPoint] = []
         let minMaxGap = CGFloat(maxValue - minValue) * topHorizontalLine
         for i in 0..<entries.count {
@@ -231,17 +326,20 @@ class ChartDataSource: Updatable {
                 let x = CGFloat(time) / CGFloat(framesInAnimationDuration - 1)
                 let y = (x * x) / (x * x + (1.0 - x) * (1.0 - x))
                 
-                let toAddValue = deltaToTargetValue * (y - prevy)
-                prevy = y
-                
                 if time == frameAnimation {
-                    maxValue = maxValue + toAddValue
+                    for index in 0..<deltaToTargetValues.count {
+                        let toAddValue = deltaToTargetValues[index] * (y - prevy)
+                        maxValues[index] = maxValues[index] + toAddValue
+                    }
                     onChangeMaxValue?()
                 }
+                prevy = y
+
             }
             frameAnimation += 1
         } else {
             runMaxValueAnimation = false
         }
     }
+
 }

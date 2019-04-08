@@ -10,10 +10,10 @@ import Foundation
 
 struct ChartModelFactory {
     
-    static func make() -> [[ChartModel]] {
+    static func make(fromResource name: String) -> [[ChartModel]] {
         var result: [[ChartModel]] = []
         
-        if let data = DataChartModelFactory.make() {
+        if let data = DataChartModelFactory.make(fromResource: name) {
             let start = Date()
             for index in 0..<data.count {
                 
@@ -52,7 +52,8 @@ struct ChartModelFactory {
                                                     color: color,
                                                     isHidden: false,
                                                     drawingStyle: StandardDrawingStyle(),
-                                                    data: pointModels)
+                                                    data: pointModels,
+                                                    yScaled: chartData.yScaled)
                         chartModels.append(chartModel)
                     }
                 }
