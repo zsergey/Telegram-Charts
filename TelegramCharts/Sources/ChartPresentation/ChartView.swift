@@ -27,7 +27,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
     private var isJustReused = true
     
-    private let labelWidth: CGFloat = 36
+    private let labelWidth: CGFloat = 40
     
     private let dataLayer: CALayer = CALayer()
     
@@ -184,8 +184,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
         
     func drawLabels(byScroll: Bool) {
-        // TODO:
-        return
+//        // TODO:
+//        return
         
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
@@ -212,7 +212,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 textLayer.alignmentMode = .center
                 textLayer.contentsScale = UIScreen.main.scale
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
-                textLayer.fontSize = 11
+                textLayer.fontSize = 12
                 textLayer.string = dataSource.maxRangePoints[index].stringDate
                 textLayer.opacity = 0
                 textLayer.toOpacity = 0
