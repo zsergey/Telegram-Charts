@@ -36,10 +36,55 @@ extension ChartTableViewCellModel: CellViewModelType {
         setupChartView(on: cell)
         setupPreviewChartView(on: cell)
         setupColors(on: cell)
-        setupButtons(on: cell)
     }
     
     func setupButtons(on cell: ChartTableViewCell) {
+        guard cell.buttons.isEmpty else {
+            return
+        }
+
+        let leadingSpace: CGFloat = 16
+        let trailingSpace: CGFloat = 16
+        let topSpace = cell.sliderView.frame.origin.y + cell.sliderView.frame.size.height + 17
+
+        var x = leadingSpace
+        var y = topSpace
+        for i in 0..<chartDataSource.chartModels.count {
+            let chartModel = chartDataSource.chartModels[i]
+            let button = CheckButton(color: chartModel.color)
+            button.unCheckedBackgroundColor = colorScheme.chart.background
+            button.chartModel = chartModel
+            button.title = chartModel.name
+            button.style = chartModel.isHidden ? .unChecked : .checked
+            button.onTapButton = { model in
+                FeedbackGenerator.impactOccurred(style: .light)
+                model.isHidden = !model.isHidden
+                cell.model?.chartDataSource.selectedIndex = nil
+                cell.chartView.cleanDots()
+                cell.calcProperties()
+            }
+            button.onLongTapButton = { model in
+                FeedbackGenerator.impactOccurred(style: .heavy)
+                self.chartDataSource.chartModels.forEach { $0.isHidden = true }
+                cell.buttons.forEach { $0.style = .unChecked }
+                model.isHidden = false
+                button.style = .checked
+                cell.model?.chartDataSource.selectedIndex = nil
+                cell.chartView.cleanDots()
+                cell.calcProperties()
+            }
+            cell.addSubview(button)
+            if x > cell.frame.size.width - trailingSpace - button.frame.size.width {
+                y += button.frame.size.height + leadingSpace / 2
+                x = leadingSpace
+            }
+            button.center = CGPoint(x: x + button.frame.size.width / 2,
+                                    y: y + button.frame.size.height / 2)
+            
+            x += button.frame.size.width + leadingSpace / 2
+            
+            cell.buttons.append(button)
+        }
     }
     
     func setupChartView(on cell: ChartTableViewCell) {

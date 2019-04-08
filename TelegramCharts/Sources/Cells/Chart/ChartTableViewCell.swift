@@ -15,6 +15,7 @@ class ChartTableViewCell: UITableViewCell {
     @IBOutlet var chartView: ChartView!
     @IBOutlet var previewChartView: ChartView!
     @IBOutlet var sliderView: SliderView!
+    var buttons: [CheckButton] = []
 
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -22,6 +23,9 @@ class ChartTableViewCell: UITableViewCell {
         chartView.prepareForReuse()
         previewChartView.prepareForReuse()
         sliderView.prepareForReuse()
+        
+        buttons.forEach { $0.removeFromSuperview() }
+        buttons.removeAll()
     }
         
     func calcProperties() {
@@ -52,6 +56,9 @@ class ChartTableViewCell: UITableViewCell {
         super.layoutSubviews()
         
         if let model = model {
+            
+            model.setupButtons(on: self)
+            
             if model.chartDataSource.viewSize != chartView.frame.size ||
                 model.previewChartDataSource.viewSize != previewChartView.frame.size {
                 
@@ -83,6 +90,9 @@ extension ChartTableViewCell: ColorUpdatable {
             let animations = {
                 self.backgroundColor = model.colorScheme.chart.background
                 self.selectedBackgroundView = model.colorScheme.selectedCellView
+                self.buttons.forEach {
+                    $0.unCheckedBackgroundColor = model.colorScheme.chart.background
+                }
             }
             self.chartView.colorScheme = model.colorScheme
             self.previewChartView.colorScheme = model.colorScheme

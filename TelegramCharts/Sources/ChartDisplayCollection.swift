@@ -29,7 +29,6 @@ class ChartDisplayCollection: DisplayCollection {
     private enum `Type` {
         case section(String)
         case chart(ChartDataSource, ChartDataSource)
-        case title(ChartModel)
         case drawingStyle(String)
         case button(String)
     }
@@ -45,7 +44,6 @@ class ChartDisplayCollection: DisplayCollection {
     
     static var modelsForRegistration: [CellViewAnyModelType.Type] {
         return [ChartTableViewCellModel.self,
-                TitleTableViewCellModel.self,
                 SectionTableViewCellModel.self,
                 ButtonTableViewCellModel.self]
     }
@@ -57,10 +55,9 @@ class ChartDisplayCollection: DisplayCollection {
             let preview = dataSource.preview[index]
             rows.append(.section(main.name))
             rows.append(.chart(main, preview))
-            //main.chartModels.forEach { rows.append(.title($0)) }
-            //rows.append(.section(""))
             // If you want to be able change drawing style uncomment this:
             // rows.append(.drawingStyle(titleDrawingStyleButton))
+            // rows.append(.section(""))
         }
     }
     
@@ -74,29 +71,9 @@ class ChartDisplayCollection: DisplayCollection {
     }
 
     func separatorInset(for indexPath: IndexPath, view: UIView) -> UIEdgeInsets {
-        var left = view.frame.size.width
-        let type = rows[indexPath.row]
-        switch type {
-        case .section: left = 0
-        case .chart: break
-        case .title:
-            switch rows[indexPath.row + 1] {
-            case .title: left = 45
-            default: left = 0
-            }
-        case .button, .drawingStyle: left = 0
-        }
-        return UIEdgeInsets(top: 0, left: left, bottom: 0, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
-    
-    func accessoryType(for indexPath: IndexPath) -> UITableViewCell.AccessoryType {
-        let type = rows[indexPath.row]
-        switch type {
-        case .title(let model): return model.isHidden ? .none : .checkmark
-        default: return .none
-        }
-    }
-    
+        
     func updateButtonText(for indexPath: IndexPath, in cell: ButtonTableViewCell) {
         let type = rows[indexPath.row]
         switch type {
@@ -115,8 +92,6 @@ class ChartDisplayCollection: DisplayCollection {
             return ChartTableViewCellModel(chartDataSource: main,
                                            previewChartDataSource: preview,
                                            colorScheme: colorScheme, drawingStyle: drawingStyle)
-        case .title(let model):
-            return TitleTableViewCellModel(text: model.name, color: model.color, colorScheme: colorScheme)
         case .button(let text), .drawingStyle(let text):
             return ButtonTableViewCellModel(text: text, colorScheme: colorScheme)
         }
@@ -126,45 +101,45 @@ class ChartDisplayCollection: DisplayCollection {
         let type = rows[indexPath.row]
         switch type {
         case .section(let name): return name.count > 0 ? 55 : 35
-        case .chart: return 372 + 45
-        case .title: return 45
+        case .chart(let main, _): return calcChartHeight(dataSource: main)
         case .button, .drawingStyle: return 46
         }
     }
     
-    func didSelect(indexPath: IndexPath) -> IndexPath? {
+    func calcChartHeight(dataSource: ChartDataSource) -> CGFloat {
+        let mainHeight: CGFloat = 400
+        let oneLineHeight: CGFloat = 41
+        let additionalHeight: CGFloat = 4
+        var countLines: CGFloat = 1
+        let leadingSpace: CGFloat = 16
+        let trailingSpace: CGFloat = 16
+        var x = leadingSpace
+        var y: CGFloat = 0
+        for i in 0..<dataSource.chartModels.count {
+            let chartModel = dataSource.chartModels[i]
+            let button = CheckButton(color: chartModel.color)
+            button.title = chartModel.name
+            if x > UIScreen.main.bounds.size.width - trailingSpace - button.frame.size.width {
+                countLines += 1
+                y += button.frame.size.height + leadingSpace / 2
+                x = leadingSpace
+            }
+            x += button.frame.size.width + leadingSpace / 2
+        }
+        return mainHeight + countLines * oneLineHeight + additionalHeight
+    }
+    
+    func didSelect(indexPath: IndexPath) {
         let type = rows[indexPath.row]
         switch type {
         case .drawingStyle:
-            FeedbackGenerator.impactOccurred(style: .medium)
+            FeedbackGenerator.impactOccurred(style: .light)
             drawingStyle = drawingStyle is StandardDrawingStyle ? CurveDrawingStyle() : StandardDrawingStyle()
             createRows()
             changeDrawingStyle(to: drawingStyle)
             onChangeDrawingStyle?()
-        case .title(let model):
-            FeedbackGenerator.impactOccurred(style: .medium)
-            model.isHidden = !model.isHidden
         default: break
         }
-
-        var result: IndexPath?
-        switch type {
-        case .title:
-            var row = indexPath.row
-            while row > 0 {
-                row -= 1
-                let type = rows[row]
-                switch type {
-                case .chart:
-                    result = IndexPath(row: row, section: indexPath.section)
-                    return result
-                default: break
-                }
-            }
-        default: break
-        }
-        
-        return result
     }
 
 }

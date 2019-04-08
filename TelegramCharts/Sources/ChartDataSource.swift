@@ -110,7 +110,7 @@ class ChartDataSource: Updatable {
         } else {
             topSpace = 40.0
             bottomSpace = 20.0
-            topHorizontalLine = 98 / 100.0
+            topHorizontalLine = 95 / 100.0
             let value = range.end - range.start - 1
             if value <= 0 {
                 lineGap = 0

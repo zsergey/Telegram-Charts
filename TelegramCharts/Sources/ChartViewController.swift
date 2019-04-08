@@ -125,11 +125,9 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         return indexPaths
     }
 
-    func didSelectRow(at indexPath: IndexPath, chartAt chartIndexPath: IndexPath?) {
+    func didSelectRow(at indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) {
-            if cell is TitleTableViewCell {
-                reloadRows([indexPath])
-            } else if cell is ButtonTableViewCell {
+            if cell is ButtonTableViewCell {
                 // Update all buttons.
                 for visibleCell in tableView.visibleCells {
                     if let cell = visibleCell as? ButtonTableViewCell {
@@ -140,12 +138,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
                     }
                 }
             }
-        }
-        if let chartIndexPath = chartIndexPath,
-            let cell = tableView.cellForRow(at: chartIndexPath) as? ChartTableViewCell {
-            cell.model?.chartDataSource.selectedIndex = nil
-            cell.chartView.cleanDots()
-            cell.calcProperties()
         }
     }
 
@@ -198,8 +190,8 @@ extension ChartViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let chartIndexPath = displayCollection.didSelect(indexPath: indexPath)
-        didSelectRow(at: indexPath, chartAt: chartIndexPath)
+        displayCollection.didSelect(indexPath: indexPath)
+        didSelectRow(at: indexPath)
     }
 }
 
@@ -213,12 +205,11 @@ extension ChartViewController: UITableViewDataSource {
         let model = displayCollection.model(for: indexPath)
         let cell = tableView.dequeueReusableCell(for: indexPath, with: model)
         cell.separatorInset = displayCollection.separatorInset(for: indexPath, view: view)
-        cell.accessoryType = displayCollection.accessoryType(for: indexPath)
         return cell
     }
     
     @IBAction func tapChangeColorSchemeButton(_ sender: UIBarButtonItem) {
-        FeedbackGenerator.impactOccurred(style: .medium)
+        FeedbackGenerator.impactOccurred(style: .light)
         displayCollection.colorScheme = colorScheme.next()
         colorScheme = displayCollection.colorScheme
         for cell in self.tableView.visibleCells {

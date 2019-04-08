@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		AD17FF312244978F0073F0BB /* ChartDisplayCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF302244978F0073F0BB /* ChartDisplayCollection.swift */; };
-		AD17FF33224498730073F0BB /* TitleTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF32224498730073F0BB /* TitleTableViewCellModel.swift */; };
 		AD17FF35224498AA0073F0BB /* ButtonTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF34224498AA0073F0BB /* ButtonTableViewCellModel.swift */; };
 		AD17FF3722449EBF0073F0BB /* ChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3622449EBF0073F0BB /* ChartModelFactory.swift */; };
 		AD17FF392244A1250073F0BB /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF382244A1250073F0BB /* Reusable.swift */; };
@@ -17,6 +16,7 @@
 		AD17FF3F224619950073F0BB /* ChartDataSourceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3E224619950073F0BB /* ChartDataSourceFactory.swift */; };
 		AD17FF41224646FA0073F0BB /* ChartDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF40224646FA0073F0BB /* ChartDataSource.swift */; };
 		AD17FF44224687E90073F0BB /* chart_data_max.json in Resources */ = {isa = PBXBuildFile; fileRef = AD17FF42224687E90073F0BB /* chart_data_max.json */; };
+		AD1C5D16225B1C6700F9A083 /* CheckButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD1C5D15225B1C6700F9A083 /* CheckButton.swift */; };
 		AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */; };
 		AD2AD4762247B15600B16492 /* TextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4752247B15600B16492 /* TextLayer.swift */; };
 		AD2AD4782248207300B16492 /* Painter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2AD4772248207300B16492 /* Painter.swift */; };
@@ -35,8 +35,6 @@
 		AD94517C223D90EF00E8CD9D /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */; };
 		ADB3E9E422441BE9007CC2F2 /* ChartTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9E222441BE9007CC2F2 /* ChartTableViewCell.swift */; };
 		ADB3E9E522441BE9007CC2F2 /* ChartTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E9E322441BE9007CC2F2 /* ChartTableViewCell.xib */; };
-		ADB3E9E922441C14007CC2F2 /* TitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9E722441C14007CC2F2 /* TitleTableViewCell.swift */; };
-		ADB3E9EA22441C14007CC2F2 /* TitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E9E822441C14007CC2F2 /* TitleTableViewCell.xib */; };
 		ADB3E9EE22441C36007CC2F2 /* ButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9EC22441C36007CC2F2 /* ButtonTableViewCell.swift */; };
 		ADB3E9EF22441C36007CC2F2 /* ButtonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E9ED22441C36007CC2F2 /* ButtonTableViewCell.xib */; };
 		ADB3E9F222441D56007CC2F2 /* CellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F122441D56007CC2F2 /* CellViewModel.swift */; };
@@ -56,7 +54,7 @@
 		ADE577132236E8920006200D /* ChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE5770C2236E8920006200D /* ChartViewController.swift */; };
 		ADE577142236E8920006200D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE5770D2236E8920006200D /* AppDelegate.swift */; };
 		ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577202236EDB20006200D /* DataChartModelFactory.swift */; };
-		ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577242236FE620006200D /* UIColor+Initializer.swift */; };
+		ADE577252236FE620006200D /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE577242236FE620006200D /* UIColorExtensions.swift */; };
 		ADE57727223702C50006200D /* DataChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE57726223702C50006200D /* DataChartModel.swift */; };
 		ADFF33B32245272F0019A4D4 /* SectionTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFF33B22245272F0019A4D4 /* SectionTableViewCellModel.swift */; };
 		ADFF33B8224527620019A4D4 /* SectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADFF33B6224527620019A4D4 /* SectionTableViewCell.swift */; };
@@ -65,7 +63,6 @@
 
 /* Begin PBXFileReference section */
 		AD17FF302244978F0073F0BB /* ChartDisplayCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDisplayCollection.swift; sourceTree = "<group>"; };
-		AD17FF32224498730073F0BB /* TitleTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleTableViewCellModel.swift; sourceTree = "<group>"; };
 		AD17FF34224498AA0073F0BB /* ButtonTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTableViewCellModel.swift; sourceTree = "<group>"; };
 		AD17FF3622449EBF0073F0BB /* ChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartModelFactory.swift; sourceTree = "<group>"; };
 		AD17FF382244A1250073F0BB /* Reusable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
@@ -74,6 +71,7 @@
 		AD17FF3E224619950073F0BB /* ChartDataSourceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDataSourceFactory.swift; sourceTree = "<group>"; };
 		AD17FF40224646FA0073F0BB /* ChartDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDataSource.swift; sourceTree = "<group>"; };
 		AD17FF42224687E90073F0BB /* chart_data_max.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_max.json; sourceTree = "<group>"; };
+		AD1C5D15225B1C6700F9A083 /* CheckButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckButton.swift; sourceTree = "<group>"; };
 		AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		AD2AD4752247B15600B16492 /* TextLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLayer.swift; sourceTree = "<group>"; };
 		AD2AD4772248207300B16492 /* Painter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Painter.swift; sourceTree = "<group>"; };
@@ -92,8 +90,6 @@
 		AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		ADB3E9E222441BE9007CC2F2 /* ChartTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartTableViewCell.swift; sourceTree = "<group>"; };
 		ADB3E9E322441BE9007CC2F2 /* ChartTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartTableViewCell.xib; sourceTree = "<group>"; };
-		ADB3E9E722441C14007CC2F2 /* TitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleTableViewCell.swift; sourceTree = "<group>"; };
-		ADB3E9E822441C14007CC2F2 /* TitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleTableViewCell.xib; sourceTree = "<group>"; };
 		ADB3E9EC22441C36007CC2F2 /* ButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonTableViewCell.swift; sourceTree = "<group>"; };
 		ADB3E9ED22441C36007CC2F2 /* ButtonTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ButtonTableViewCell.xib; sourceTree = "<group>"; };
 		ADB3E9F122441D56007CC2F2 /* CellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewModel.swift; sourceTree = "<group>"; };
@@ -115,7 +111,7 @@
 		ADE5770C2236E8920006200D /* ChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartViewController.swift; sourceTree = "<group>"; };
 		ADE5770D2236E8920006200D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ADE577202236EDB20006200D /* DataChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataChartModelFactory.swift; sourceTree = "<group>"; };
-		ADE577242236FE620006200D /* UIColor+Initializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Initializer.swift"; sourceTree = "<group>"; };
+		ADE577242236FE620006200D /* UIColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
 		ADE57726223702C50006200D /* DataChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataChartModel.swift; sourceTree = "<group>"; };
 		ADFF33B22245272F0019A4D4 /* SectionTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTableViewCellModel.swift; sourceTree = "<group>"; };
 		ADFF33B6224527620019A4D4 /* SectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTableViewCell.swift; sourceTree = "<group>"; };
@@ -177,9 +173,9 @@
 		ADB3E9E022441BCB007CC2F2 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				AD1C5D15225B1C6700F9A083 /* CheckButton.swift */,
 				ADFF33B1224527160019A4D4 /* Section */,
 				ADB3E9EB22441C29007CC2F2 /* Button */,
-				ADB3E9E622441BEF007CC2F2 /* Title */,
 				ADB3E9E122441BD6007CC2F2 /* Chart */,
 			);
 			path = Cells;
@@ -193,16 +189,6 @@
 				ADB3E9E322441BE9007CC2F2 /* ChartTableViewCell.xib */,
 			);
 			path = Chart;
-			sourceTree = "<group>";
-		};
-		ADB3E9E622441BEF007CC2F2 /* Title */ = {
-			isa = PBXGroup;
-			children = (
-				AD17FF32224498730073F0BB /* TitleTableViewCellModel.swift */,
-				ADB3E9E722441C14007CC2F2 /* TitleTableViewCell.swift */,
-				ADB3E9E822441C14007CC2F2 /* TitleTableViewCell.xib */,
-			);
-			path = Title;
 			sourceTree = "<group>";
 		};
 		ADB3E9EB22441C29007CC2F2 /* Button */ = {
@@ -301,7 +287,7 @@
 		ADE577232236FE500006200D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				ADE577242236FE620006200D /* UIColor+Initializer.swift */,
+				ADE577242236FE620006200D /* UIColorExtensions.swift */,
 				AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */,
 				ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */,
 				AD9226DD223A286E00A5B7D6 /* Int+Format.swift */,
@@ -387,7 +373,6 @@
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,
 				ADB3E9E522441BE9007CC2F2 /* ChartTableViewCell.xib in Resources */,
 				ADE5770E2236E8920006200D /* chart_data.json in Resources */,
-				ADB3E9EA22441C14007CC2F2 /* TitleTableViewCell.xib in Resources */,
 				ADE577112236E8920006200D /* Main.storyboard in Resources */,
 				ADB3E9EF22441C36007CC2F2 /* ButtonTableViewCell.xib in Resources */,
 				AD17FF44224687E90073F0BB /* chart_data_max.json in Resources */,
@@ -414,16 +399,16 @@
 				ADE577132236E8920006200D /* ChartViewController.swift in Sources */,
 				ADB3E9F222441D56007CC2F2 /* CellViewModel.swift in Sources */,
 				ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */,
+				AD1C5D16225B1C6700F9A083 /* CheckButton.swift in Sources */,
 				ADFF33B8224527620019A4D4 /* SectionTableViewCell.swift in Sources */,
 				ADB3E9FC22441F4F007CC2F2 /* ChartTableViewCellModel.swift in Sources */,
 				AD17FF3F224619950073F0BB /* ChartDataSourceFactory.swift in Sources */,
 				AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */,
 				AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */,
 				AD17FF3B2244A9CC0073F0BB /* Updatable.swift in Sources */,
-				ADE577252236FE620006200D /* UIColor+Initializer.swift in Sources */,
+				ADE577252236FE620006200D /* UIColorExtensions.swift in Sources */,
 				AD9226D02238CBA800A5B7D6 /* ChartModel.swift in Sources */,
 				AD17FF35224498AA0073F0BB /* ButtonTableViewCellModel.swift in Sources */,
-				AD17FF33224498730073F0BB /* TitleTableViewCellModel.swift in Sources */,
 				AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */,
 				AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */,
 				ADFF33B32245272F0019A4D4 /* SectionTableViewCellModel.swift in Sources */,
@@ -440,7 +425,6 @@
 				ADB3E9E422441BE9007CC2F2 /* ChartTableViewCell.swift in Sources */,
 				AD9226DE223A286E00A5B7D6 /* Int+Format.swift in Sources */,
 				ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */,
-				ADB3E9E922441C14007CC2F2 /* TitleTableViewCell.swift in Sources */,
 				AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */,
 				AD9226D2223A122B00A5B7D6 /* DrawingStyleProtocol.swift in Sources */,
 				ADB3E9F622441D85007CC2F2 /* ReusableCell.swift in Sources */,
