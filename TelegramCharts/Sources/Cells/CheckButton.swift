@@ -90,6 +90,8 @@ class CheckButton: UIControl {
         }
     }
     
+    private var processedLongPressGesture: Bool = false
+    
     private let textOffset: CGFloat = 21
 
     private let space: CGFloat = 20
@@ -136,13 +138,23 @@ class CheckButton: UIControl {
         font = UIFont(name: titleLabel.font.fontName, size: 13)
         self.addSubview(self.imageView)
         addTarget(self, action: #selector(tapButton(_:)), for: .touchUpInside)
+        addTarget(self, action: #selector(touchDownButton(_:)), for: .touchDown)
+
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(longTapButton(_:)))
+        gesture.minimumPressDuration = 0.2
         addGestureRecognizer(gesture)
         self.updateStyle()
     }
-    
+
+    @objc func touchDownButton(_ button: UIButton) {
+        processedLongPressGesture = false
+    }
+
     @objc func longTapButton(_ button: UIButton) {
-        onLongTapButton?(chartModel)
+        if !processedLongPressGesture {
+            onLongTapButton?(chartModel)
+            processedLongPressGesture = true
+        }
     }
 
     @objc func tapButton(_ button: UIButton) {

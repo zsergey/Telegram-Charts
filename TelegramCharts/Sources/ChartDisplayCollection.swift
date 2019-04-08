@@ -133,7 +133,7 @@ class ChartDisplayCollection: DisplayCollection {
         let type = rows[indexPath.row]
         switch type {
         case .drawingStyle:
-            FeedbackGenerator.impactOccurred(style: .light)
+            FeedbackGenerator.impactOccurred(style: .medium)
             drawingStyle = drawingStyle is StandardDrawingStyle ? CurveDrawingStyle() : StandardDrawingStyle()
             createRows()
             changeDrawingStyle(to: drawingStyle)

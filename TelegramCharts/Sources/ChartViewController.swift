@@ -209,7 +209,7 @@ extension ChartViewController: UITableViewDataSource {
     }
     
     @IBAction func tapChangeColorSchemeButton(_ sender: UIBarButtonItem) {
-        FeedbackGenerator.impactOccurred(style: .light)
+        FeedbackGenerator.impactOccurred(style: .medium)
         displayCollection.colorScheme = colorScheme.next()
         colorScheme = displayCollection.colorScheme
         for cell in self.tableView.visibleCells {

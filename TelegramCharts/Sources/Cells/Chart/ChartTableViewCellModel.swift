@@ -57,7 +57,7 @@ extension ChartTableViewCellModel: CellViewModelType {
             button.title = chartModel.name
             button.style = chartModel.isHidden ? .unChecked : .checked
             button.onTapButton = { model in
-                FeedbackGenerator.impactOccurred(style: .light)
+                FeedbackGenerator.impactOccurred(style: .medium)
                 model.isHidden = !model.isHidden
                 cell.model?.chartDataSource.selectedIndex = nil
                 cell.chartView.cleanDots()
