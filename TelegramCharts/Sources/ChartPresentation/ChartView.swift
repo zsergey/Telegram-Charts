@@ -86,6 +86,10 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         layer.addSublayer(mainLayer)
         clipsToBounds = true
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTouch))
+        tapGesture.delegate = self
+        addGestureRecognizer(tapGesture)
+
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
         panGesture.minimumNumberOfTouches = 1
@@ -95,6 +99,11 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
+    }
+    
+    @objc private func handleTouch(recognizer: UIPanGestureRecognizer) {
+        let point = recognizer.location(in: self)
+        drawDotsIfNeeded(location: point)
     }
 
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
