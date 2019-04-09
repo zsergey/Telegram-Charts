@@ -400,11 +400,18 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     func updateColors() {
+        guard let dataSource = dataSource else {
+            return
+        }
         // TODO: here you should update colors.
         if let gridLines = gridLines {
             gridLines.forEach {
-                let color = $0.lineValue == 0 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
-                $0.updateColors(lineColor: color, textColor: colorScheme.chart.text, background: colorScheme.chart.background)
+                
+                let lineColor = $0.lineValue == 0 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
+                let textColor = dataSource.yScaled ? nil : colorScheme.chart.text
+                $0.updateColors(lineColor: lineColor,
+                                background: colorScheme.chart.background,
+                                textColor: textColor)
             }
         }
         if let labels = labels {
@@ -412,7 +419,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 $0.foregroundColor = colorScheme.chart.text.cgColor
             }
         }
-        if dataSource?.selectedIndex != nil {
+        if dataSource.selectedIndex != nil {
             drawDots()
         }
     }

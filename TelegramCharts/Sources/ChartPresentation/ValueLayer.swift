@@ -36,10 +36,12 @@ class ValueLayer: CALayer {
         super.init(coder: aDecoder)
     }
     
-    func updateColors(lineColor: UIColor, textColor: UIColor, background: UIColor) {
+    func updateColors(lineColor: UIColor, background: UIColor, textColor: UIColor?) {
         lineLayer?.strokeColor = lineColor.cgColor
         lineLayer?.fillColor = background.cgColor
-        textLayer?.foregroundColor = textColor.cgColor
+        if let textColor = textColor {
+            textLayer?.foregroundColor = textColor.cgColor
+        }
     }
     
     override func layoutSublayers() {
