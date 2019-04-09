@@ -71,6 +71,8 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
 
     private var isChangingTheme = false
 
+    private var isScrolling = false
+    
     func calcPerformance(_ link: CADisplayLink) {
         if lastTime == 0.0 {
             firstTime = link.timestamp
@@ -126,6 +128,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func scrollingFinished() {
+        isScrolling = false
         for cell in tableView.visibleCells {
             if let cell = cell as? ChartTableViewCell {
                 cell.chartView.isScrolling = false
@@ -136,6 +139,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func scrollingStarted() {
+        isScrolling = true
         for cell in tableView.visibleCells {
             if let cell = cell as? ChartTableViewCell {
                 cell.chartView.isScrolling = true
@@ -194,6 +198,12 @@ extension ChartViewController {
         guard !isChangingTheme else {
             return
         }
+
+        if isScrolling {
+            let offset = tableView.contentOffset
+            tableView.setContentOffset(offset, animated: false)
+        }
+        
         FeedbackGenerator.impactOccurred(style: .medium)
         animateColorSchemeSwitch()
         displayCollection.colorScheme = colorScheme.next()

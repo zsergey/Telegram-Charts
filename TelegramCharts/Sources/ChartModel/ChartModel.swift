@@ -11,7 +11,7 @@ import UIKit
 struct PointModel {
     var value: Int
     let date: Date
-    
+
     var stringDate: String {
         return date.format
     }
