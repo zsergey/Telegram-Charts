@@ -46,10 +46,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         
         navigationController?.navigationBar.isTranslucent = false
         
-        let empty = СoupleChartDataSource(main: [ChartDataSource](),
-                                           preview: [ChartDataSource]())
-        self.displayCollection = createDisplayCollection(dataSource: empty)
-
         let dataSource = ChartDataSourceFactory.make()
         self.displayCollection = self.createDisplayCollection(dataSource: dataSource)
         self.tableView.reloadData()
@@ -62,9 +58,8 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func createDisplayCollection(dataSource: СoupleChartDataSource) -> ChartDisplayCollection {
         colorScheme = DayScheme()
-
         let displayCollection = ChartDisplayCollection(dataSource: dataSource,
-                                                   colorScheme: colorScheme)
+                                                       colorScheme: colorScheme)
         tableView.backgroundColor = colorScheme.section.background
         tableView.registerNibs(from: displayCollection)
         return displayCollection

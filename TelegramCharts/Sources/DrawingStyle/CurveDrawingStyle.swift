@@ -15,7 +15,7 @@ struct CurveDrawingStyle: DrawingStyleProtocol {
         var controlPoint2: CGPoint
     }
 
-    func createPath(dataPoints: [CGPoint]) -> UIBezierPath? {
+    func createPath(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
         guard dataPoints.count > 0 else {
             return nil
         }

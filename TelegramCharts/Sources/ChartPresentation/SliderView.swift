@@ -251,30 +251,34 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     private func drawThumbs() {
         // Left Thumb.
         let color = colorScheme.slider.thumb
-        let height = self.frame.size.height + 1
-        var rect = CGRect(x: startX + trailingSpace, y: -0.5, width: thumbWidth, height: height)
+        let height = self.frame.size.height
+        var rect = CGRect(x: startX + trailingSpace, y: 0, width: thumbWidth, height: height)
         var corners: UIRectCorner = [.topLeft, .bottomLeft]
         if let leftThumb = leftThumb {
-            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: SliderView.thumbCornerRadius)
+            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners,
+                                              cornerRadius: SliderView.thumbCornerRadius)
             leftThumb.path = path.cgPath
             leftThumb.fillColor = color.cgColor
         } else {
             let leftThumb = Painter.createRect(rect: rect, byRoundingCorners: corners,
-                                     fillColor: color, lineWidth: 1.0, cornerRadius: SliderView.thumbCornerRadius)
+                                               fillColor: color, lineWidth: 1.0,
+                                               cornerRadius: SliderView.thumbCornerRadius)
             mainLayer.addSublayer(leftThumb)
             self.leftThumb = leftThumb
         }
 
         // Right Thumb.
         corners = [.topRight, .bottomRight]
-        rect = CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: -0.5, width: thumbWidth, height: height)
+        rect = CGRect(x: startX + trailingSpace + sliderWidth - thumbWidth, y: 0, width: thumbWidth, height: height)
         if let rightThumb = rightThumb {
-            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: SliderView.thumbCornerRadius)
+            let path = Painter.createRectPath(rect: rect, byRoundingCorners: corners,
+                                              cornerRadius: SliderView.thumbCornerRadius)
             rightThumb.path = path.cgPath
             rightThumb.fillColor = color.cgColor
         } else {
             let rightThumb = Painter.createRect(rect: rect, byRoundingCorners: corners,
-                                      fillColor: color, lineWidth: 1.0, cornerRadius: SliderView.thumbCornerRadius)
+                                                fillColor: color, lineWidth: 1.0,
+                                                cornerRadius: SliderView.thumbCornerRadius)
             mainLayer.addSublayer(rightThumb)
             self.rightThumb = rightThumb
         }
@@ -283,29 +287,30 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     private func drawLines() {
         let height = self.frame.size.height
         let x = startX + trailingSpace + thumbWidth
+        let lineHeight: CGFloat = 1
         
         // Top Line.
         let lineWidth = sliderWidth - 2 * thumbWidth
-        var rect = CGRect(x: x, y: -0.25, width: lineWidth, height: 0.5)
+        var rect = CGRect(x: x, y: 0, width: lineWidth, height: lineHeight)
         let color = colorScheme.slider.thumb
         if let topLine = topLine {
             let path = Painter.createRectPath(rect: rect)
             topLine.path = path.cgPath
-            topLine.strokeColor = color.cgColor
+            topLine.fillColor = color.cgColor
         } else {
-            let topLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: 0.5)
+            let topLine = Painter.createRect(rect: rect, fillColor: color, lineWidth: 0.5)
             mainLayer.addSublayer(topLine)
             self.topLine = topLine
         }
         
         // Bottom Line.
-        rect = CGRect(x: x, y: height - 0.25, width: lineWidth, height: 0.5)
+        rect = CGRect(x: x, y: height - lineHeight, width: lineWidth, height: lineHeight)
         if let bottomLine = bottomLine {
             let path = Painter.createRectPath(rect: rect)
             bottomLine.path = path.cgPath
-            bottomLine.strokeColor = color.cgColor
+            bottomLine.fillColor = color.cgColor
         } else {
-            let bottomLine = Painter.createRect(rect: rect, strokeColor: color, lineWidth: 0.5)
+            let bottomLine = Painter.createRect(rect: rect, fillColor: color, lineWidth: 0.5)
             mainLayer.addSublayer(bottomLine)
             self.bottomLine = bottomLine
         }

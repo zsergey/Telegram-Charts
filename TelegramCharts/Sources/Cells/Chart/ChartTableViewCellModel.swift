@@ -112,9 +112,9 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.chartView.cleanDots()
 
         chartDataSource.onChangeMaxValue = {
-            self.calcProperties(of: self.chartDataSource, for: cell.chartView)
-             self.chartDataSource.selectedIndex = nil
-             cell.chartView.cleanDots()
+            self.calcProperties(of: self.chartDataSource, for: cell.chartView, shouldCalcMaxValue: false)
+            self.chartDataSource.selectedIndex = nil
+            cell.chartView.cleanDots()
         }
         chartDataSource.onSetNewTargetMaxValue = {
             DispatchQueue.main.async {
@@ -126,7 +126,7 @@ extension ChartTableViewCellModel: CellViewModelType {
     func setupPreviewChartView(on cell: ChartTableViewCell) {
         cell.previewChartView.dataSource = previewChartDataSource
         previewChartDataSource.onChangeMaxValue = {
-            self.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView)
+            self.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, shouldCalcMaxValue: false)
         }
     }
     
@@ -163,7 +163,7 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.updateColors(changeColorScheme: false)
     }
     
-    func calcProperties(of dataSource: ChartDataSource, for view: ChartView) {
+    func calcProperties(of dataSource: ChartDataSource, for view: ChartView, shouldCalcMaxValue: Bool = true) {
         // TODO: Calc in background.
         /*if view.isScrolling {
             DispatchQueue.global(qos: .background).async {
@@ -173,7 +173,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                 }
             }
         } else { */
-            dataSource.calcProperties()
+            dataSource.calcProperties(shouldCalcMaxValue)
             view.setNeedsLayout()
         /*} */
     }

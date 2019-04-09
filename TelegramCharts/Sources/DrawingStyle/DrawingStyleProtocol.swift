@@ -9,5 +9,5 @@
 import UIKit
 
 protocol DrawingStyleProtocol {
-    func createPath(dataPoints: [CGPoint]) -> UIBezierPath?
+    func createPath(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath?
 }

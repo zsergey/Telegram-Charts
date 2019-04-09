@@ -9,7 +9,7 @@
 import UIKit
 
 struct PointModel {
-    let value: Int
+    var value: Int
     let date: Date
     
     var stringDate: String {
@@ -43,6 +43,7 @@ class ChartModel {
     var color: UIColor
     var isHidden: Bool
     var yScaled: Bool
+    var stacked: Bool
     var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
     var opacity: Float {
@@ -51,16 +52,20 @@ class ChartModel {
     
     init(name: String,
          color: UIColor,
-         isHidden: Bool,
-         drawingStyle: DrawingStyleProtocol,
          data: [PointModel],
-         yScaled: Bool) {
+         yScaled: Bool,
+         stacked: Bool) {
         self.name = name
         self.color = color
-        self.isHidden = isHidden
-        self.drawingStyle = drawingStyle
+        self.isHidden = false
         self.data = data
         self.yScaled = yScaled
+        self.stacked = stacked
+        if stacked {
+            self.drawingStyle = StackedDrawingStyle()
+        } else {
+            self.drawingStyle = StandardDrawingStyle()
+        }
     }
 }
 

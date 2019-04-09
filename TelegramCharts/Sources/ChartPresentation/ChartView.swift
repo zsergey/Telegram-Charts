@@ -10,7 +10,12 @@ import UIKit
 
 class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
-    var dataSource: ChartDataSource?
+    var dataSource: ChartDataSource? {
+        didSet {
+            let isPreviewMode = dataSource?.isPreviewMode ?? false
+            layer.cornerRadius = isPreviewMode ? SliderView.thumbCornerRadius : 0 // TODO: Performance
+        }
+    }
     
     var colorScheme: ColorSchemeProtocol = DayScheme() {
         didSet {
@@ -79,8 +84,6 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     private func setupView() {
-        layer.cornerRadius = SliderView.thumbCornerRadius // TODO: fix
-        
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
@@ -143,20 +146,24 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         }
     }
     
-    private func drawCharts() {
+    func drawCharts() {
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
             let paths = dataSource.paths else {
-            return
+                return
         }
         
         let isUpdating = chartLines != nil
         var newChartLines = isUpdating ? nil : [CAShapeLayer]()
         
-        for index in 0..<dataSource.chartModels.count {
-            let chartModel = dataSource.chartModels[index]
-            let lineLayer = isUpdating ? chartLines![index] : CAShapeLayer()
-            let path = paths[index]
+        let range = 0..<dataSource.chartModels.count
+        for standartIndex in range {
+            var inverseIndex = range.endIndex - standartIndex - 1
+            inverseIndex = dataSource.stacked ? inverseIndex : standartIndex
+            
+            let chartModel = dataSource.chartModels[inverseIndex]
+            let lineLayer = isUpdating ? chartLines![standartIndex] : CAShapeLayer()
+            let path = paths[inverseIndex]
             if isUpdating {
                 CATransaction.setDisableActions(true)
                 lineLayer.path = path.cgPath
@@ -170,10 +177,12 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 lineLayer.path = path.cgPath
                 lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
-                lineLayer.fillColor = UIColor.clear.cgColor
+                lineLayer.fillColor = dataSource.stacked ? chartModel.color.cgColor : UIColor.clear.cgColor
                 lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
-                lineLayer.lineCap = .round
-                lineLayer.lineJoin = .round
+                if !dataSource.stacked { // TODO: не забыть здесь
+                    lineLayer.lineCap = .round
+                    lineLayer.lineJoin = .round
+                }
                 dataLayer.addSublayer(lineLayer)
                 newChartLines!.append(lineLayer)
             }
@@ -183,7 +192,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             chartLines = newChartLines
         }
     }
-        
+    
     func drawLabels(byScroll: Bool) {
         
         guard let dataSource = dataSource,

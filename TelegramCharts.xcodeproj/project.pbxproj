@@ -14,6 +14,7 @@
 		AD107AD9225B58E100D84D3F /* overview3.json in Resources */ = {isa = PBXBuildFile; fileRef = AD107AD0225B58E100D84D3F /* overview3.json */; };
 		AD107ADA225B58E100D84D3F /* overview2.json in Resources */ = {isa = PBXBuildFile; fileRef = AD107AD2225B58E100D84D3F /* overview2.json */; };
 		AD107ADB225B58E100D84D3F /* overview5.json in Resources */ = {isa = PBXBuildFile; fileRef = AD107AD4225B58E100D84D3F /* overview5.json */; };
+		AD107ADD225C6B4900D84D3F /* StackedDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD107ADC225C6B4900D84D3F /* StackedDrawingStyle.swift */; };
 		AD17FF312244978F0073F0BB /* ChartDisplayCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF302244978F0073F0BB /* ChartDisplayCollection.swift */; };
 		AD17FF3722449EBF0073F0BB /* ChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3622449EBF0073F0BB /* ChartModelFactory.swift */; };
 		AD17FF392244A1250073F0BB /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF382244A1250073F0BB /* Reusable.swift */; };
@@ -71,6 +72,7 @@
 		AD107AD0225B58E100D84D3F /* overview3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview3.json; sourceTree = "<group>"; };
 		AD107AD2225B58E100D84D3F /* overview2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview2.json; sourceTree = "<group>"; };
 		AD107AD4225B58E100D84D3F /* overview5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview5.json; sourceTree = "<group>"; };
+		AD107ADC225C6B4900D84D3F /* StackedDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackedDrawingStyle.swift; sourceTree = "<group>"; };
 		AD17FF302244978F0073F0BB /* ChartDisplayCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDisplayCollection.swift; sourceTree = "<group>"; };
 		AD17FF3622449EBF0073F0BB /* ChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartModelFactory.swift; sourceTree = "<group>"; };
 		AD17FF382244A1250073F0BB /* Reusable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				AD9226D1223A122B00A5B7D6 /* DrawingStyleProtocol.swift */,
 				AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */,
 				AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */,
+				AD107ADC225C6B4900D84D3F /* StackedDrawingStyle.swift */,
 			);
 			path = DrawingStyle;
 			sourceTree = "<group>";
@@ -460,6 +463,7 @@
 				ADFF33B8224527620019A4D4 /* SectionTableViewCell.swift in Sources */,
 				ADB3E9FC22441F4F007CC2F2 /* ChartTableViewCellModel.swift in Sources */,
 				AD17FF3F224619950073F0BB /* ChartDataSourceFactory.swift in Sources */,
+				AD107ADD225C6B4900D84D3F /* StackedDrawingStyle.swift in Sources */,
 				AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */,
 				AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */,
 				AD17FF3B2244A9CC0073F0BB /* Updatable.swift in Sources */,
