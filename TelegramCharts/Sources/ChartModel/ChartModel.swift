@@ -44,6 +44,7 @@ class ChartModel {
     var isHidden: Bool
     var yScaled: Bool
     var stacked: Bool
+    var singleBar: Bool
     var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
     var opacity: Float {
@@ -54,14 +55,16 @@ class ChartModel {
          color: UIColor,
          data: [PointModel],
          yScaled: Bool,
-         stacked: Bool) {
+         stacked: Bool,
+         singleBar: Bool) {
         self.name = name
         self.color = color
         self.isHidden = false
         self.data = data
         self.yScaled = yScaled
         self.stacked = stacked
-        if stacked {
+        self.singleBar = singleBar
+        if stacked || singleBar {
             self.drawingStyle = StackedDrawingStyle()
         } else {
             self.drawingStyle = StandardDrawingStyle()

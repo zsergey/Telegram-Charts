@@ -21,7 +21,7 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
     
-    var buttons: [CheckButton] = []
+    var filterButtons: [CheckButton] = []
 
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -30,8 +30,8 @@ class ChartTableViewCell: UITableViewCell {
         previewChartView.prepareForReuse()
         sliderView.prepareForReuse()
         
-        buttons.forEach { $0.removeFromSuperview() }
-        buttons.removeAll()
+        filterButtons.forEach { $0.removeFromSuperview() }
+        filterButtons.removeAll()
     }
         
     func hideViewsIfNeeded() {
@@ -76,7 +76,7 @@ class ChartTableViewCell: UITableViewCell {
         
         if let model = model {
             
-            model.setupButtons(on: self)
+            model.setupFilterButtons(on: self)
             
             if model.chartDataSource.viewSize != chartView.frame.size ||
                 model.previewChartDataSource.viewSize != previewChartView.frame.size {
@@ -109,7 +109,7 @@ extension ChartTableViewCell: ColorUpdatable {
             self.backgroundColor = model.colorScheme.chart.background
             self.selectedBackgroundView = model.colorScheme.selectedCellView
             self.chartNoDataLabel.textColor = model.colorScheme.chart.text
-            self.buttons.forEach {
+            self.filterButtons.forEach {
                 $0.unCheckedBackgroundColor = model.colorScheme.chart.background
             }
             self.chartView.colorScheme = model.colorScheme

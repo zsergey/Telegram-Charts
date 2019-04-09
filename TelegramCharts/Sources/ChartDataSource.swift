@@ -86,6 +86,8 @@ class ChartDataSource: Updatable {
 
     private(set) var stacked: Bool = false
 
+    private(set) var singleBar: Bool = false
+
     public var framesInAnimationDuration: Int {
         return Int(CFTimeInterval(60) * UIView.animationDuration)
     }
@@ -97,6 +99,7 @@ class ChartDataSource: Updatable {
         chartModels.forEach {
             yScaled = $0.yScaled || yScaled
             stacked = $0.stacked || stacked
+            singleBar = $0.singleBar || singleBar
         }
         
         let addZeroValue = {

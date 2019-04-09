@@ -40,7 +40,7 @@ struct DataChartModelFactory {
             }
             
             var chartModel = DataChartModel()
-            readTypeChart(from: dictionary, to: &chartModel)
+            readTypeChart(from: dictionary, to: &chartModel, types: types)
             
             for column in columns {
                 readColumn(column, to: &chartModel, types, names, colors)
@@ -52,12 +52,17 @@ struct DataChartModelFactory {
     }
     
     private static func readTypeChart(from dictionary: [String : Any],
-                                      to chartModel: inout DataChartModel) {
+                                      to chartModel: inout DataChartModel,
+                                      types: [String : Any]) {
         if let value = dictionary["y_scaled"] as? Bool {
             chartModel.yScaled = value
         }
         if let value = dictionary["stacked"] as? Bool {
             chartModel.stacked = value
+        }
+        if types.count == 2, types["x"] != nil, let y = types["y0"] as? String,
+            let type = ColumnType(rawValue: y), type == .bar {
+            chartModel.singleBar = true
         }
     }
 

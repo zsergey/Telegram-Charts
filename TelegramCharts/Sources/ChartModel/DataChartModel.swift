@@ -22,4 +22,5 @@ struct DataChartModel {
     var data = [String: [Any]]()
     var yScaled: Bool = false
     var stacked: Bool = false
+    var singleBar: Bool = false
 }

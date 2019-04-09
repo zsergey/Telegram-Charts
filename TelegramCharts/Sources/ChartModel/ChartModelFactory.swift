@@ -51,7 +51,8 @@ struct ChartModelFactory {
                                                     color: color,
                                                     data: pointModels,
                                                     yScaled: chartData.yScaled,
-                                                    stacked: chartData.stacked)
+                                                    stacked: chartData.stacked,
+                                                    singleBar: chartData.singleBar)
                         chartModels.append(chartModel)
                     }
                 }

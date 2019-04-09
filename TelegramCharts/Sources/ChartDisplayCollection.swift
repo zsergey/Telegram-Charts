@@ -74,22 +74,26 @@ class ChartDisplayCollection: DisplayCollection {
         let mainHeight: CGFloat = 400
         let oneLineHeight: CGFloat = 41
         let additionalHeight: CGFloat = 4
-        var countLines: CGFloat = 1
         let leadingSpace: CGFloat = 16
         let trailingSpace: CGFloat = 16
         var x = leadingSpace
         var y: CGFloat = 0
-        for i in 0..<dataSource.chartModels.count {
-            let chartModel = dataSource.chartModels[i]
-            let button = CheckButton(color: chartModel.color)
-            button.title = chartModel.name
-            if x > UIScreen.main.bounds.size.width - trailingSpace - button.frame.size.width {
-                countLines += 1
-                y += button.frame.size.height + leadingSpace / 2
-                x = leadingSpace
+        
+        var countLines: CGFloat = dataSource.chartModels.count > 1 ? 1 : 0
+        if countLines > 0 {
+            for i in 0..<dataSource.chartModels.count {
+                let chartModel = dataSource.chartModels[i]
+                let button = CheckButton(color: chartModel.color)
+                button.title = chartModel.name
+                if x > UIScreen.main.bounds.size.width - trailingSpace - button.frame.size.width {
+                    countLines += 1
+                    y += button.frame.size.height + leadingSpace / 2
+                    x = leadingSpace
+                }
+                x += button.frame.size.width + leadingSpace / 2
             }
-            x += button.frame.size.width + leadingSpace / 2
         }
+        
         return mainHeight + countLines * oneLineHeight + additionalHeight
     }
     

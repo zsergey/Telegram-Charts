@@ -174,13 +174,14 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                                             animationDuration: UIView.animationDuration)
                 }
             } else {
+                let stackStyle = chartModel.drawingStyle is StackedDrawingStyle
                 lineLayer.path = path.cgPath
                 lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
-                lineLayer.fillColor = dataSource.stacked ? chartModel.color.cgColor : UIColor.clear.cgColor
+                lineLayer.fillColor = stackStyle ? chartModel.color.cgColor : UIColor.clear.cgColor
                 lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
-                if !dataSource.stacked { // TODO: не забыть здесь
-                    lineLayer.lineCap = .round
+                if !stackStyle {
+                    lineLayer.lineCap = .round // TODO: не забыть здесь
                     lineLayer.lineJoin = .round
                 }
                 dataLayer.addSublayer(lineLayer)

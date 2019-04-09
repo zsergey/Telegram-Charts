@@ -35,8 +35,8 @@ extension ChartTableViewCellModel: CellViewModelType {
         setupColors(on: cell)
     }
     
-    func setupButtons(on cell: ChartTableViewCell) {
-        guard cell.buttons.isEmpty else {
+    func setupFilterButtons(on cell: ChartTableViewCell) {
+        guard cell.filterButtons.isEmpty, chartDataSource.chartModels.count > 1 else {
             return
         }
 
@@ -80,7 +80,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                     if !processedLongPressGesture {
                         FeedbackGenerator.impactOccurred(style: .heavy)
                     }
-                    cell.buttons.forEach { $0.style = .unChecked }
+                    cell.filterButtons.forEach { $0.style = .unChecked }
                     button.style = .checked
                     cell.model?.chartDataSource.selectedIndex = nil
                     cell.chartView.cleanDots()
@@ -102,7 +102,7 @@ extension ChartTableViewCellModel: CellViewModelType {
             
             x += button.frame.size.width + leadingSpace / 2
             
-            cell.buttons.append(button)
+            cell.filterButtons.append(button)
         }
     }
     
