@@ -177,7 +177,7 @@ extension ChartViewController: UITableViewDataSource {
 
 extension ChartViewController {
     
-    func animateThemeSwitch() {
+    func animateColorSchemeSwitch() {
         if let snapshotView = self.view.snapshotView(afterScreenUpdates: false) {
             self.view.addSubview(snapshotView)
             self.isChangingTheme = true
@@ -195,7 +195,7 @@ extension ChartViewController {
             return
         }
         FeedbackGenerator.impactOccurred(style: .medium)
-        animateThemeSwitch()
+        animateColorSchemeSwitch()
         displayCollection.colorScheme = colorScheme.next()
         colorScheme = displayCollection.colorScheme
         for cell in self.tableView.visibleCells {

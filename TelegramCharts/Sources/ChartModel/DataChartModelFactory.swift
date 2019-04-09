@@ -64,6 +64,9 @@ struct DataChartModelFactory {
             let type = ColumnType(rawValue: y), type == .bar {
             chartModel.singleBar = true
         }
+        if let value = dictionary["percentage"] as? Bool {
+            chartModel.percentage = value
+        }
     }
 
     private static func readColumn(_ column: [Any], to chartModel: inout DataChartModel,

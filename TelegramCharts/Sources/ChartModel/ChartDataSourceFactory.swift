@@ -19,7 +19,7 @@ struct ChartDataSourceFactory {
         charts += ChartModelFactory.make(fromResource: "overview2")
         charts += ChartModelFactory.make(fromResource: "overview3")
         charts += ChartModelFactory.make(fromResource: "overview4")
-//        charts += ChartModelFactory.make(fromResource: "overview5")
+        charts += ChartModelFactory.make(fromResource: "overview5")
         var names = ["FOLLOWERS", "INTERACTIONS", "MESSAGES", "VIEWS", "APPS"]
         
         for index in 0..<charts.count {

@@ -174,15 +174,18 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                                             animationDuration: UIView.animationDuration)
                 }
             } else {
-                let stackStyle = chartModel.drawingStyle is StackedDrawingStyle
+                let shouldFill = chartModel.stacked || chartModel.singleBar
                 lineLayer.path = path.cgPath
                 lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
-                lineLayer.fillColor = stackStyle ? chartModel.color.cgColor : UIColor.clear.cgColor
+                lineLayer.fillColor = shouldFill ? chartModel.color.cgColor : UIColor.clear.cgColor
                 lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
-                if !stackStyle {
-                    lineLayer.lineCap = .round // TODO: не забыть здесь
+                if chartModel.drawingStyle is StandardDrawingStyle {
+                    lineLayer.lineCap = .round
                     lineLayer.lineJoin = .round
+                } else if chartModel.drawingStyle is PercentageDrawingStyle {
+                    lineLayer.lineCap = .butt
+                    lineLayer.lineJoin = .bevel
                 }
                 dataLayer.addSublayer(lineLayer)
                 newChartLines!.append(lineLayer)
@@ -456,7 +459,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             let widthGrid: CGFloat = self.frame.size.width
             let isUpdating = self.gridLines != nil
             
-            let gridValues: [CGFloat] = [0.0, 0.2, 0.4, 0.6, 0.8, 1]
+            let gridValues: [CGFloat] = dataSource.percentage ? [0.0, 0.25, 0.5, 0.75, 1] : [0.0, 0.2, 0.4, 0.6, 0.8, 1]
             for index in 0..<gridValues.count {
                 
                 let value = gridValues[index]

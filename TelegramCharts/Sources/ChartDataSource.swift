@@ -88,6 +88,8 @@ class ChartDataSource: Updatable {
 
     private(set) var singleBar: Bool = false
 
+    private(set) var percentage: Bool = false
+
     public var framesInAnimationDuration: Int {
         return Int(CFTimeInterval(60) * UIView.animationDuration)
     }
@@ -100,6 +102,7 @@ class ChartDataSource: Updatable {
             yScaled = $0.yScaled || yScaled
             stacked = $0.stacked || stacked
             singleBar = $0.singleBar || singleBar
+            percentage = $0.percentage || percentage
         }
         
         let addZeroValue = {
@@ -183,8 +186,8 @@ class ChartDataSource: Updatable {
     
     private func calcStackedMaxValue(animateMaxValue value: Bool) {
         if isPreviewMode {
-            // Summ all maximums in full range.
-            var summMax: CGFloat = 0
+            // Sum all maximums in full range.
+            var sumMax: CGFloat = 0
             for i in 0..<maxRangePoints.count {
                 var value: Int = 0
                 for chartModel in chartModels {
@@ -193,12 +196,12 @@ class ChartDataSource: Updatable {
                     }
                     value += chartModel.data[i].value
                 }
-                summMax = max(summMax, CGFloat(value))
+                sumMax = max(sumMax, CGFloat(value))
             }
-            setMaxValues([summMax], animated: value)
+            setMaxValues([sumMax], animated: value)
         } else {
-            // Summ all maximums in specific range.
-            var summMax: CGFloat = 0
+            // Sum all maximums in specific range.
+            var sumMax: CGFloat = 0
             for i in 0..<maxRangePoints.count {
                 var value: Int = 0
                 for chartModel in chartModels {
@@ -210,15 +213,43 @@ class ChartDataSource: Updatable {
                         value += chartModel.data[i].value
                     }
                 }
-                summMax = max(summMax, CGFloat(value))
+                sumMax = max(sumMax, CGFloat(value))
             }
-            setMaxValues([summMax], animated: value)
+            setMaxValues([sumMax], animated: value)
         }
     }
     
+    private var sumValues: [CGFloat]?
+    
+    private func calcPercentageMaxValue(animateMaxValue value: Bool) {
+        var newMaxValue: CGFloat = 0
+        chartModels.forEach {
+            if !$0.isHidden {
+                newMaxValue = 100
+            }
+        }
+        setMaxValues([newMaxValue], animated: value)
+        
+        // Sum all values in range and save it.
+        var newSumValues = [CGFloat]()
+        for i in 0..<maxRangePoints.count {
+            var value: Int = 0
+            for chartModel in chartModels {
+                if chartModel.isHidden {
+                    continue
+                }
+                value += chartModel.data[i].value
+            }
+            newSumValues.append(CGFloat(value))
+        }
+        sumValues = newSumValues
+    }
+
     private func calcMaxValue(animateMaxValue value: Bool) {
         if yScaled {
             calcYScaledMaxValue(animateMaxValue: value)
+        } else if percentage {
+            calcPercentageMaxValue(animateMaxValue: value)
         } else if stacked {
             calcStackedMaxValue(animateMaxValue: value)
         } else {
@@ -241,7 +272,7 @@ class ChartDataSource: Updatable {
         } else {
             topSpace = 40.0
             bottomSpace = 20.0
-            topHorizontalLine = 95 / 100.0
+            topHorizontalLine = percentage ? 1 : 95 / 100.0
             let value = range.end - range.start - 1
             if value <= 0 {
                 lineGap = 0
@@ -251,66 +282,95 @@ class ChartDataSource: Updatable {
         }
     }
     
+    private func selectMaxValue(at index: Int) -> CGFloat {
+        var maxValue: CGFloat = 0
+        if yScaled {
+            maxValue = maxValues[index]
+        } else if let firstMax = maxValues.first {
+            maxValue = firstMax
+        }
+        return maxValue
+    }
+    
+    private var allData: [PointModel]?
+    
+    private func prepareData(for chartModel: ChartModel) -> [PointModel] {
+        var data = chartModel.data
+        
+        guard percentage || stacked else {
+            return data
+        }
+        
+        if percentage {
+            for index in 0..<data.count {
+                let maxValue = sumValues?[index] ?? 0
+                if maxValue == 0 {
+                    data[index].value = 0
+                } else {
+                    // Durov
+                    data[index].value = data[index].value / Int(maxValue)
+                }
+            }
+            return data
+        }
+        
+        // Summing values for stacked chart.
+        if chartModel.isHidden {
+            /* TODO: оставил доработать, надо анимированно как-то делать
+             for i in 0..<data.count {
+             data[i].value = 0
+             }*/
+        } else {
+            if let allData = allData {
+                for i in 0..<data.count {
+                    data[i].value = data[i].value + allData[i].value
+                }
+            }
+            allData = data
+        }
+        return data
+    }
+    
     private func calcPointsAndMakePaths() {
         let isUpdating = dataPoints != nil && self.paths != nil
         var newDataPoints = isUpdating ? nil : [[CGPoint]]()
         var newPaths = isUpdating ? nil : [UIBezierPath]()
         
-        var allData: [PointModel]?
+        allData = nil
         let viewStack = CGSize(width: viewDataSize.width,
                                height: viewDataSize.height - 2 * ValueLayer.lineWidth)
 
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
-            var maxValue: CGFloat = 0
-            if yScaled {
-                maxValue = maxValues[index]
-            } else if let firstMax = maxValues.first {
-                maxValue = firstMax
-            }
-
-            // Summing values for stack.
-            var data = chartModels[index].data
-            if stacked {
-                if chartModel.isHidden {
-                    /* TODO: оставил доработать, надо анимированно как-то делать
-                    for i in 0..<data.count {
-                        data[i].value = 0
-                    }*/
-                } else {
-                    if let allData = allData {
-                        for i in 0..<data.count {
-                            data[i].value = data[i].value + allData[i].value
-                        }
-                    }
-                    allData = data
-                }
-            }
+            let maxValue = selectMaxValue(at: index)
+            let data = prepareData(for: chartModel)
             
-            var points = self.convertDataEntriesToPoints(entries: data,
-                                                         maxValue: maxValue)
+            var points = self.convertDataEntriesToPoints(entries: data, maxValue: maxValue)
+            
+            // Correct points.
             if !isPreviewMode {
                 for i in 0..<points.count {
                     points[i] = CGPoint(x: (CGFloat(i) - range.start) * lineGap, y: points[i].y)
                 }
             }
             
-            if let path = chartModel.drawingStyle.createPath(dataPoints: points,
-                                                             lineGap: lineGap,
-                                                             viewSize: viewStack) {
-                    if isUpdating {
-                        self.paths?[index] = path
-                    } else {
-                        newPaths!.append(path)
-                    }
+            if let path = chartModel.drawingStyle.createPath(dataPoints: points, lineGap: lineGap, viewSize: viewStack) {
+                if isUpdating {
+                    self.paths?[index] = path
+                } else {
+                    newPaths!.append(path)
                 }
-            
+            }
+
             if isUpdating {
                 self.dataPoints?[index] = points
             } else {
                 newDataPoints!.append(points)
             }
         }
+        
+        allData = nil
+        
         if !isUpdating {
             self.dataPoints = newDataPoints
             self.paths = newPaths

@@ -15,6 +15,7 @@
 		AD107ADA225B58E100D84D3F /* overview2.json in Resources */ = {isa = PBXBuildFile; fileRef = AD107AD2225B58E100D84D3F /* overview2.json */; };
 		AD107ADB225B58E100D84D3F /* overview5.json in Resources */ = {isa = PBXBuildFile; fileRef = AD107AD4225B58E100D84D3F /* overview5.json */; };
 		AD107ADD225C6B4900D84D3F /* StackedDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD107ADC225C6B4900D84D3F /* StackedDrawingStyle.swift */; };
+		AD107ADF225D168800D84D3F /* PercentageDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD107ADE225D168800D84D3F /* PercentageDrawingStyle.swift */; };
 		AD17FF312244978F0073F0BB /* ChartDisplayCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF302244978F0073F0BB /* ChartDisplayCollection.swift */; };
 		AD17FF3722449EBF0073F0BB /* ChartModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF3622449EBF0073F0BB /* ChartModelFactory.swift */; };
 		AD17FF392244A1250073F0BB /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD17FF382244A1250073F0BB /* Reusable.swift */; };
@@ -37,8 +38,8 @@
 		AD9226D7223A12B800A5B7D6 /* NightScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D6223A12B800A5B7D6 /* NightScheme.swift */; };
 		AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */; };
 		AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */; };
-		AD9226DE223A286E00A5B7D6 /* Int+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DD223A286E00A5B7D6 /* Int+Format.swift */; };
-		AD94517C223D90EF00E8CD9D /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */; };
+		AD9226DE223A286E00A5B7D6 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DD223A286E00A5B7D6 /* IntExtensions.swift */; };
+		AD94517C223D90EF00E8CD9D /* CGFloatExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94517B223D90EF00E8CD9D /* CGFloatExtensions.swift */; };
 		ADB3E9E422441BE9007CC2F2 /* ChartTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9E222441BE9007CC2F2 /* ChartTableViewCell.swift */; };
 		ADB3E9E522441BE9007CC2F2 /* ChartTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ADB3E9E322441BE9007CC2F2 /* ChartTableViewCell.xib */; };
 		ADB3E9F222441D56007CC2F2 /* CellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F122441D56007CC2F2 /* CellViewModel.swift */; };
@@ -73,6 +74,7 @@
 		AD107AD2225B58E100D84D3F /* overview2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview2.json; sourceTree = "<group>"; };
 		AD107AD4225B58E100D84D3F /* overview5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview5.json; sourceTree = "<group>"; };
 		AD107ADC225C6B4900D84D3F /* StackedDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackedDrawingStyle.swift; sourceTree = "<group>"; };
+		AD107ADE225D168800D84D3F /* PercentageDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PercentageDrawingStyle.swift; sourceTree = "<group>"; };
 		AD17FF302244978F0073F0BB /* ChartDisplayCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartDisplayCollection.swift; sourceTree = "<group>"; };
 		AD17FF3622449EBF0073F0BB /* ChartModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartModelFactory.swift; sourceTree = "<group>"; };
 		AD17FF382244A1250073F0BB /* Reusable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
@@ -95,8 +97,8 @@
 		AD9226D6223A12B800A5B7D6 /* NightScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightScheme.swift; sourceTree = "<group>"; };
 		AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardDrawingStyle.swift; sourceTree = "<group>"; };
 		AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurveDrawingStyle.swift; sourceTree = "<group>"; };
-		AD9226DD223A286E00A5B7D6 /* Int+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Format.swift"; sourceTree = "<group>"; };
-		AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
+		AD9226DD223A286E00A5B7D6 /* IntExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntExtensions.swift; sourceTree = "<group>"; };
+		AD94517B223D90EF00E8CD9D /* CGFloatExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatExtensions.swift; sourceTree = "<group>"; };
 		ADB3E9E222441BE9007CC2F2 /* ChartTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartTableViewCell.swift; sourceTree = "<group>"; };
 		ADB3E9E322441BE9007CC2F2 /* ChartTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChartTableViewCell.xib; sourceTree = "<group>"; };
 		ADB3E9F122441D56007CC2F2 /* CellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewModel.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */,
 				AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */,
 				AD107ADC225C6B4900D84D3F /* StackedDrawingStyle.swift */,
+				AD107ADE225D168800D84D3F /* PercentageDrawingStyle.swift */,
 			);
 			path = DrawingStyle;
 			sourceTree = "<group>";
@@ -347,8 +350,8 @@
 				ADE577242236FE620006200D /* UIColorExtensions.swift */,
 				AD2AD4722246E3BE00B16492 /* UIViewExtensions.swift */,
 				ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */,
-				AD9226DD223A286E00A5B7D6 /* Int+Format.swift */,
-				AD94517B223D90EF00E8CD9D /* CGFloatExtension.swift */,
+				AD9226DD223A286E00A5B7D6 /* IntExtensions.swift */,
+				AD94517B223D90EF00E8CD9D /* CGFloatExtensions.swift */,
 				ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */,
 				ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */,
 				ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */,
@@ -473,7 +476,7 @@
 				AD2AD4732246E3BE00B16492 /* UIViewExtensions.swift in Sources */,
 				ADFF33B32245272F0019A4D4 /* SectionTableViewCellModel.swift in Sources */,
 				ADE577212236EDB20006200D /* DataChartModelFactory.swift in Sources */,
-				AD94517C223D90EF00E8CD9D /* CGFloatExtension.swift in Sources */,
+				AD94517C223D90EF00E8CD9D /* CGFloatExtensions.swift in Sources */,
 				ADB3E9F422441D6D007CC2F2 /* DisplayCollection.swift in Sources */,
 				ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */,
 				AD17FF3722449EBF0073F0BB /* ChartModelFactory.swift in Sources */,
@@ -483,10 +486,11 @@
 				ADE57727223702C50006200D /* DataChartModel.swift in Sources */,
 				AD9226D5223A12A900A5B7D6 /* DayScheme.swift in Sources */,
 				ADB3E9E422441BE9007CC2F2 /* ChartTableViewCell.swift in Sources */,
-				AD9226DE223A286E00A5B7D6 /* Int+Format.swift in Sources */,
+				AD9226DE223A286E00A5B7D6 /* IntExtensions.swift in Sources */,
 				ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */,
 				AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */,
 				AD9226D2223A122B00A5B7D6 /* DrawingStyleProtocol.swift in Sources */,
+				AD107ADF225D168800D84D3F /* PercentageDrawingStyle.swift in Sources */,
 				ADB3E9F622441D85007CC2F2 /* ReusableCell.swift in Sources */,
 				AD17FF392244A1250073F0BB /* Reusable.swift in Sources */,
 			);

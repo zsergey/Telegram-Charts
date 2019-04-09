@@ -45,18 +45,15 @@ class ChartModel {
     var yScaled: Bool
     var stacked: Bool
     var singleBar: Bool
+    var percentage: Bool
     var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
     var opacity: Float {
         return isHidden ? 0 : 1
     }
     
-    init(name: String,
-         color: UIColor,
-         data: [PointModel],
-         yScaled: Bool,
-         stacked: Bool,
-         singleBar: Bool) {
+    init(name: String, color: UIColor, data: [PointModel], yScaled: Bool,
+         stacked: Bool, singleBar: Bool, percentage: Bool) {
         self.name = name
         self.color = color
         self.isHidden = false
@@ -64,7 +61,11 @@ class ChartModel {
         self.yScaled = yScaled
         self.stacked = stacked
         self.singleBar = singleBar
-        if stacked || singleBar {
+        self.percentage = percentage
+
+        if percentage {
+            self.drawingStyle = PercentageDrawingStyle()
+        } else if stacked || singleBar {
             self.drawingStyle = StackedDrawingStyle()
         } else {
             self.drawingStyle = StandardDrawingStyle()

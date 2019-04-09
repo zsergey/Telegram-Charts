@@ -12,6 +12,7 @@ enum ColumnType: String {
     case x
     case line
     case bar
+    case area
 }
 
 struct DataChartModel {
@@ -23,4 +24,5 @@ struct DataChartModel {
     var yScaled: Bool = false
     var stacked: Bool = false
     var singleBar: Bool = false
+    var percentage: Bool = false
 }

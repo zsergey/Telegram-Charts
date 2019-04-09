@@ -1,5 +1,5 @@
 //
-//  Int+Format.swift
+//  IntExtensions.swift
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/14/19.

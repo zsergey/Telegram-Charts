@@ -6,7 +6,7 @@
 //  Copyright © 2019 @zsergey. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct ChartModelFactory {
     
@@ -52,7 +52,8 @@ struct ChartModelFactory {
                                                     data: pointModels,
                                                     yScaled: chartData.yScaled,
                                                     stacked: chartData.stacked,
-                                                    singleBar: chartData.singleBar)
+                                                    singleBar: chartData.singleBar,
+                                                    percentage: chartData.percentage)
                         chartModels.append(chartModel)
                     }
                 }
