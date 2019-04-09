@@ -12,40 +12,24 @@ class ChartDisplayCollection: DisplayCollection {
     
     var dataSource: СoupleChartDataSource
     var colorScheme: ColorSchemeProtocol
-    var drawingStyle: DrawingStyleProtocol
 
     init(dataSource: СoupleChartDataSource,
-         colorScheme: ColorSchemeProtocol,
-         drawingStyle: DrawingStyleProtocol) {
+         colorScheme: ColorSchemeProtocol) {
         self.dataSource = dataSource
         self.colorScheme = colorScheme
-        self.drawingStyle = drawingStyle
-        self.changeDrawingStyle(to: drawingStyle)
         self.createRows()
     }
     
-    var onChangeDrawingStyle: (() -> ())?
-
     private enum `Type` {
         case section(String)
         case chart(ChartDataSource, ChartDataSource)
-        case drawingStyle(String)
-        case button(String)
     }
     
     private var rows: [Type] = []
     
-    private var titleDrawingStyleButton: String {
-        var text = "Switch to "
-        let nextStyle = drawingStyle is StandardDrawingStyle ? "Curve" : "Standard"
-        text = text + nextStyle + " Drawing Style"
-        return text
-    }
-    
     static var modelsForRegistration: [CellViewAnyModelType.Type] {
         return [ChartTableViewCellModel.self,
-                SectionTableViewCellModel.self,
-                ButtonTableViewCellModel.self]
+                SectionTableViewCellModel.self]
     }
     
     private func createRows() {
@@ -55,15 +39,7 @@ class ChartDisplayCollection: DisplayCollection {
             let preview = dataSource.preview[index]
             rows.append(.section(main.name))
             rows.append(.chart(main, preview))
-            // If you want to be able change drawing style uncomment this:
-            // rows.append(.drawingStyle(titleDrawingStyleButton))
-            // rows.append(.section(""))
         }
-    }
-    
-    func changeDrawingStyle(to drawingStyle: DrawingStyleProtocol) {
-        dataSource.main.forEach { $0.drawingStyle = drawingStyle }
-        dataSource.preview.forEach { $0.drawingStyle = drawingStyle }
     }
     
     func numberOfRows(in section: Int) -> Int {
@@ -74,15 +50,6 @@ class ChartDisplayCollection: DisplayCollection {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
         
-    func updateButtonText(for indexPath: IndexPath, in cell: ButtonTableViewCell) {
-        let type = rows[indexPath.row]
-        switch type {
-        case .drawingStyle:
-            cell.label.text = titleDrawingStyleButton
-        default: break
-        }
-    }
-    
     func model(for indexPath: IndexPath) -> CellViewAnyModelType {
         let type = rows[indexPath.row]
         switch type {
@@ -91,9 +58,7 @@ class ChartDisplayCollection: DisplayCollection {
         case .chart(let main, let preview):
             return ChartTableViewCellModel(chartDataSource: main,
                                            previewChartDataSource: preview,
-                                           colorScheme: colorScheme, drawingStyle: drawingStyle)
-        case .button(let text), .drawingStyle(let text):
-            return ButtonTableViewCellModel(text: text, colorScheme: colorScheme)
+                                           colorScheme: colorScheme)
         }
     }
     
@@ -102,7 +67,6 @@ class ChartDisplayCollection: DisplayCollection {
         switch type {
         case .section(let name): return name.count > 0 ? 55 : 35
         case .chart(let main, _): return calcChartHeight(dataSource: main)
-        case .button, .drawingStyle: return 46
         }
     }
     
@@ -129,17 +93,4 @@ class ChartDisplayCollection: DisplayCollection {
         return mainHeight + countLines * oneLineHeight + additionalHeight
     }
     
-    func didSelect(indexPath: IndexPath) {
-        let type = rows[indexPath.row]
-        switch type {
-        case .drawingStyle:
-            FeedbackGenerator.impactOccurred(style: .medium)
-            drawingStyle = drawingStyle is StandardDrawingStyle ? CurveDrawingStyle() : StandardDrawingStyle()
-            createRows()
-            changeDrawingStyle(to: drawingStyle)
-            onChangeDrawingStyle?()
-        default: break
-        }
-    }
-
 }

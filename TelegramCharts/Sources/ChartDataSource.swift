@@ -28,8 +28,6 @@ class ChartDataSource: Updatable {
     
     var viewSize: CGSize = .zero
     
-    var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle()
-
     var chartModels: [ChartModel] {
         didSet {
             dataPoints = nil
@@ -205,6 +203,7 @@ class ChartDataSource: Updatable {
         var newPaths = isUpdating ? nil : [UIBezierPath]()
         
         for index in 0..<chartModels.count {
+            let chartModel = chartModels[index]
             var maxValue: CGFloat = 0
             if yScaled {
                 maxValue = maxValues[index]
@@ -219,7 +218,7 @@ class ChartDataSource: Updatable {
                 }
             }
             
-            if let path = drawingStyle.createPath(dataPoints: points) {
+            if let path = chartModel.drawingStyle.createPath(dataPoints: points) {
                 if isUpdating {
                     self.paths?[index] = path
                 } else {

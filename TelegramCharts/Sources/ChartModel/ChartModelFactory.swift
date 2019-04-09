@@ -47,11 +47,14 @@ struct ChartModelFactory {
                                 pointModels.append(pointModel)
                             }
                         }
-                        
+                        var drawingStyle: DrawingStyleProtocol = StandardDrawingStyle()
+                        if chartData.stacked {
+                            drawingStyle = CurveDrawingStyle()
+                        }
                         let chartModel = ChartModel(name: name,
                                                     color: color,
                                                     isHidden: false,
-                                                    drawingStyle: StandardDrawingStyle(),
+                                                    drawingStyle: drawingStyle,
                                                     data: pointModels,
                                                     yScaled: chartData.yScaled)
                         chartModels.append(chartModel)

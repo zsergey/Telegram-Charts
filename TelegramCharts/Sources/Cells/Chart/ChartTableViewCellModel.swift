@@ -13,16 +13,13 @@ class ChartTableViewCellModel {
     var previewChartDataSource: ChartDataSource
     
     var colorScheme: ColorSchemeProtocol
-    var drawingStyle: DrawingStyleProtocol
     
     init(chartDataSource: ChartDataSource,
          previewChartDataSource: ChartDataSource,
-         colorScheme: ColorSchemeProtocol,
-         drawingStyle: DrawingStyleProtocol) {
+         colorScheme: ColorSchemeProtocol) {
         self.chartDataSource = chartDataSource
         self.previewChartDataSource = previewChartDataSource
         self.colorScheme = colorScheme
-        self.drawingStyle = drawingStyle
     }
 }
 
@@ -134,6 +131,7 @@ extension ChartTableViewCellModel: CellViewModelType {
     }
     
     func setupSliderView(on cell: ChartTableViewCell) {
+        // TODO: Don't forget about reusing cells.
         cell.sliderView.chartModels = chartDataSource.chartModels
         cell.sliderView.sliderWidth = chartDataSource.sliderWidth
         cell.sliderView.startX = chartDataSource.startX

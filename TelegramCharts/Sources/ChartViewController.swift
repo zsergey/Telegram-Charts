@@ -41,8 +41,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    var drawingStyleProtocol: DrawingStyleProtocol!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -64,21 +62,9 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func createDisplayCollection(dataSource: СoupleChartDataSource) -> ChartDisplayCollection {
         colorScheme = DayScheme()
-        drawingStyleProtocol = StandardDrawingStyle()
 
         let displayCollection = ChartDisplayCollection(dataSource: dataSource,
-                                                   colorScheme: colorScheme,
-                                                   drawingStyle: drawingStyleProtocol)
-        
-        displayCollection.onChangeDrawingStyle = { [weak self] in
-            guard let self = self else { return }
-            let cells = self.tableView.visibleCells
-            for cell in cells {
-                if let cell = cell as? ChartTableViewCell {
-                    cell.calcProperties()
-                }
-            }
-        }
+                                                   colorScheme: colorScheme)
         tableView.backgroundColor = colorScheme.section.background
         tableView.registerNibs(from: displayCollection)
         return displayCollection
@@ -126,22 +112,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         return indexPaths
-    }
-
-    func didSelectRow(at indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) {
-            if cell is ButtonTableViewCell {
-                // Update all buttons.
-                for visibleCell in tableView.visibleCells {
-                    if let cell = visibleCell as? ButtonTableViewCell {
-                        if let indexPath = tableView.indexPath(for: cell) {
-                            displayCollection.updateButtonText(for: indexPath,
-                                                               in: cell)
-                        }
-                    }
-                }
-            }
-        }
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -193,8 +163,6 @@ extension ChartViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        displayCollection.didSelect(indexPath: indexPath)
-        didSelectRow(at: indexPath)
     }
 }
 

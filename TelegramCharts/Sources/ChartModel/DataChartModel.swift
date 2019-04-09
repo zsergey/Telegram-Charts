@@ -11,6 +11,7 @@ import UIKit
 enum ColumnType: String {
     case x
     case line
+    case bar
 }
 
 struct DataChartModel {
@@ -19,5 +20,6 @@ struct DataChartModel {
     var names = [String: String]()
     var colors = [String: UIColor]()
     var data = [String: [Any]]()
-    var yScaled = false
+    var yScaled: Bool = false
+    var stacked: Bool = false
 }
