@@ -10,8 +10,16 @@ import UIKit
 
 struct PointModel {
     var value: Int
+    var targetValue: Int
+    var deltaToTargetValue: Int = 0
     let date: Date
-
+    
+    init(value: Int, date: Date) {
+        self.value = value
+        self.targetValue = value
+        self.date = date
+    }
+    
     var stringDate: String {
         return date.format
     }
@@ -39,6 +47,12 @@ func == (lhs: ChartModel, rhs: ChartModel) -> Bool {
 }
 
 class ChartModel {
+    
+    enum TargetDirection {
+        case toZero
+        case toValue
+    }
+    
     var name: String
     var color: UIColor
     var isHidden: Bool
@@ -46,8 +60,11 @@ class ChartModel {
     var stacked: Bool
     var singleBar: Bool
     var percentage: Bool
+    var targetDirection = TargetDirection.toValue // by default all charts aren't hidden
+    var runValueAnimation: Bool = false
     var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
+    
     var opacity: Float {
         return isHidden ? 0 : 1
     }

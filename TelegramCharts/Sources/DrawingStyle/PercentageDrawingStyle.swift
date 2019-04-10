@@ -10,6 +10,18 @@ import UIKit
 
 struct PercentageDrawingStyle: DrawingStyleProtocol {
     
+    var isCustomFillColor: Bool {
+        return true
+    }
+
+    var lineCap: CAShapeLayerLineCap {
+        return .round
+    }
+    
+    var lineJoin: CAShapeLayerLineJoin {
+        return .round
+    }
+
     func createPath(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
         guard dataPoints.count > 0 else {
             return nil

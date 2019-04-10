@@ -12,8 +12,11 @@ extension UIView {
 
     static var animationDuration: CFTimeInterval = 0.3
 
-    static func animateEaseInOut(with duration: CFTimeInterval, animations: @escaping () -> ()) {
-        UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseInOut], animations: animations, completion: nil)
+    static func animateEaseInOut(with duration: CFTimeInterval,
+                                 animations: @escaping () -> ()) {
+        UIView.animate(withDuration: duration, delay: 0,
+                       options: [.curveEaseInOut],
+                       animations: animations, completion: nil)
     }
 
 }

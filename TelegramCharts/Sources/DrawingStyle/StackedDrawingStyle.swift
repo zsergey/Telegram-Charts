@@ -10,6 +10,18 @@ import UIKit
 
 struct StackedDrawingStyle: DrawingStyleProtocol {
     
+    var isCustomFillColor: Bool {
+        return true
+    }
+
+    var lineCap: CAShapeLayerLineCap {
+        return .butt
+    }
+    
+    var lineJoin: CAShapeLayerLineJoin {
+        return .miter
+    }
+
     func createPath(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
         guard dataPoints.count > 0 else {
             return nil

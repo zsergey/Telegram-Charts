@@ -48,6 +48,8 @@
 		ADB3E9F822441E2A007CC2F2 /* UITableViewCellExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */; };
 		ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */; };
 		ADB3E9FC22441F4F007CC2F2 /* ChartTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9FB22441F4F007CC2F2 /* ChartTableViewCellModel.swift */; };
+		ADC861C4225E10E900E697C8 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC861C3225E10E900E697C8 /* Math.swift */; };
+		ADC861C6225E253800E697C8 /* overview6.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC861C5225E253800E697C8 /* overview6.json */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
 		ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
 		ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
@@ -107,6 +109,8 @@
 		ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtenions.swift; sourceTree = "<group>"; };
 		ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewExtenions.swift; sourceTree = "<group>"; };
 		ADB3E9FB22441F4F007CC2F2 /* ChartTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartTableViewCellModel.swift; sourceTree = "<group>"; };
+		ADC861C3225E10E900E697C8 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
+		ADC861C5225E253800E697C8 /* overview6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview6.json; sourceTree = "<group>"; };
 		ADCD101E22441697006A9856 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		ADDBBDC4224010010090E2AD /* ValueLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueLayer.swift; sourceTree = "<group>"; };
 		ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Animations.swift"; sourceTree = "<group>"; };
@@ -194,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				AD107AD4225B58E100D84D3F /* overview5.json */,
+				ADC861C5225E253800E697C8 /* overview6.json */,
 			);
 			path = 5;
 			sourceTree = "<group>";
@@ -203,6 +208,7 @@
 			children = (
 				AD17FF3C224613DD0073F0BB /* TapticFeedback.swift */,
 				AD2AD4772248207300B16492 /* Painter.swift */,
+				ADC861C3225E10E900E697C8 /* Math.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -436,6 +442,7 @@
 				AD2AD47A22483D2800B16492 /* README.md in Resources */,
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,
 				AD107ADB225B58E100D84D3F /* overview5.json in Resources */,
+				ADC861C6225E253800E697C8 /* overview6.json in Resources */,
 				ADB3E9E522441BE9007CC2F2 /* ChartTableViewCell.xib in Resources */,
 				AD107AD9225B58E100D84D3F /* overview3.json in Resources */,
 				AD107AD8225B58E100D84D3F /* overview4.json in Resources */,
@@ -485,6 +492,7 @@
 				ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */,
 				ADE57727223702C50006200D /* DataChartModel.swift in Sources */,
 				AD9226D5223A12A900A5B7D6 /* DayScheme.swift in Sources */,
+				ADC861C4225E10E900E697C8 /* Math.swift in Sources */,
 				ADB3E9E422441BE9007CC2F2 /* ChartTableViewCell.swift in Sources */,
 				AD9226DE223A286E00A5B7D6 /* IntExtensions.swift in Sources */,
 				ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */,

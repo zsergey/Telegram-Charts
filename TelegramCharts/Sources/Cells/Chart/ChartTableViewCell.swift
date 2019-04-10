@@ -47,7 +47,7 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
     
-    func calcProperties() {
+    func calcProperties(animateMaxValue: Bool, changedIsHidden: Bool) {
         if let model = model {
             // TODO: Calc in background.
             /* if chartView.isScrolling || previewChartView.isScrolling {
@@ -62,8 +62,10 @@ class ChartTableViewCell: UITableViewCell {
                     }
                 }
             } else {*/
-                model.chartDataSource.calcProperties()
-                model.previewChartDataSource.calcProperties()
+                model.chartDataSource.calcProperties(animateMaxValue: animateMaxValue,
+                                                     changedIsHidden: changedIsHidden)
+                model.previewChartDataSource.calcProperties(animateMaxValue: animateMaxValue,
+                                                            changedIsHidden: changedIsHidden)
                 self.setNeedsLayout()
                 self.chartView.setNeedsLayout()
                 self.previewChartView.setNeedsLayout()
@@ -84,7 +86,7 @@ class ChartTableViewCell: UITableViewCell {
                 model.chartDataSource.viewSize = self.chartView.frame.size
                 model.previewChartDataSource.viewSize = self.previewChartView.frame.size
                 
-                calcProperties()
+                calcProperties(animateMaxValue: false, changedIsHidden: false)
             }
         }
     }

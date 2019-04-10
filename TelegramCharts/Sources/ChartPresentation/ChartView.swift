@@ -174,19 +174,17 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                                             animationDuration: UIView.animationDuration)
                 }
             } else {
-                let shouldFill = chartModel.stacked || chartModel.singleBar
+                var fillColor = UIColor.clear
+                if chartModel.drawingStyle.isCustomFillColor {
+                    fillColor = chartModel.color
+                }
                 lineLayer.path = path.cgPath
                 lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
-                lineLayer.fillColor = shouldFill ? chartModel.color.cgColor : UIColor.clear.cgColor
+                lineLayer.fillColor = fillColor.cgColor
                 lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
-                if chartModel.drawingStyle is StandardDrawingStyle {
-                    lineLayer.lineCap = .round
-                    lineLayer.lineJoin = .round
-                } else if chartModel.drawingStyle is PercentageDrawingStyle {
-                    lineLayer.lineCap = .butt
-                    lineLayer.lineJoin = .bevel
-                }
+                lineLayer.lineCap = chartModel.drawingStyle.lineCap
+                lineLayer.lineJoin = chartModel.drawingStyle.lineJoin
                 dataLayer.addSublayer(lineLayer)
                 newChartLines!.append(lineLayer)
             }
@@ -486,10 +484,16 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
                 let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
                 let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
-                let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
+                var toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
                 newValueLayer.lineColor = index == gridValues.count - 1 ? colorScheme.chart.accentGrid : colorScheme.chart.grid
                 newValueLayer.textColor = dataSource.yScaled ? dataSource.chartModels[i].color : colorScheme.chart.text
 
+                // Correct last and first lines.
+                var onePixel: CGFloat = 0
+                if index == 0 { onePixel = -1 }
+                if index == gridValues.count - 1 { onePixel = 1 }
+                toNewPoint = CGPoint(x: toNewPoint.x, y: toNewPoint.y + onePixel)
+                
                 if newLineValue == 0 {
                     let isHidden = dataSource.yScaled ? dataSource.chartModels[i].isHidden : dataSource.isAllChartsHidden
                     if index == gridValues.count - 1, !isHidden {
@@ -520,7 +524,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                     newValueLayer.lineValue = lineValue
                     newValueLayer.opacity = 1
                     let height = dataSource.calcHeight(for: lineValue, with: minMaxGap)
-                    let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
+                    let rect = CGRect(x: 0, y: height + onePixel, width: frame.size.width, height: heightGrid)
                     newValueLayer.frame = rect
                 }
             }
@@ -645,7 +649,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         
         // Path line.
         path.move(to: CGPoint(x: xLine, y: -dataSource.topSpace / 2))
-        path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace))
+        let theOnePixel: CGFloat = 1 // from drawing horizontal lines
+        path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace + theOnePixel))
         lineLayer.path = path.cgPath
         lineLayer.strokeColor = colorScheme.chart.accentGrid.cgColor
         if !isUpdating {

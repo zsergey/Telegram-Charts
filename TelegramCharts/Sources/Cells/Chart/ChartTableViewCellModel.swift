@@ -58,7 +58,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                 model.isHidden = !model.isHidden
                 cell.model?.chartDataSource.selectedIndex = nil
                 cell.chartView.cleanDots()
-                cell.calcProperties()
+                cell.calcProperties(animateMaxValue: true, changedIsHidden: true)
                 cell.hideViewsIfNeeded()
             }
             button.onLongTapButton = { model, processedLongPressGesture in
@@ -84,7 +84,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                     button.style = .checked
                     cell.model?.chartDataSource.selectedIndex = nil
                     cell.chartView.cleanDots()
-                    cell.calcProperties()
+                    cell.calcProperties(animateMaxValue: true, changedIsHidden: true)
                     cell.hideViewsIfNeeded()
                 } else {
                     if !processedLongPressGesture {
@@ -138,14 +138,14 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.sliderView.currentRange = chartDataSource.range
         cell.sliderView.setNeedsLayout()
         
-        cell.sliderView.onChangeRange = { range, sliderWidth, startX in
+        cell.sliderView.onChangeRange = { range, sliderWidth, startX, value in
             self.chartDataSource.range = range
             self.chartDataSource.sliderWidth = sliderWidth
             self.chartDataSource.startX = startX
             self.chartDataSource.selectedIndex = nil
             cell.chartView.cleanDots()
             
-            self.calcProperties(of: self.chartDataSource, for: cell.chartView)
+            self.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: value)
         }
         cell.sliderView.onBeganTouch = { sliderDirection in
             cell.chartView.sliderDirection = sliderDirection
@@ -163,7 +163,10 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.updateColors(changeColorScheme: false)
     }
     
-    func calcProperties(of dataSource: ChartDataSource, for view: ChartView, shouldCalcMaxValue: Bool = true) {
+    func calcProperties(of dataSource: ChartDataSource,
+                        for view: ChartView,
+                        shouldCalcMaxValue: Bool = true,
+                        animateMaxValue: Bool = true) {
         // TODO: Calc in background.
         /*if view.isScrolling {
             DispatchQueue.global(qos: .background).async {
@@ -173,7 +176,9 @@ extension ChartTableViewCellModel: CellViewModelType {
                 }
             }
         } else { */
-            dataSource.calcProperties(shouldCalcMaxValue)
+            dataSource.calcProperties(shouldCalcMaxValue: shouldCalcMaxValue,
+                                      animateMaxValue: animateMaxValue,
+                                      changedIsHidden: false)
             view.setNeedsLayout()
         /*} */
     }

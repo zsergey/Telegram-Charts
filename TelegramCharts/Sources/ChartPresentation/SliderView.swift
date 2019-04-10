@@ -18,7 +18,7 @@ enum SliderDirection {
 
 class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     
-    var onChangeRange: ((IndexRange, CGFloat, CGFloat) ->())?
+    var onChangeRange: ((IndexRange, CGFloat, CGFloat, Bool) ->())?
     var onBeganTouch: ((SliderDirection) ->())?
     var onEndTouch: ((SliderDirection) ->())?
     var currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
@@ -44,7 +44,9 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
 
     private var tapSliderWidth: CGFloat = 0
 
-    private let tapSize: CGFloat = 34
+    private let minimalCenterWidth: CGFloat = 28
+
+    private let tapWidth: CGFloat = 34
     
     private var minValueSliderWidth: CGFloat = 0
     
@@ -134,16 +136,16 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     }
     
     private func calcProperties() {
-        minValueSliderWidth = 2 * thumbWidth + 2 * tapSize
+        minValueSliderWidth = 2 * thumbWidth + minimalCenterWidth
         indexGap = (self.frame.size.width - trailingSpace - leadingSpace) / (CGFloat(countPoints) - 1)
         if sliderWidth == 0 {
             sliderWidth = minValueSliderWidth
-            updateCurrentRange()
+            updateCurrentRange(animateMaxValue: false)
         }
     }
     
-    private func updateCurrentRange() {
-        calcCurrentRange()
+    private func updateCurrentRange(animateMaxValue value: Bool) {
+        calcCurrentRange(animateMaxValue: value)
         setNeedsLayout()
     }
     
@@ -179,7 +181,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
             value = maxValue
         }
         startX = value
-        updateCurrentRange()
+        updateCurrentRange(animateMaxValue: true)
     }
     
     private func processLeft(_ translation: CGPoint) {
@@ -198,7 +200,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         }
         startX = valueX
         sliderWidth = valueWidth
-        updateCurrentRange()
+        updateCurrentRange(animateMaxValue: true)
     }
 
     private func processRight(_ translation: CGPoint) {
@@ -210,26 +212,23 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
             valueWidth = maxValueSliderWidth
         }
         sliderWidth = valueWidth
-        updateCurrentRange()
+        updateCurrentRange(animateMaxValue: true)
     }
 
     private func detectSliderTap(from point: CGPoint) {
         sliderDirection = .none
-        let halfTapSize = tapSize / 2
+        let extraTapZone = sliderWidth > 2 * minValueSliderWidth ? tapWidth : 0
         let x = startX + trailingSpace
-        if point.x >= x - halfTapSize,
-            point.x <= x + thumbWidth + halfTapSize {
+        if point.x >= x - tapWidth, point.x <= x + thumbWidth + extraTapZone {
             sliderDirection = .left
-        } else if point.x >= x + sliderWidth - thumbWidth - halfTapSize,
-            point.x <= x + sliderWidth + halfTapSize {
+        } else if point.x >= x + sliderWidth - thumbWidth - extraTapZone, point.x <= x + sliderWidth + thumbWidth + tapWidth {
             sliderDirection = .right
-        } else if point.x > x + thumbWidth + halfTapSize,
-            point.x < x + sliderWidth - thumbWidth - halfTapSize {
+        } else if point.x > x + thumbWidth, point.x < x + sliderWidth - thumbWidth {
             sliderDirection = .center
         }
     }
     
-    private func calcCurrentRange() {
+    private func calcCurrentRange(animateMaxValue value: Bool) {
         guard indexGap != 0 else {
             return
         }
@@ -237,7 +236,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         let endIndex = (startX + sliderWidth) / indexGap + 1
         currentRange.start = startIndex
         currentRange.end = endIndex
-        onChangeRange?(currentRange, sliderWidth, startX)
+        onChangeRange?(currentRange, sliderWidth, startX, value)
     }
     
     private func drawSlider() {
