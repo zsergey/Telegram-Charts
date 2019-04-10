@@ -11,11 +11,13 @@ import UIKit
 struct PointModel {
     var value: Int
     var targetValue: Int
+    var originalValue: Int
     var deltaToTargetValue: Int = 0
     let date: Date
     
-    init(value: Int, date: Date) {
+    init(value: Int, date: Date, originalValue: Int) {
         self.value = value
+        self.originalValue = originalValue
         self.targetValue = value
         self.date = date
     }

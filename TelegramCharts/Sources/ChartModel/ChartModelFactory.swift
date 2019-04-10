@@ -31,6 +31,23 @@ struct ChartModelFactory {
                 }
                 ylabels = ylabels.sorted(by: { $0 < $1 })
                 
+                // Preparing sum values.
+                var sumValues: [Int]? = nil
+                if chartData.percentage {
+                    sumValues = [Int]()
+                    if let dataX = chartData.data[xlabel] {
+                        for i in 0..<dataX.count {
+                            var sumValue: Int = 0
+                            for index in 0..<ylabels.count {
+                                let ylabel = ylabels[index]
+                                let dataY = chartData.data[ylabel] as! [Int]
+                                sumValue += dataY[i]
+                            }
+                            sumValues!.append(sumValue)
+                        }
+                    }
+                }
+                
                 for i in 0..<ylabels.count {
                     let ylabel = ylabels[i]
                     if let dataX = chartData.data[xlabel],
@@ -42,11 +59,16 @@ struct ChartModelFactory {
                         let count = min(dataX.count, dataY.count)
                         for index in 0..<count {
                             if let date = dataX[index] as? Date,
-                                let value = dataY[index] as? Int {
-                                let pointModel = PointModel(value: value, date: date)
+                                let originalValue = dataY[index] as? Int {
+                                var value = originalValue
+                                if chartData.percentage {
+                                    value = Int(100 * CGFloat(value) / CGFloat(sumValues![index]))
+                                }
+                                let pointModel = PointModel(value: value, date: date, originalValue: originalValue)
                                 pointModels.append(pointModel)
                             }
                         }
+                        // ["y0",200,400,1000],["y1",100,200,400],["y2",500,500,500]
                         let chartModel = ChartModel(name: name,
                                                     color: color,
                                                     data: pointModels,

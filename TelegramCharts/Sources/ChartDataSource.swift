@@ -72,6 +72,8 @@ class ChartDataSource: Updatable {
     
     private(set) var runMaxValueAnimation: Bool = false
 
+    private(set) var runStackValueAnimation: Bool = false
+
     private(set) var countPoints: Int = 0
     
     private(set) var dataPoints: [[CGPoint]]?
@@ -218,7 +220,8 @@ class ChartDataSource: Updatable {
             setMaxValues([sumMax], animated: value)
         }
     }
-    
+
+    // TODO
     private func calcPercentageMaxValue(animateMaxValue value: Bool) {
         var newMaxValue: CGFloat = 0
         chartModels.forEach {
@@ -286,9 +289,12 @@ class ChartDataSource: Updatable {
                 if data[i].targetValue != 0 {
                     dataValue = 0
                 }
+                print("prepareStackData frameAnimation \(frameAnimation)")
+
                 let value = Math.calcEaseInOut(for: frameAnimation, totalTime: framesInAnimationDuration)
                 let toAddValue = CGFloat(data[i].deltaToTargetValue) * value
                 dataValue = dataValue + Int(toAddValue)
+                print("toAddValue \(toAddValue)")
             } else if chartModel.isHidden {
                 dataValue = 0
             }
@@ -317,46 +323,48 @@ class ChartDataSource: Updatable {
         return visibleIndex
     }
 
-    private func calcSumValues(from data: [[PointModel]]) -> [CGFloat] {
-        // Sum all values in range and save it.
-        var sumValues = [CGFloat]()
-        for i in 0..<maxRangePoints.count {
-            var sumValue: Int = 0
-            var previusValue: Int = 0
-            for index in 0..<data.count {
-                let chartModel = chartModels[index]
-                if chartModel.isHidden {
-                    continue
-                }
-                let value = data[index][i].value - previusValue // because it's stack
-                sumValue += value
-                previusValue = data[index][i].value
-            }
-            sumValues.append(CGFloat(sumValue))
-        }
-        return sumValues
-    }
-
-    private func calcPercentageData(from data: [PointModel],
-                                    sumValues: [CGFloat],
-                                    isLastVisibleChart: Bool) -> [PointModel] {
-        // TODO: оптимизировать.
-        var percentageData = [PointModel]()
-        for index in 0..<data.count {
-            if isLastVisibleChart {
-                percentageData.append(PointModel(value: 100, date: Date()))
-                continue
-            }
-            let maxValue = sumValues[index]
-            if maxValue == 0 {
-                percentageData.append(PointModel(value: 0, date: Date()))
-            } else {
-                let value = Int(100 * CGFloat(data[index].value) / maxValue)
-                percentageData.append(PointModel(value: value, date: Date()))
-            }
-        }
-        return percentageData
-    }
+//    private func calcSumValues(from data: [[PointModel]]) -> [CGFloat] {
+//        // Sum all values in range and save it.
+//        var sumValues = [CGFloat]()
+//        for i in 0..<maxRangePoints.count {
+//            var sumValue: Int = 0
+//            var previusValue: Int = 0
+//            for index in 0..<data.count {
+//                let chartModel = chartModels[index]
+//                if chartModel.isHidden {
+//                    continue
+//                }
+//                let value = data[index][i].value - previusValue // because it's stack
+//                sumValue += value
+//                previusValue = data[index][i].value
+//            }
+//            sumValues.append(CGFloat(sumValue))
+//        }
+//        return sumValues
+//    }
+//
+//    private func calcPercentageData(from data: [PointModel],
+//                                    sumValues: [CGFloat],
+//                                    isLastVisibleChart: Bool) -> [PointModel] {
+//        // TODO: оптимизировать.
+//        var percentageData = [PointModel]()
+//        for index in 0..<data.count {
+//            if isLastVisibleChart {
+//                percentageData.append(PointModel(value: 100, date: Date()))
+//                continue
+//            }
+//            let maxValue = sumValues[index]
+//            if maxValue == 0 {
+//                percentageData.append(PointModel(value: 0, date: Date()))
+//            } else {
+//                let value = Int(100 * CGFloat(data[index].value) / maxValue)
+//                percentageData.append(PointModel(value: value, date: Date()))
+//            }
+//        }
+//        return percentageData
+//    }
+    
+    var preparedData = [[PointModel]]()
 
     private func calcPointsAndMakePaths() {
         let isUpdating = dataPoints != nil && self.paths != nil
@@ -364,39 +372,45 @@ class ChartDataSource: Updatable {
         var newPaths = isUpdating ? nil : [UIBezierPath]()
         
         // Preparing datas.
-        allData = nil
-        var preparedData = [[PointModel]]()
-        for index in 0..<chartModels.count {
-            let chartModel = chartModels[index]
-            if stacked {
-                let data = prepareStackData(chartModel: chartModel)
-                preparedData.append(data)
-            } else {
+//        allData = nil
+//        var preparedData = [[PointModel]]()
+//        for index in 0..<chartModels.count {
+//            let chartModel = chartModels[index]
+//            if stacked {
+//                let data = prepareStackData(chartModel: chartModel)
+//                preparedData.append(data)
+//            } else {
+//                preparedData.append(chartModel.data)
+//            }
+//        }
+        
+//        var sumValues: [CGFloat]? = nil
+//        var lastVisibleIndex: Int? = nil
+//        if percentage {
+//            sumValues = calcSumValues(from: preparedData)
+//            lastVisibleIndex = fetchLastVisibleIndex()
+//        }
+        if preparedData.count == 0 {
+            for index in 0..<chartModels.count {
+                let chartModel = chartModels[index]
                 preparedData.append(chartModel.data)
             }
-        }
-        
-        var sumValues: [CGFloat]? = nil
-        var lastVisibleIndex: Int? = nil
-        if percentage {
-            sumValues = calcSumValues(from: preparedData)
-            lastVisibleIndex = fetchLastVisibleIndex()
         }
 
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
             let maxValue = selectMaxValue(at: index)
             var data = preparedData[index]
-            if percentage {
-                var isLastVisibleChart = false
-                if let lastVisibleIndex = lastVisibleIndex, index == lastVisibleIndex {
-                    isLastVisibleChart = true
-                }
-
-                data = calcPercentageData(from: data,
-                                          sumValues: sumValues!,
-                                          isLastVisibleChart: isLastVisibleChart)
-            }
+//            if percentage {
+//                var isLastVisibleChart = false
+//                if let lastVisibleIndex = lastVisibleIndex, index == lastVisibleIndex {
+//                    isLastVisibleChart = true
+//                }
+//
+//                data = calcPercentageData(from: data,
+//                                          sumValues: sumValues!,
+//                                          isLastVisibleChart: isLastVisibleChart)
+//            }
 
             var points = convertModelsToPoints(entries: data, maxValue: maxValue)
             
@@ -432,12 +446,11 @@ class ChartDataSource: Updatable {
     }
     
     private func calcNewTargetsValuesIfNeeded() {
+        print("calcNewTargetsValuesIfNeeded")
         guard stacked else {
             return
         }
         
-        frameAnimation = 0
-
         for i in 0..<chartModels.count {
             let chartModel = chartModels[i]
             if chartModel.isHidden && chartModel.targetDirection != .toZero {
@@ -451,6 +464,8 @@ class ChartDataSource: Updatable {
                 chartModel.data = data
                 chartModel.targetDirection = .toZero
                 chartModel.runValueAnimation = true
+                frameAnimation = 0
+                runStackValueAnimation = true
             }
             
             if !chartModel.isHidden && chartModel.targetDirection != .toValue {
@@ -464,6 +479,8 @@ class ChartDataSource: Updatable {
                 chartModel.data = data
                 chartModel.targetDirection = .toValue
                 chartModel.runValueAnimation = true
+                frameAnimation = 0
+                runStackValueAnimation = true
             }
         }
     }
@@ -554,12 +571,29 @@ class ChartDataSource: Updatable {
                 let toAddValue = deltaToTargetValues[index] * value
                 maxValues[index] = maxValues[index] + toAddValue
             }
-            onChangeMaxValue?()
         }
+
+        if runStackValueAnimation {
+            allData = nil
+            preparedData.removeAll()
+            for index in 0..<chartModels.count {
+                let chartModel = chartModels[index]
+                if stacked {
+                    let data = prepareStackData(chartModel: chartModel)
+                    preparedData.append(data)
+                } else {
+                    preparedData.append(chartModel.data)
+                }
+            }
+        }
+        print("frameAnimation \(frameAnimation)")
+        
+        onChangeMaxValue?()
         
         frameAnimation += 1
         if frameAnimation >= framesInAnimationDuration {
             runMaxValueAnimation = false
+            runStackValueAnimation = false
             chartModels.forEach { $0.runValueAnimation = false }
         }
     }
