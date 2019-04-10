@@ -473,9 +473,11 @@ class ChartDataSource: Updatable {
                         changedIsHidden: Bool) {
         findMaxRangePoints()
         calcConstants()
+
         if shouldCalcMaxValue {
             calcMaxValue(animateMaxValue: animateMaxValue)
         }
+        
         if changedIsHidden {
             calcNewTargetsValuesIfNeeded()
         }

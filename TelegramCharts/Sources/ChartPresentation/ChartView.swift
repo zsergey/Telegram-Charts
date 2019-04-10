@@ -196,7 +196,6 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     func drawLabels(byScroll: Bool) {
-        
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {

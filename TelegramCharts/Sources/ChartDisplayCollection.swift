@@ -18,14 +18,16 @@ class ChartDisplayCollection: DisplayCollection {
         self.dataSource = dataSource
         self.colorScheme = colorScheme
         self.createRows()
+        self.calcChartHeights()
     }
     
     private enum `Type` {
         case section(String)
-        case chart(ChartDataSource, ChartDataSource)
+        case chart(ChartDataSource, ChartDataSource, Int)
     }
     
     private var rows: [Type] = []
+    private var chartHeights: [CGFloat] = []
     
     static var modelsForRegistration: [CellViewAnyModelType.Type] {
         return [ChartTableViewCellModel.self,
@@ -38,7 +40,7 @@ class ChartDisplayCollection: DisplayCollection {
             let main = dataSource.main[index]
             let preview = dataSource.preview[index]
             rows.append(.section(main.name))
-            rows.append(.chart(main, preview))
+            rows.append(.chart(main, preview, index))
         }
     }
     
@@ -49,13 +51,13 @@ class ChartDisplayCollection: DisplayCollection {
     func separatorInset(for indexPath: IndexPath, view: UIView) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
-        
-    func model(for indexPath: IndexPath) -> CellViewAnyModelType {
+    
+    func fetchModel(for indexPath: IndexPath) -> CellViewAnyModelType {
         let type = rows[indexPath.row]
         switch type {
         case .section(let name):
             return SectionTableViewCellModel(text: name, colorScheme: colorScheme)
-        case .chart(let main, let preview):
+        case .chart(let main, let preview, _):
             return ChartTableViewCellModel(chartDataSource: main,
                                            previewChartDataSource: preview,
                                            colorScheme: colorScheme)
@@ -66,7 +68,19 @@ class ChartDisplayCollection: DisplayCollection {
         let type = rows[indexPath.row]
         switch type {
         case .section(let name): return name.count > 0 ? 55 : 35
-        case .chart(let main, _): return calcChartHeight(dataSource: main)
+        case .chart(_, _, let index): return chartHeights[index]
+        }
+    }
+}
+
+private extension ChartDisplayCollection {
+    
+    func calcChartHeights() {
+        chartHeights.removeAll()
+        for index in 0..<dataSource.main.count {
+            let main = dataSource.main[index]
+            let height = calcChartHeight(dataSource: main)
+            chartHeights.append(height)
         }
     }
     
@@ -96,5 +110,4 @@ class ChartDisplayCollection: DisplayCollection {
         
         return mainHeight + countLines * oneLineHeight + additionalHeight
     }
-    
 }

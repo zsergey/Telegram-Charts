@@ -17,7 +17,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
             tableView.delegate = self
             tableView.dataSource = self
             tableView.rowHeight = 0
-            tableView.estimatedRowHeight = 372
+            tableView.estimatedRowHeight = 0
         }
     }
     
@@ -94,23 +94,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 
-    func reloadRows(_ rows: [IndexPath]) {
-        self.tableView.beginUpdates()
-        self.tableView.reloadRows(at: rows, with: .fade)
-        self.tableView.endUpdates()
-    }
-    
-    func visibleRows() -> [IndexPath] {
-        var indexPaths = [IndexPath]()
-        let cells = self.tableView.visibleCells
-        for cell in cells {
-            if let indexPath = self.tableView.indexPath(for: cell) {
-                indexPaths.append(indexPath)
-            }
-        }
-        return indexPaths
-    }
-
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         scrollingStarted()
     }
@@ -156,7 +139,7 @@ extension ChartViewController: UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let model = displayCollection.model(for: indexPath)
+        let model = displayCollection.fetchModel(for: indexPath)
         model.setupDefault(on: cell)
     }
 
@@ -172,7 +155,7 @@ extension ChartViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let model = displayCollection.model(for: indexPath)
+        let model = displayCollection.fetchModel(for: indexPath)
         let cell = tableView.dequeueReusableCell(for: indexPath, with: model)
         cell.separatorInset = displayCollection.separatorInset(for: indexPath, view: view)
         return cell

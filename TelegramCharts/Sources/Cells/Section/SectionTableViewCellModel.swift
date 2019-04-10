@@ -11,7 +11,7 @@ import UIKit
 class SectionTableViewCellModel {
     var text: String
     var colorScheme: ColorSchemeProtocol
-    
+
     init(text: String, colorScheme: ColorSchemeProtocol) {
         self.text = text
         self.colorScheme = colorScheme
@@ -19,7 +19,7 @@ class SectionTableViewCellModel {
 }
 
 extension SectionTableViewCellModel: CellViewModelType {
-    
+
     func setup(on cell: SectionTableViewCell) {
         cell.model = self
         cell.label.text = text

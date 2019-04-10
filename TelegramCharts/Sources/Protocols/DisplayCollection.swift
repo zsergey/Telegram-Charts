@@ -12,7 +12,7 @@ protocol DisplayCollection {
     static var modelsForRegistration: [CellViewAnyModelType.Type] { get }
     
     func numberOfRows(in section: Int) -> Int
-    func model(for indexPath: IndexPath) -> CellViewAnyModelType
+    func fetchModel(for indexPath: IndexPath) -> CellViewAnyModelType
 }
 
 extension DisplayCollection {
