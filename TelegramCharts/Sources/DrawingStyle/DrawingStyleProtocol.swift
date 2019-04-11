@@ -9,9 +9,11 @@
 import UIKit
 
 protocol DrawingStyleProtocol {
+    var minLineLength: CGFloat { get set }
+    var shortIndexes: [Int] { get set }
     var isCustomFillColor: Bool { get }
     var lineCap: CAShapeLayerLineCap { get }
     var lineJoin: CAShapeLayerLineJoin { get }
-    func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath?
+    mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
+                             viewSize: CGSize, isPreviewMode: Bool) -> CGPath?
 }

@@ -12,8 +12,8 @@ class ChartTableViewCell: UITableViewCell {
 
     weak var model: ChartTableViewCellModel?
     
-    @IBOutlet var chartView: ChartView!
-    @IBOutlet var previewChartView: ChartView!
+    @IBOutlet var chartView: ChartContentView!
+    @IBOutlet var previewChartView: ChartContentView!
     @IBOutlet var sliderView: SliderView!
     @IBOutlet var chartNoDataLabel: UILabel! {
         didSet {
@@ -78,8 +78,7 @@ class ChartTableViewCell: UITableViewCell {
         
         if let model = model {
             
-            // TODO
-            // model.setupFilterButtons(on: self)
+            model.setupFilterButtons(on: self)
             
             if model.chartDataSource.viewSize != chartView.frame.size ||
                 model.previewChartDataSource.viewSize != previewChartView.frame.size {

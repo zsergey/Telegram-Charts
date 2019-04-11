@@ -15,10 +15,12 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var currentFPS: Int = 0 {
         didSet {
+            let text = "\(currentFPS) fps"
             if abs(oldValue - currentFPS) > 1 {
-                let text = "\(currentFPS) fps"
                 buttonFPS.setTitle(text, for: .normal)
                 buttonFPS.tintColor = currentFPS < 50 ? .red : .gray
+            }
+            if currentFPS < 59 {
                 print(text)
             }
         }
@@ -77,15 +79,13 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         return displayCollection
     }
     
+    private var isChangingTheme = false
+    
+    private var isScrolling = false
+    
     private var lastTime: CFTimeInterval = 0.0
 
     private var firstTime: CFTimeInterval = 0.0
-
-    private var currentFrame: Int = 0
-
-    private var isChangingTheme = false
-
-    private var isScrolling = false
     
     func calcPerformance(_ link: CADisplayLink) {
         if lastTime == 0.0 {
@@ -96,25 +96,22 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         let currentTime = link.timestamp
         
         let deltaTime = currentTime - lastTime
-        if deltaTime != 0, currentFrame >= 2 {
+        if deltaTime != 0 {
             currentFPS = Int(1 / deltaTime)
-            currentFrame = 0
         }
 
         let elapsedTime = floor((currentTime - lastTime) * 10_000) / 10
         let totalElapsedTime = currentTime - firstTime
-
         if elapsedTime > 16.7 {
             print("Frame was dropped with elapsed time of \(elapsedTime) at \(totalElapsedTime)")
         }
         lastTime = link.timestamp
-        currentFrame += 1
     }
     
     @objc func update(link: CADisplayLink) {
         calcPerformance(link)
         // TODO
-        //tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
+        tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

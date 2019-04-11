@@ -9,7 +9,11 @@
 import UIKit
 
 struct StandardDrawingStyle: DrawingStyleProtocol {
-    
+
+    var minLineLength: CGFloat = 0
+
+    var shortIndexes: [Int] = []
+
     var isCustomFillColor: Bool {
         return false
     }
@@ -22,7 +26,7 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
         return .round
     }
     
-    func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
+    mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
                     viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
         if isPreviewMode {
             return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
@@ -44,18 +48,27 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
         return path
     }
     
-    private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
+    private mutating func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }
         let path = CGMutablePath()
         var startPoint = dataPoints[0]
         path.move(to: startPoint)
-        for i in 1..<dataPoints.count {
-            let point = dataPoints[i]
-            if Math.lenghtLine(from: startPoint, to: point) >= 3 {
-                path.addLine(to: point)
-                startPoint = point
+
+        if shortIndexes.isEmpty {
+            for i in 1..<dataPoints.count {
+                let point = dataPoints[i]
+                if Math.lenghtLine(from: startPoint, to: point) >= minLineLength {
+                    path.addLine(to: point)
+                    startPoint = point
+                    shortIndexes.append(i)
+                }
+            }
+        } else {
+            for i in 0..<shortIndexes.count {
+                let index = shortIndexes[i]
+                path.addLine(to: dataPoints[index])
             }
         }
         return path

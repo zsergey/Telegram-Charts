@@ -10,7 +10,7 @@ import UIKit
 
 struct ChartModelFactory {
     
-    static func make(fromResource name: String) -> [[ChartModel]] {
+    static func make(fromResource name: String, minLineLength: CGFloat = 0) -> [[ChartModel]] {
         var result: [[ChartModel]] = []
         
         if let data = DataChartModelFactory.make(fromResource: name) {
@@ -53,7 +53,8 @@ struct ChartModelFactory {
                                                     yScaled: chartData.yScaled,
                                                     stacked: chartData.stacked,
                                                     singleBar: chartData.singleBar,
-                                                    percentage: chartData.percentage)
+                                                    percentage: chartData.percentage,
+                                                    minLineLength: minLineLength)
                         chartModels.append(chartModel)
                     }
                 }

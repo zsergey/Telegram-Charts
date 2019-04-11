@@ -10,6 +10,10 @@ import UIKit
 
 struct CurveDrawingStyle: DrawingStyleProtocol {
 
+    var minLineLength: CGFloat = 0
+
+    var shortIndexes: [Int] = []
+
     struct CurvedSegment {
         var controlPoint1: CGPoint
         var controlPoint2: CGPoint
@@ -27,8 +31,8 @@ struct CurveDrawingStyle: DrawingStyleProtocol {
         return .round
     }
 
-    func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
+    mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
+                             viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }

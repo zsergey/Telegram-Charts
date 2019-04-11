@@ -10,6 +10,10 @@ import UIKit
 
 struct StackedDrawingStyle: DrawingStyleProtocol {
     
+    var minLineLength: CGFloat = 0
+
+    var shortIndexes: [Int] = []
+
     var isCustomFillColor: Bool {
         return true
     }
@@ -22,8 +26,8 @@ struct StackedDrawingStyle: DrawingStyleProtocol {
         return .miter
     }
 
-    func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
+    mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
+                             viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
         if isPreviewMode {
             return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
         } else {
@@ -31,35 +35,53 @@ struct StackedDrawingStyle: DrawingStyleProtocol {
         }
     }
     
-    private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
-        
+    private mutating func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
+        // TODO: здесь сделать на подобии стандартного шорта
         guard dataPoints.count > 0 else {
             return nil
         }
+        let minimumGap: CGFloat = minLineLength
+        var deltaIndex = 1
+        if lineGap < minimumGap {
+            deltaIndex = Int(minimumGap / lineGap)
+        }
+        
         let path = CGMutablePath()
         let startPoint = dataPoints[0]
         let finishPoint = dataPoints[dataPoints.count - 1]
         
         path.move(to: CGPoint(x: startPoint.x, y: viewSize.height))
         path.addLine(to: startPoint)
-        let secondPoint = CGPoint(x: startPoint.x + lineGap, y: startPoint.y)
-        path.addLine(to: secondPoint)
-        var lastPoint = secondPoint
-        for i in 1..<dataPoints.count {
-            let point = dataPoints[i]
-            if Math.lenghtLine(from: point, to: lastPoint) >= 3 {
+        var lastLine = startPoint
+        
+        if shortIndexes.isEmpty {
+            var index = deltaIndex
+            while index < dataPoints.count {
+                let point = dataPoints[index]
+                
+                path.addLine(to: CGPoint(x: point.x, y: lastLine.y))
                 path.addLine(to: point)
-                path.addLine(to: CGPoint(x: point.x + lineGap, y: point.y))
-                lastPoint = point
+                lastLine = point
+                shortIndexes.append(index)
+                index += deltaIndex
+            }
+        } else {
+            for i in 0..<shortIndexes.count {
+                let index = shortIndexes[i]
+                let point = dataPoints[index]
+                path.addLine(to: CGPoint(x: point.x, y: lastLine.y))
+                path.addLine(to: point)
+                lastLine = point
             }
         }
-
+        
         path.addLine(to: CGPoint(x: finishPoint.x, y: viewSize.height))
         path.addLine(to: CGPoint(x: startPoint.x, y: viewSize.height))
-        
+
         return path
     }
 
+    
     private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil

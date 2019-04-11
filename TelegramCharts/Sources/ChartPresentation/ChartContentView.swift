@@ -1,5 +1,5 @@
 //
-//  ChartView.swift
+//  ChartContentView.swift
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 3/11/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
+class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
     var dataSource: ChartDataSource? {
         didSet {
@@ -160,7 +160,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         
         let isUpdating = chartLines != nil
         var newChartLines = isUpdating ? nil : [CAShapeLayer]()
-        
+
         let range = 0..<dataSource.chartModels.count
         for standartIndex in range {
             var inverseIndex = range.endIndex - standartIndex - 1
@@ -169,9 +169,10 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             let chartModel = dataSource.chartModels[inverseIndex]
             let lineLayer = isUpdating ? chartLines![standartIndex] : CAShapeLayer()
             let path = paths[inverseIndex]
+            
             if isUpdating {
-                CATransaction.setDisableActions(true)
                 lineLayer.path = path
+                CATransaction.setDisableActions(true)
                 if chartModel.opacity != lineLayer.opacity {
                     let toValue: Float = chartModel.opacity
                     let fromValue: Float = lineLayer.opacity
@@ -191,6 +192,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 lineLayer.lineCap = chartModel.drawingStyle.lineCap
                 lineLayer.lineJoin = chartModel.drawingStyle.lineJoin
                 dataLayer.addSublayer(lineLayer)
+
                 newChartLines!.append(lineLayer)
             }
         }
@@ -777,6 +779,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     
     func prepareForReuse() {
         chartLines = nil
+        
         gridLines = nil
         labels = nil
         dataSource = nil

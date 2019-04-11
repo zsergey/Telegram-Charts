@@ -10,7 +10,7 @@ import UIKit
 
 extension UIView {
 
-    static var animationDuration: CFTimeInterval = 0.3
+    static var animationDuration: CFTimeInterval = 0.25
 
     static func animateEaseInOut(with duration: CFTimeInterval,
                                  animations: @escaping () -> ()) {

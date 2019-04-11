@@ -10,6 +10,10 @@ import UIKit
 
 struct PercentageDrawingStyle: DrawingStyleProtocol {
     
+    var minLineLength: CGFloat = 0
+
+    var shortIndexes: [Int] = []
+
     var isCustomFillColor: Bool {
         return true
     }
@@ -22,13 +26,14 @@ struct PercentageDrawingStyle: DrawingStyleProtocol {
         return .round
     }
 
-    func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
-        if isPreviewMode {
-            return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
-        } else {
+    mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
+                             viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
+        // TODO
+//        if isPreviewMode {
+//            return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
+//        } else {
             return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
-        }
+//        }
     }
     
     private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
@@ -44,7 +49,7 @@ struct PercentageDrawingStyle: DrawingStyleProtocol {
         var lastPoint = startPoint
         for i in 1..<dataPoints.count {
             let point = dataPoints[i]
-            if Math.lenghtLine(from: point, to: lastPoint) >= 3 {
+            if Math.lenghtLine(from: point, to: lastPoint) >= minLineLength {
                 path.addLine(to: point)
                 lastPoint = point
             }

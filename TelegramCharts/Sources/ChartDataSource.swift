@@ -400,7 +400,9 @@ class ChartDataSource: Updatable {
         
         let mapKey = chartModels.map { String(Int(truncating: $0.isHidden as NSNumber))}.reduce("", +)
         let previewKey = String(Int(truncating: isPreviewMode as NSNumber))
-        
+        let maxValueCachedKey = "max \(maxValues.reduce(0, +))"
+        let rangeValue = "range [\(loopRange.startIndex), \(loopRange.endIndex)]"
+
         for index in 0..<chartModels.count {
             
             let chartModel = chartModels[index]
@@ -422,8 +424,7 @@ class ChartDataSource: Updatable {
             let mapValue = "map: \(mapKey)"
             let previewValue = "preview: \(previewKey)"
             let nameValue = "name: \(chartModel.name)"
-            let rangeValue = "range [\(loopRange.startIndex), \(loopRange.endIndex)]"
-            let cachKey = mapValue + ", " + previewValue + ", " + nameValue + ", " + rangeValue
+            let cachKey = mapValue + ", " + previewValue + ", " + nameValue + ", " + rangeValue + ", " + maxValueCachedKey
             
             let points = convertModelsToPoints(entries: data, maxValue: maxValue)
             
@@ -453,13 +454,13 @@ class ChartDataSource: Updatable {
     
     private func fetchBezierPath(for chartModel: ChartModel, points: [CGPoint], key: String) -> CGPath? {
         var path: CGPath?
-        if let cachedPath = cachedPaths[key] {
-            path = cachedPath
-        } else {
+//        if let cachedPath = cachedPaths[key] {
+//            path = cachedPath
+//        } else {
             path = chartModel.drawingStyle.createPath(dataPoints: points, lineGap: lineGap,
                                                       viewSize: viewDataSize, isPreviewMode: isPreviewMode)
-            cachedPaths[key] = path
-        }
+//            cachedPaths[key] = path
+//        }
         return path
     }
     

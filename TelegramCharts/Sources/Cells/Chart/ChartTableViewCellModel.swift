@@ -164,7 +164,7 @@ extension ChartTableViewCellModel: CellViewModelType {
     }
     
     func calcProperties(of dataSource: ChartDataSource,
-                        for view: ChartView,
+                        for view: ChartContentView,
                         shouldCalcMaxValue: Bool = true,
                         animateMaxValue: Bool = true) {
         // TODO: Calc in background.

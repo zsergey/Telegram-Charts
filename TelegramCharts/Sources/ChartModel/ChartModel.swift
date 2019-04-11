@@ -70,7 +70,7 @@ class ChartModel {
     }
     
     init(name: String, color: UIColor, data: [PointModel], yScaled: Bool,
-         stacked: Bool, singleBar: Bool, percentage: Bool) {
+         stacked: Bool, singleBar: Bool, percentage: Bool, minLineLength: CGFloat) {
         self.name = name
         self.color = color
         self.isHidden = false
@@ -87,6 +87,7 @@ class ChartModel {
         } else {
             self.drawingStyle = StandardDrawingStyle()
         }
+        self.drawingStyle.minLineLength = minLineLength
     }
 }
 
