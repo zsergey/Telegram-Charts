@@ -11,6 +11,18 @@ import UIKit
 class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var displayCollection: ChartDisplayCollection!
+    @IBOutlet var buttonFPS: UIButton!
+    
+    var currentFPS: Int = 0 {
+        didSet {
+            if abs(oldValue - currentFPS) > 1 {
+                let text = "\(currentFPS) fps"
+                buttonFPS.setTitle(text, for: .normal)
+                buttonFPS.tintColor = currentFPS < 50 ? .red : .gray
+                print(text)
+            }
+        }
+    }
     
     @IBOutlet var tableView: UITableView! {
         didSet {
@@ -69,6 +81,8 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
 
     private var firstTime: CFTimeInterval = 0.0
 
+    private var currentFrame: Int = 0
+
     private var isChangingTheme = false
 
     private var isScrolling = false
@@ -80,19 +94,27 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         let currentTime = link.timestamp
+        
+        let deltaTime = currentTime - lastTime
+        if deltaTime != 0, currentFrame >= 2 {
+            currentFPS = Int(1 / deltaTime)
+            currentFrame = 0
+        }
+
         let elapsedTime = floor((currentTime - lastTime) * 10_000) / 10
         let totalElapsedTime = currentTime - firstTime
-        
+
         if elapsedTime > 16.7 {
             print("Frame was dropped with elapsed time of \(elapsedTime) at \(totalElapsedTime)")
         }
         lastTime = link.timestamp
+        currentFrame += 1
     }
     
     @objc func update(link: CADisplayLink) {
         calcPerformance(link)
         // TODO
-        tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
+        //tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
