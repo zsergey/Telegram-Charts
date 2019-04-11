@@ -23,7 +23,7 @@ struct PercentageDrawingStyle: DrawingStyleProtocol {
     }
 
     func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> UIBezierPath? {
+                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
         if isPreviewMode {
             return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
         } else {
@@ -31,11 +31,11 @@ struct PercentageDrawingStyle: DrawingStyleProtocol {
         }
     }
     
-    private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
+    private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }
-        let path = UIBezierPath()
+        let path = CGMutablePath()
         let startPoint = dataPoints[0]
         let finishPoint = dataPoints[dataPoints.count - 1]
         
@@ -57,11 +57,11 @@ struct PercentageDrawingStyle: DrawingStyleProtocol {
 
     }
 
-    private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
+    private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }
-        let path = UIBezierPath()
+        let path = CGMutablePath()
         let startPoint = dataPoints[0]
         let finishPoint = dataPoints[dataPoints.count - 1]
         

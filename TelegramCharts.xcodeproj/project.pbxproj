@@ -37,7 +37,6 @@
 		AD9226D5223A12A900A5B7D6 /* DayScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D4223A12A900A5B7D6 /* DayScheme.swift */; };
 		AD9226D7223A12B800A5B7D6 /* NightScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D6223A12B800A5B7D6 /* NightScheme.swift */; };
 		AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */; };
-		AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */; };
 		AD9226DE223A286E00A5B7D6 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DD223A286E00A5B7D6 /* IntExtensions.swift */; };
 		AD94517C223D90EF00E8CD9D /* CGFloatExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD94517B223D90EF00E8CD9D /* CGFloatExtensions.swift */; };
 		ADB3E9E422441BE9007CC2F2 /* ChartTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9E222441BE9007CC2F2 /* ChartTableViewCell.swift */; };
@@ -48,6 +47,7 @@
 		ADB3E9F822441E2A007CC2F2 /* UITableViewCellExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */; };
 		ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */; };
 		ADB3E9FC22441F4F007CC2F2 /* ChartTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9FB22441F4F007CC2F2 /* ChartTableViewCellModel.swift */; };
+		ADC5E884225F582F0062A4AE /* CurveDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */; };
 		ADC861C4225E10E900E697C8 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC861C3225E10E900E697C8 /* Math.swift */; };
 		ADC861C6225E253800E697C8 /* overview6.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC861C5225E253800E697C8 /* overview6.json */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
@@ -496,8 +496,8 @@
 				ADB3E9E422441BE9007CC2F2 /* ChartTableViewCell.swift in Sources */,
 				AD9226DE223A286E00A5B7D6 /* IntExtensions.swift in Sources */,
 				ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */,
-				AD9226DC223A137600A5B7D6 /* CurveDrawingStyle.swift in Sources */,
 				AD9226D2223A122B00A5B7D6 /* DrawingStyleProtocol.swift in Sources */,
+				ADC5E884225F582F0062A4AE /* CurveDrawingStyle.swift in Sources */,
 				AD107ADF225D168800D84D3F /* PercentageDrawingStyle.swift in Sources */,
 				ADB3E9F622441D85007CC2F2 /* ReusableCell.swift in Sources */,
 				AD17FF392244A1250073F0BB /* Reusable.swift in Sources */,

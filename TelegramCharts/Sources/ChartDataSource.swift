@@ -84,7 +84,7 @@ class ChartDataSource: Updatable {
     
     private(set) var dataPoints: [[CGPoint]]?
 
-    private(set) var paths: [UIBezierPath]?
+    private(set) var paths: [CGPath]?
     
     private(set) var maxRangePoints: [PointModel] = []
     
@@ -102,7 +102,7 @@ class ChartDataSource: Updatable {
         return Int(CFTimeInterval(60) * UIView.animationDuration)
     }
     
-    private var cachedPaths = [String : UIBezierPath]()
+    private var cachedPaths = [String : CGPath]()
     
     init(chartModels: [ChartModel], name: String) {
         self.name = name
@@ -375,7 +375,7 @@ class ChartDataSource: Updatable {
     private func calcPointsAndMakePaths() {
         let isUpdating = dataPoints != nil && self.paths != nil
         var newDataPoints = isUpdating ? nil : [[CGPoint]]()
-        var newPaths = isUpdating ? nil : [UIBezierPath]()
+        var newPaths = isUpdating ? nil : [CGPath]()
         
         // Preparing datas.
         allData = nil
@@ -451,8 +451,8 @@ class ChartDataSource: Updatable {
         }
     }
     
-    private func fetchBezierPath(for chartModel: ChartModel, points: [CGPoint], key: String) -> UIBezierPath? {
-        var path: UIBezierPath?
+    private func fetchBezierPath(for chartModel: ChartModel, points: [CGPoint], key: String) -> CGPath? {
+        var path: CGPath?
         if let cachedPath = cachedPaths[key] {
             path = cachedPath
         } else {

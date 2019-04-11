@@ -171,7 +171,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             let path = paths[inverseIndex]
             if isUpdating {
                 CATransaction.setDisableActions(true)
-                lineLayer.path = path.cgPath
+                lineLayer.path = path
                 if chartModel.opacity != lineLayer.opacity {
                     let toValue: Float = chartModel.opacity
                     let fromValue: Float = lineLayer.opacity
@@ -183,7 +183,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 if chartModel.drawingStyle.isCustomFillColor {
                     fillColor = chartModel.color
                 }
-                lineLayer.path = path.cgPath
+                lineLayer.path = path
                 lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
                 lineLayer.fillColor = fillColor.cgColor

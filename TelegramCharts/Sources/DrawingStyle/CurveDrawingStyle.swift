@@ -28,12 +28,12 @@ struct CurveDrawingStyle: DrawingStyleProtocol {
     }
 
     func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> UIBezierPath? {
+                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }
 
-        let path = UIBezierPath()
+        let path = CGMutablePath()
         path.move(to: dataPoints[0])
         
         var curveSegments: [CurvedSegment] = []
@@ -41,8 +41,8 @@ struct CurveDrawingStyle: DrawingStyleProtocol {
         
         for i in 1..<dataPoints.count {
             path.addCurve(to: dataPoints[i],
-                          controlPoint1: curveSegments[i - 1].controlPoint1,
-                          controlPoint2: curveSegments[i - 1].controlPoint2)
+                          control1: curveSegments[i - 1].controlPoint1,
+                          control2: curveSegments[i - 1].controlPoint2)
         }
         return path
     }

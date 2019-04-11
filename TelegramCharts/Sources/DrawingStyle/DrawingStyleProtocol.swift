@@ -13,5 +13,5 @@ protocol DrawingStyleProtocol {
     var lineCap: CAShapeLayerLineCap { get }
     var lineJoin: CAShapeLayerLineJoin { get }
     func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> UIBezierPath?
+                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath?
 }

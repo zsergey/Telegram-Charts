@@ -23,7 +23,7 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
     }
     
     func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
-                    viewSize: CGSize, isPreviewMode: Bool) -> UIBezierPath? {
+                    viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
         if isPreviewMode {
             return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
         } else {
@@ -31,11 +31,11 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
         }
     }
     
-    private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
+    private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }
-        let path = UIBezierPath()
+        let path = CGMutablePath()
         path.move(to: dataPoints[0])
         
         for i in 1..<dataPoints.count {
@@ -44,11 +44,11 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
         return path
     }
     
-    private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
+    private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }
-        let path = UIBezierPath()
+        let path = CGMutablePath()
         var startPoint = dataPoints[0]
         path.move(to: startPoint)
         for i in 1..<dataPoints.count {
@@ -62,7 +62,7 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
     }
     
     // Use for unreal big data.
-    private func createPathSkipIndexes(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> UIBezierPath? {
+    private func createPathSkipIndexes(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGMutablePath? {
         guard dataPoints.count > 0 else {
             return nil
         }
@@ -72,7 +72,7 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
             deltaIndex = Int(minimumGap / lineGap)
         }
 
-        let path = UIBezierPath()
+        let path = CGMutablePath()
         path.move(to: dataPoints[0])
 
         var index = 1
