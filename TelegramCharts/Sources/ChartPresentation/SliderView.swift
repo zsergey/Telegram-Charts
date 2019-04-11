@@ -21,7 +21,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     var onChangeRange: ((IndexRange, CGFloat, CGFloat, Bool) ->())?
     var onBeganTouch: ((SliderDirection) ->())?
     var onEndTouch: ((SliderDirection) ->())?
-    var currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
+    var currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(2.0))
 
     var chartModels: [ChartModel]? {
         didSet {
@@ -428,6 +428,6 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         sliderDirection = .finished
         sliderWidth = 0
         startX = 0
-        currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
+        currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(2.0))
     }
 }

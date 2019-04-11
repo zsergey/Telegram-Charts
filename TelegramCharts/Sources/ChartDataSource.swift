@@ -20,8 +20,14 @@ class СoupleChartDataSource {
 
 class ChartDataSource: Updatable {
     
-    var range = IndexRange(start: CGFloat(0.0), end: CGFloat(0.0))
+    var range = IndexRange(start: CGFloat(0.0), end: CGFloat(2.0))
     
+    var intRange: Range<Int> {
+        let startIndex = max(Int(range.start) - 1, 0)
+        let endIndex = min(Int(viewSize.width / lineGap + range.start) + 2, maxRangePoints.count)
+        return startIndex..<endIndex
+    }
+
     var sliderWidth: CGFloat = 0
     
     var startX: CGFloat = 0
@@ -37,6 +43,8 @@ class ChartDataSource: Updatable {
     }
     
     var selectedIndex: Int?
+
+    var globalSelectedIndex: Int?
 
     var onChangeMaxValue: (() ->())?
     
@@ -94,6 +102,8 @@ class ChartDataSource: Updatable {
         return Int(CFTimeInterval(60) * UIView.animationDuration)
     }
     
+    private var cachedPaths = [String : UIBezierPath]()
+    
     init(chartModels: [ChartModel], name: String) {
         self.name = name
         self.chartModels = chartModels
@@ -133,13 +143,14 @@ class ChartDataSource: Updatable {
         } else {
             // Individual maximum in specific range.
             var newMaxValues = self.maxValues
+            let loopRange = intRange
             for index in 0..<chartModels.count {
                 let chartModel = chartModels[index]
                 if chartModel.isHidden {
                     newMaxValues[index] = 0
                 } else {
                     var max: CGFloat = 0
-                    for i in 0..<chartModel.data.count {
+                    for i in loopRange {
                         let x = (CGFloat(i) - range.start) * lineGap
                         if x >= 0, x <= viewSize.width {
                             let value = CGFloat(chartModel.data[i].value)
@@ -168,9 +179,10 @@ class ChartDataSource: Updatable {
         } else {
             // One maximum in specific range.
             var max: CGFloat = 0
+            let loopRange = intRange
             for chartModel in chartModels {
                 if chartModel.isHidden { continue }
-                for i in 0..<chartModel.data.count {
+                for i in loopRange {
                     let x = (CGFloat(i) - range.start) * lineGap
                     if x >= 0, x <= viewSize.width {
                         let value = CGFloat(chartModel.data[i].value)
@@ -202,7 +214,8 @@ class ChartDataSource: Updatable {
         } else {
             // Sum all maximums in specific range.
             var sumMax: CGFloat = 0
-            for i in 0..<maxRangePoints.count {
+            let loopRange = intRange
+            for i in loopRange {
                 var value: Int = 0
                 for chartModel in chartModels {
                     if chartModel.isHidden {
@@ -278,9 +291,9 @@ class ChartDataSource: Updatable {
     
     private var allData: [PointModel]?
     
-    private func prepareStackData(chartModel: ChartModel) -> [PointModel] {
+    private func prepareStackData(chartModel: ChartModel, loopRange: Range<Int>) -> [PointModel] {
         var data = chartModel.data
-        for i in 0..<data.count {
+        for i in loopRange {
             var dataValue = data[i].value
             if chartModel.runValueAnimation {
                 if data[i].targetValue != 0 {
@@ -317,10 +330,10 @@ class ChartDataSource: Updatable {
         return visibleIndex
     }
 
-    private func calcSumValues(from data: [[PointModel]]) -> [CGFloat] {
+    private func calcSumValues(from data: [[PointModel]], loopRange: Range<Int>) -> [CGFloat] {
         // Sum all values in range and save it.
         var sumValues = [CGFloat]()
-        for i in 0..<maxRangePoints.count {
+        for i in loopRange {
             var sumValue: Int = 0
             var previusValue: Int = 0
             for index in 0..<data.count {
@@ -339,15 +352,16 @@ class ChartDataSource: Updatable {
 
     private func calcPercentageData(from data: [PointModel],
                                     sumValues: [CGFloat],
-                                    isLastVisibleChart: Bool) -> [PointModel] {
+                                    isLastVisibleChart: Bool,
+                                    loopRange: Range<Int>) -> [PointModel] {
         // TODO: оптимизировать.
         var percentageData = [PointModel]()
-        for index in 0..<data.count {
+        for index in loopRange {
             if isLastVisibleChart {
                 percentageData.append(PointModel(value: 100, date: Date()))
                 continue
             }
-            let maxValue = sumValues[index]
+            let maxValue = sumValues[index - loopRange.startIndex]
             if maxValue == 0 {
                 percentageData.append(PointModel(value: 0, date: Date()))
             } else {
@@ -357,7 +371,7 @@ class ChartDataSource: Updatable {
         }
         return percentageData
     }
-
+    
     private func calcPointsAndMakePaths() {
         let isUpdating = dataPoints != nil && self.paths != nil
         var newDataPoints = isUpdating ? nil : [[CGPoint]]()
@@ -365,25 +379,30 @@ class ChartDataSource: Updatable {
         
         // Preparing datas.
         allData = nil
+        let loopRange = intRange
         var preparedData = [[PointModel]]()
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
             if stacked {
-                let data = prepareStackData(chartModel: chartModel)
+                let data = prepareStackData(chartModel: chartModel, loopRange: loopRange)
                 preparedData.append(data)
             } else {
-                preparedData.append(chartModel.data)
+                preparedData.append(Array(chartModel.data[loopRange]))
             }
         }
         
         var sumValues: [CGFloat]? = nil
         var lastVisibleIndex: Int? = nil
         if percentage {
-            sumValues = calcSumValues(from: preparedData)
+            sumValues = calcSumValues(from: preparedData, loopRange: loopRange)
             lastVisibleIndex = fetchLastVisibleIndex()
         }
-
+        
+        let mapKey = chartModels.map { String(Int(truncating: $0.isHidden as NSNumber))}.reduce("", +)
+        let previewKey = String(Int(truncating: isPreviewMode as NSNumber))
+        
         for index in 0..<chartModels.count {
+            
             let chartModel = chartModels[index]
             let maxValue = selectMaxValue(at: index)
             var data = preparedData[index]
@@ -395,19 +414,20 @@ class ChartDataSource: Updatable {
 
                 data = calcPercentageData(from: data,
                                           sumValues: sumValues!,
-                                          isLastVisibleChart: isLastVisibleChart)
+                                          isLastVisibleChart: isLastVisibleChart,
+                                          loopRange: loopRange)
+            } else if stacked {
+                data = Array(data[loopRange])
             }
-
-            var points = convertModelsToPoints(entries: data, maxValue: maxValue)
+            let mapValue = "map: \(mapKey)"
+            let previewValue = "preview: \(previewKey)"
+            let nameValue = "name: \(chartModel.name)"
+            let rangeValue = "range [\(loopRange.startIndex), \(loopRange.endIndex)]"
+            let cachKey = mapValue + ", " + previewValue + ", " + nameValue + ", " + rangeValue
             
-            // TODO: Correct points.
-            if !isPreviewMode {
-                for i in 0..<points.count {
-                    points[i] = CGPoint(x: (CGFloat(i) - range.start) * lineGap, y: points[i].y)
-                }
-            }
+            let points = convertModelsToPoints(entries: data, maxValue: maxValue)
             
-            if let path = chartModel.drawingStyle.createPath(dataPoints: points, lineGap: lineGap, viewSize: viewDataSize) {
+            if let path = fetchBezierPath(for: chartModel, points: points, key: cachKey) {
                 if isUpdating {
                     self.paths?[index] = path
                 } else {
@@ -431,13 +451,25 @@ class ChartDataSource: Updatable {
         }
     }
     
+    private func fetchBezierPath(for chartModel: ChartModel, points: [CGPoint], key: String) -> UIBezierPath? {
+        var path: UIBezierPath?
+        if let cachedPath = cachedPaths[key] {
+            path = cachedPath
+        } else {
+            path = chartModel.drawingStyle.createPath(dataPoints: points, lineGap: lineGap,
+                                                      viewSize: viewDataSize, isPreviewMode: isPreviewMode)
+            cachedPaths[key] = path
+        }
+        return path
+    }
+    
     private func calcNewTargetsValuesIfNeeded() {
         guard stacked else {
             return
         }
         
         frameAnimation = 0
-
+        
         for i in 0..<chartModels.count {
             let chartModel = chartModels[i]
             if chartModel.isHidden && chartModel.targetDirection != .toZero {
@@ -563,4 +595,5 @@ class ChartDataSource: Updatable {
             chartModels.forEach { $0.runValueAnimation = false }
         }
     }
+    
 }

@@ -153,6 +153,11 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
                 return
         }
         
+        // TODO
+//        if dataSource.isPreviewMode {
+//            return
+//        }
+        
         let isUpdating = chartLines != nil
         var newChartLines = isUpdating ? nil : [CAShapeLayer]()
         
@@ -196,6 +201,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     func drawLabels(byScroll: Bool) {
+        // TODO
+        return
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {
@@ -435,6 +442,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
     }
     
     func drawHorizontalLines(animated: Bool) {
+        // TODO
+        return
         guard let dataSource = dataSource,
             !dataSource.isPreviewMode else {
                 return
@@ -544,7 +553,10 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             return
         }
         
-        let newSelectedIndex = Int((location.x + dataSource.range.start * dataSource.lineGap) / dataSource.lineGap)
+        // TODO: Текушие значения не правильно отображаются
+        let newSelectedIndex = Int(location.x / dataSource.lineGap)
+        // let newGlobalSelectedIndex = Int((location.x + dataSource.range.start * dataSource.lineGap) / dataSource.lineGap)
+        let newGlobalSelectedIndex = newSelectedIndex + Int(dataSource.range.start)
         var isUpdating = dataSource.selectedIndex == nil
         if let selectedIndex = dataSource.selectedIndex,
             selectedIndex != newSelectedIndex {
@@ -552,6 +564,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         }
         if isUpdating {
             dataSource.selectedIndex = newSelectedIndex
+            dataSource.globalSelectedIndex = newGlobalSelectedIndex
             drawDots()
         }
     }
@@ -582,7 +595,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
             !dataSource.isPreviewMode,
-            let selectedIndex = dataSource.selectedIndex else {
+            let selectedIndex = dataSource.selectedIndex,
+            let globalSelectedIndex = dataSource.globalSelectedIndex else {
             return
         }
         
@@ -621,7 +635,8 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
             var points = dataPoints[index]
             
             let dataPoint = points[selectedIndex]
-            let xValue = (CGFloat(selectedIndex) - dataSource.range.start) * dataSource.lineGap - outerRadius / 2
+//            let xValue = (CGFloat(selectedIndex) - dataSource.range.start) * dataSource.lineGap - outerRadius / 2
+            let xValue = CGFloat(selectedIndex) * dataSource.lineGap - outerRadius / 2
             let yValue = dataPoint.y  - outerRadius / 2
             let dotFrame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
             
@@ -660,7 +675,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         var rectWidth: CGFloat = 80
         var maxString = ""
         for chartModel in visibleChartModels {
-            let data = chartModel.data[selectedIndex]
+            let data = chartModel.data[globalSelectedIndex]
             let format = data.value.format
             if maxString.count < format.count {
                 maxString = format
@@ -702,7 +717,7 @@ class ChartView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate {
         let deltaY = oneLine - 3
         for index in 0..<visibleChartModels.count {
             let chartModel = visibleChartModels[index]
-            let data = chartModel.data[selectedIndex]
+            let data = chartModel.data[globalSelectedIndex]
             if drawDate {
                 let ydate = rect.origin.y + 5
                 let isUpdating = self.dateTextLayer != nil

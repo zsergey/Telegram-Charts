@@ -39,4 +39,9 @@ struct Math {
         return true
     }
 
+    static func lenghtLine(from startPoint: CGPoint, to finishPoint: CGPoint) -> CGFloat {
+        let y = startPoint.y - finishPoint.y
+        let x = startPoint.x - finishPoint.x
+        return CGFloat(sqrtf(Float(y * y + x * x)))
+    }
 }

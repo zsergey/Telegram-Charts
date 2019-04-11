@@ -240,9 +240,9 @@
 			children = (
 				AD9226D1223A122B00A5B7D6 /* DrawingStyleProtocol.swift */,
 				AD9226D9223A135D00A5B7D6 /* StandardDrawingStyle.swift */,
-				AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */,
 				AD107ADC225C6B4900D84D3F /* StackedDrawingStyle.swift */,
 				AD107ADE225D168800D84D3F /* PercentageDrawingStyle.swift */,
+				AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */,
 			);
 			path = DrawingStyle;
 			sourceTree = "<group>";
