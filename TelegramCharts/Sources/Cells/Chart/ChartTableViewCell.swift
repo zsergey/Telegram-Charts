@@ -37,15 +37,32 @@ class ChartTableViewCell: UITableViewCell {
         filterButtons.removeAll()
     }
         
-    func hideViewsIfNeeded() {
+    func hideViewsIfNeeded(animated: Bool) {
         if let model = model {
             let alphaViews: CGFloat = model.chartDataSource.isAllChartsHidden ? 0 : 1
-            let alphaLabels: CGFloat = 1 - alphaViews
-            UIView.animateEaseInOut(with: UIView.animationDuration) {
+            
+            if !model.chartDataSource.isDetailedView {
+                zoomOutButton.alpha = 0
+            }
+            
+            let alphaNoDataLabel: CGFloat = 1 - alphaViews
+            let animation = {
                 self.chartView.alpha = alphaViews
                 self.previewChartView.alpha = alphaViews
                 self.sliderView.alpha = alphaViews
-                self.chartNoDataLabel.alpha = alphaLabels
+                self.dateLabel.alpha = alphaViews
+                if model.chartDataSource.isDetailedView {
+                    self.zoomOutButton.alpha = alphaViews
+                }
+                
+                self.chartNoDataLabel.alpha = alphaNoDataLabel
+            }
+            if animated {
+                UIView.animateEaseInOut(with: UIView.animationDuration) {
+                    animation()
+                }
+            } else {
+                animation()
             }
         }
     }

@@ -59,7 +59,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                 cell.model?.chartDataSource.selectedIndex = nil
                 cell.chartView.cleanDots()
                 cell.calcProperties(animateMaxValue: true, changedIsHidden: true)
-                cell.hideViewsIfNeeded()
+                cell.hideViewsIfNeeded(animated: true)
             }
             button.onLongTapButton = { model, processedLongPressGesture in
                 var needsUpdate = false
@@ -85,7 +85,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                     cell.model?.chartDataSource.selectedIndex = nil
                     cell.chartView.cleanDots()
                     cell.calcProperties(animateMaxValue: true, changedIsHidden: true)
-                    cell.hideViewsIfNeeded()
+                    cell.hideViewsIfNeeded(animated: true)
                 } else {
                     if !processedLongPressGesture {
                         FeedbackGenerator.notificationOccurred(.warning)
@@ -110,7 +110,8 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.chartView.dataSource = chartDataSource
         self.chartDataSource.selectedIndex = nil
         cell.chartView.cleanDots()
-
+        cell.hideViewsIfNeeded(animated: false)
+        
         chartDataSource.onChangeMaxValue = {
             self.calcProperties(of: self.chartDataSource, for: cell.chartView, shouldCalcMaxValue: false)
             self.chartDataSource.selectedIndex = nil

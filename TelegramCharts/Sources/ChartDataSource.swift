@@ -59,7 +59,9 @@ class ChartDataSource: Updatable {
         chartModels.forEach { result = result && $0.isHidden }
         return result
     }
-
+    
+    var isDetailedView: Bool = false
+    
     private(set) var lineGap: CGFloat = 60.0
     
     private(set) var topSpace: CGFloat = 0.0
