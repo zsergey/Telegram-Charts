@@ -10,6 +10,7 @@ import UIKit
 
 struct PointModel {
     var value: Int
+    var originalValue: Int
     var targetValue: Int
     var deltaToTargetValue: Int = 0
     let date: Date
@@ -17,6 +18,7 @@ struct PointModel {
     init(value: Int, date: Date) {
         self.value = value
         self.targetValue = value
+        self.originalValue = value
         self.date = date
     }
     
@@ -60,10 +62,12 @@ class ChartModel {
     var stacked: Bool
     var singleBar: Bool
     var percentage: Bool
-    var targetDirection = TargetDirection.toValue // by default all charts aren't hidden
-    var runValueAnimation: Bool = false
     var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
+
+    // TODO
+//    var targetDirection = TargetDirection.toValue // by default all charts aren't hidden
+    var runValueAnimation: Bool = false
     
     var opacity: Float {
         return isHidden ? 0 : 1

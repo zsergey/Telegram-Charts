@@ -58,10 +58,34 @@ struct ChartModelFactory {
                     }
                 }
                 
+                if chartData.stacked {
+                    chartModels = preparedStackData(chartModels)
+                }
+                
                 result.append(chartModels)
             }
         }
         
         return result
+    }
+    
+    // TODO
+    // ["y0",1000,2000,3000,4000,5000],
+    // ["y1",300,400,500,600,700],
+    // ["y2",100,200,300,400,500]]
+    static func preparedStackData(_ chartModels: [ChartModel]) -> [ChartModel] {
+        let count = chartModels.map { $0.data.count }.max() ?? 0
+        for i in 0..<count {
+            var value = 0
+            for index in 0..<chartModels.count {
+                let chartModel = chartModels[index]
+                var poinModel = chartModel.data[i]
+                let toAddValue = chartModel.isHidden ? 0 : poinModel.originalValue
+                poinModel.value = value + toAddValue
+                chartModels[index].data[i] = poinModel
+                value = value + toAddValue
+            }
+        }
+        return chartModels
     }
 }

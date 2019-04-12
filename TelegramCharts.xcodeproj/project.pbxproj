@@ -48,7 +48,6 @@
 		ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */; };
 		ADB3E9FC22441F4F007CC2F2 /* ChartTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB3E9FB22441F4F007CC2F2 /* ChartTableViewCellModel.swift */; };
 		ADC5E884225F582F0062A4AE /* CurveDrawingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226DB223A137600A5B7D6 /* CurveDrawingStyle.swift */; };
-		ADC5E88C225F85B60062A4AE /* chart_data_3.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC5E887225F85B50062A4AE /* chart_data_3.json */; };
 		ADC5E88D225F85B60062A4AE /* chart_data_2.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC5E888225F85B60062A4AE /* chart_data_2.json */; };
 		ADC5E88E225F85B60062A4AE /* chart_data_5.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC5E889225F85B60062A4AE /* chart_data_5.json */; };
 		ADC5E88F225F85B60062A4AE /* chart_data_1.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC5E88A225F85B60062A4AE /* chart_data_1.json */; };
@@ -58,6 +57,8 @@
 		ADC861C6225E253800E697C8 /* overview6.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC861C5225E253800E697C8 /* overview6.json */; };
 		ADC8D1ED22608B440087EDB3 /* CalcOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8D1EC22608B440087EDB3 /* CalcOperation.swift */; };
 		ADC8D1F12260AD9B0087EDB3 /* LabelsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8D1F02260AD9B0087EDB3 /* LabelsProcessor.swift */; };
+		ADC8D1F32260F4910087EDB3 /* chart_data_3.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC8D1F22260F4910087EDB3 /* chart_data_3.json */; };
+		ADC8D1F52260F4E60087EDB3 /* overview3_3.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC8D1F42260F4E60087EDB3 /* overview3_3.json */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
 		ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
 		ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
@@ -117,7 +118,6 @@
 		ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCellExtenions.swift; sourceTree = "<group>"; };
 		ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewExtenions.swift; sourceTree = "<group>"; };
 		ADB3E9FB22441F4F007CC2F2 /* ChartTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartTableViewCellModel.swift; sourceTree = "<group>"; };
-		ADC5E887225F85B50062A4AE /* chart_data_3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_3.json; sourceTree = "<group>"; };
 		ADC5E888225F85B60062A4AE /* chart_data_2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_2.json; sourceTree = "<group>"; };
 		ADC5E889225F85B60062A4AE /* chart_data_5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_5.json; sourceTree = "<group>"; };
 		ADC5E88A225F85B60062A4AE /* chart_data_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_1.json; sourceTree = "<group>"; };
@@ -127,6 +127,8 @@
 		ADC861C5225E253800E697C8 /* overview6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview6.json; sourceTree = "<group>"; };
 		ADC8D1EC22608B440087EDB3 /* CalcOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalcOperation.swift; sourceTree = "<group>"; };
 		ADC8D1F02260AD9B0087EDB3 /* LabelsProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelsProcessor.swift; sourceTree = "<group>"; };
+		ADC8D1F22260F4910087EDB3 /* chart_data_3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_3.json; sourceTree = "<group>"; };
+		ADC8D1F42260F4E60087EDB3 /* overview3_3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview3_3.json; sourceTree = "<group>"; };
 		ADCD101E22441697006A9856 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		ADDBBDC4224010010090E2AD /* ValueLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueLayer.swift; sourceTree = "<group>"; };
 		ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Animations.swift"; sourceTree = "<group>"; };
@@ -162,7 +164,7 @@
 			children = (
 				ADC5E88A225F85B60062A4AE /* chart_data_1.json */,
 				ADC5E888225F85B60062A4AE /* chart_data_2.json */,
-				ADC5E887225F85B50062A4AE /* chart_data_3.json */,
+				ADC8D1F22260F4910087EDB3 /* chart_data_3.json */,
 				ADC5E88B225F85B60062A4AE /* chart_data_4.json */,
 				ADC5E889225F85B60062A4AE /* chart_data_5.json */,
 				AD107AC8225B58E100D84D3F /* chart_data.json */,
@@ -202,6 +204,7 @@
 		AD107ACF225B58E100D84D3F /* 3 */ = {
 			isa = PBXGroup;
 			children = (
+				ADC8D1F42260F4E60087EDB3 /* overview3_3.json */,
 				AD107AD0225B58E100D84D3F /* overview3.json */,
 			);
 			path = 3;
@@ -458,13 +461,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				ADC5E88F225F85B60062A4AE /* chart_data_1.json in Resources */,
-				ADC5E88C225F85B60062A4AE /* chart_data_3.json in Resources */,
+				ADC8D1F32260F4910087EDB3 /* chart_data_3.json in Resources */,
 				AD107ADA225B58E100D84D3F /* overview2.json in Resources */,
 				AD107AD7225B58E100D84D3F /* overview1.json in Resources */,
 				ADE577102236E8920006200D /* LaunchScreen.storyboard in Resources */,
 				ADFF33B9224527620019A4D4 /* SectionTableViewCell.xib in Resources */,
 				ADC5E88D225F85B60062A4AE /* chart_data_2.json in Resources */,
 				AD107AD6225B58E100D84D3F /* chart_data_max.json in Resources */,
+				ADC8D1F52260F4E60087EDB3 /* overview3_3.json in Resources */,
 				AD107AD5225B58E100D84D3F /* chart_data.json in Resources */,
 				AD2AD47A22483D2800B16492 /* README.md in Resources */,
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,

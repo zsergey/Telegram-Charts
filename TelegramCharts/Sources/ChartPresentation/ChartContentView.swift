@@ -504,7 +504,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
 
         // Rect.
-        let rectWidth: CGFloat = 160
+        let rectWidth: CGFloat = 80 // TODO 160
         // TODO: удалить
 //        var maxString = ""
 //        for index in 0..<dataSource.chartModels.count {

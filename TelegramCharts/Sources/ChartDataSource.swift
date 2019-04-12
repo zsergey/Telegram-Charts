@@ -25,8 +25,11 @@ class ChartDataSource: Updatable {
     var uniqueId: String = ""
     
     var intRange: Range<Int> {
+        print("start \(range.start) end \(range.end)")
         let startIndex = max(Int(range.start) - 1, 0)
         let endIndex = min(Int(viewSize.width / lineGap + range.start) + 2, maxRangePoints.count)
+        // TODO
+        // let endIndex = min(Int(range.end) + 2, maxRangePoints.count)
         return startIndex..<endIndex
     }
     
@@ -263,7 +266,8 @@ class ChartDataSource: Updatable {
         } else if percentage {
             calcPercentageMaxValue(animateMaxValue: value)
         } else if stacked {
-            calcStackedMaxValue(animateMaxValue: value)
+            //calcStackedMaxValue(animateMaxValue: value)
+            calcStandardMaxValue(animateMaxValue: value)
         } else {
             calcStandardMaxValue(animateMaxValue: value)
         }
@@ -398,20 +402,20 @@ class ChartDataSource: Updatable {
         var preparedData = [[PointModel]]()
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
-            if stacked {
-                let data = prepareStackData(chartModel: chartModel, loopRange: loopRange)
-                preparedData.append(data)
-            } else {
+//            if stacked {
+//                let data = prepareStackData(chartModel: chartModel, loopRange: loopRange)
+//                preparedData.append(data)
+//            } else {
                 preparedData.append(Array(chartModel.data[loopRange]))
-            }
+//            }
         }
         
-        var sumValues: [CGFloat]? = nil
-        var lastVisibleIndex: Int? = nil
-        if percentage {
-            sumValues = calcSumValues(from: preparedData, loopRange: loopRange)
-            lastVisibleIndex = fetchLastVisibleIndex()
-        }
+//        var sumValues: [CGFloat]? = nil
+//        var lastVisibleIndex: Int? = nil
+//        if percentage {
+//            sumValues = calcSumValues(from: preparedData, loopRange: loopRange)
+//            lastVisibleIndex = fetchLastVisibleIndex()
+//        }
         
         let mapKey = chartModels.map { String(Int(truncating: $0.isHidden as NSNumber))}.reduce("", +)
         let previewKey = String(Int(truncating: isPreviewMode as NSNumber))
@@ -423,19 +427,19 @@ class ChartDataSource: Updatable {
             let chartModel = chartModels[index]
             let maxValue = selectMaxValue(at: index)
             var data = preparedData[index]
-            if percentage {
-                var isLastVisibleChart = false
-                if let lastVisibleIndex = lastVisibleIndex, index == lastVisibleIndex {
-                    isLastVisibleChart = true
-                }
-
-                data = calcPercentageData(from: data,
-                                          sumValues: sumValues!,
-                                          isLastVisibleChart: isLastVisibleChart,
-                                          loopRange: loopRange)
-            } else if stacked {
-                data = Array(data[loopRange])
-            }
+//            if percentage {
+//                var isLastVisibleChart = false
+//                if let lastVisibleIndex = lastVisibleIndex, index == lastVisibleIndex {
+//                    isLastVisibleChart = true
+//                }
+//
+//                data = calcPercentageData(from: data,
+//                                          sumValues: sumValues!,
+//                                          isLastVisibleChart: isLastVisibleChart,
+//                                          loopRange: loopRange)
+//            } else if stacked {
+//                data = Array(data[loopRange])
+//            }
             let mapValue = "map: \(mapKey)"
             let previewValue = "preview: \(previewKey)"
             let nameValue = "name: \(chartModel.name)"
@@ -492,37 +496,28 @@ class ChartDataSource: Updatable {
         guard stacked else {
             return
         }
-        
-        frameAnimation = 0
-        
-        for i in 0..<chartModels.count {
-            let chartModel = chartModels[i]
-            if chartModel.isHidden && chartModel.targetDirection != .toZero {
-                var data = chartModel.data
-                for index in 0..<data.count {
-                    var pointModel = data[index]
-                    pointModel.targetValue = 0
-                    pointModel.deltaToTargetValue = -pointModel.value
-                    data[index] = pointModel
-                }
-                chartModel.data = data
-                chartModel.targetDirection = .toZero
-                chartModel.runValueAnimation = true
-            }
-            
-            if !chartModel.isHidden && chartModel.targetDirection != .toValue {
-                var data = chartModel.data
-                for index in 0..<data.count {
-                    var pointModel = data[index]
-                    pointModel.targetValue = pointModel.value
-                    pointModel.deltaToTargetValue = pointModel.value
-                    data[index] = pointModel
-                }
-                chartModel.data = data
-                chartModel.targetDirection = .toValue
-                chartModel.runValueAnimation = true
-            }
-        }
+        // durov
+        chartModels = ChartModelFactory.preparedStackData(chartModels)
+//        for i in 0..<chartModels.count {
+//            let chartModel = chartModels[i]
+//            var needsAnimation = false
+//            var data = chartModel.data
+//            for index in 0..<data.count {
+//                var pointModel = data[index]
+//                let targetValue = chartModel.isHidden ? 0 : pointModel.originalValue
+//                if pointModel.value != targetValue {
+//                    needsAnimation = true
+//                }
+//                pointModel.targetValue = targetValue
+//                pointModel.deltaToTargetValue = targetValue - pointModel.value
+//                data[index] = pointModel
+//            }
+//            if needsAnimation {
+//                frameAnimation = 0
+//                chartModel.data = data
+//                chartModel.runValueAnimation = true
+//            }
+//        }
     }
     
     func calcProperties(shouldCalcMaxValue: Bool = true,
@@ -605,18 +600,42 @@ class ChartDataSource: Updatable {
         }
         
         if runMaxValueAnimation {
-            let value = Math.calcDeltaEaseInOut(for: frameAnimation,
-                                                totalTime: framesInAnimationDuration)
+            let easeInOutValue = Math.calcDeltaEaseInOut(for: frameAnimation,
+                                                         totalTime: framesInAnimationDuration)
             for index in 0..<deltaToTargetValues.count {
-                let toAddValue = deltaToTargetValues[index] * value
+                let toAddValue = deltaToTargetValues[index] * easeInOutValue
                 maxValues[index] = maxValues[index] + toAddValue
             }
             onChangeMaxValue?()
         }
         
+//        var shouldCallOnChangeMaxValue = false
+//        for i in 0..<chartModels.count {
+//            let chartModel = chartModels[i]
+//            if chartModel.runValueAnimation {
+//                shouldCallOnChangeMaxValue = true
+//                let easeInOutValue = Math.calcDeltaEaseInOut(for: frameAnimation,
+//                                                             totalTime: framesInAnimationDuration)
+//
+//                for index in 0..<chartModel.data.count {
+//                    var pointModel = chartModel.data[index]
+//                    let toAddValue = CGFloat(pointModel.deltaToTargetValue) * easeInOutValue
+//                    pointModel.value = pointModel.value + Int(toAddValue)
+//                    chartModel.data[index] = pointModel
+//                }
+//            }
+//        }
+//
+//        if shouldCallOnChangeMaxValue {
+//            onChangeMaxValue?()
+//        }
+        
         frameAnimation += 1
         if frameAnimation >= framesInAnimationDuration {
             runMaxValueAnimation = false
+            for index in 0..<deltaToTargetValues.count {
+                maxValues[index] = round(maxValues[index])
+            }
             chartModels.forEach { $0.runValueAnimation = false }
         }
     }
