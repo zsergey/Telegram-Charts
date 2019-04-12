@@ -29,6 +29,13 @@ class ChartDataSource: Updatable {
         let endIndex = min(Int(viewSize.width / lineGap + range.start) + 2, maxRangePoints.count)
         return startIndex..<endIndex
     }
+    
+    var selectedPeriod: String {
+        let loopRange = intRange
+        let startDate = self.maxRangePoints[loopRange.startIndex].date.fullDate
+        let endDate = self.maxRangePoints[loopRange.endIndex - 1].date.fullDate
+        return startDate + " - " + endDate
+    }
 
     var sliderWidth: CGFloat = 0
     
@@ -64,6 +71,10 @@ class ChartDataSource: Updatable {
     
     var isDetailedView: Bool = false
     
+    private let trailingSpace: CGFloat = 16
+    
+    private let leadingSpace: CGFloat = 16
+
     private(set) var lineGap: CGFloat = 60.0
     
     private(set) var topSpace: CGFloat = 0.0
@@ -466,6 +477,7 @@ class ChartDataSource: Updatable {
     
     private func fetchBezierPath(for chartModel: ChartModel, points: [CGPoint], key: String) -> CGPath? {
         var path: CGPath?
+        // TODO: удалить кэширование
 //        if let cachedPath = cachedPaths[key] {
 //            path = cachedPath
 //        } else {

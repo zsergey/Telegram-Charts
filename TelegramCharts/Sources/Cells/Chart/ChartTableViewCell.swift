@@ -89,6 +89,12 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
 
+    func updateDotsIfNeeded() {
+        if model?.chartDataSource.selectedIndex != nil {
+            chartView.drawDots()
+        }
+    }
+    
     @IBAction func tapZoomOutButton(_ sender: Any) {
     }
 }

@@ -65,8 +65,7 @@ extension ChartTableViewCellModel: CellViewModelType {
             button.onTapButton = { model in
                 FeedbackGenerator.impactOccurred(style: .medium)
                 model.isHidden = !model.isHidden
-                cell.model?.chartDataSource.selectedIndex = nil
-                cell.chartView.cleanDots()
+                cell.updateDotsIfNeeded()
                 cell.hideViewsIfNeeded(animated: true)
                 cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                 cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
@@ -92,8 +91,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                     }
                     cell.filterButtons.forEach { $0.style = .unChecked }
                     button.style = .checked
-                    cell.model?.chartDataSource.selectedIndex = nil
-                    cell.chartView.cleanDots()
+                    cell.updateDotsIfNeeded()
                     cell.hideViewsIfNeeded(animated: true)
                     cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                     cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
@@ -125,8 +123,7 @@ extension ChartTableViewCellModel: CellViewModelType {
         
         chartDataSource.onChangeMaxValue = {
             self.calcProperties(of: self.chartDataSource, for: cell.chartView, shouldCalcMaxValue: false)
-            self.chartDataSource.selectedIndex = nil
-            cell.chartView.cleanDots()
+            cell.updateDotsIfNeeded()
         }
         chartDataSource.onSetNewTargetMaxValue = {
             DispatchQueue.main.async {
@@ -156,7 +153,8 @@ extension ChartTableViewCellModel: CellViewModelType {
             self.chartDataSource.startX = startX
             self.chartDataSource.selectedIndex = nil
             cell.chartView.cleanDots()
-            
+            cell.dateLabel.text = self.chartDataSource.selectedPeriod
+
             self.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: value)
         }
         cell.sliderView.onBeganTouch = { sliderDirection in

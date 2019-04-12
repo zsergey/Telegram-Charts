@@ -16,9 +16,15 @@ extension Date {
         return formatter.string(from: self)
     }
 
+    var fullDate: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d MMMM YYYY"
+        return formatter.string(from: self)
+    }
+
     var formatDot: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
+        formatter.dateFormat = "d MMM YYYY"
         return formatter.string(from: self)
     }
 

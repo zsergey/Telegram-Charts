@@ -20,10 +20,12 @@ struct LabelsProcessor {
     
     var dataSource: ChartDataSource?
     
-    var countCalls = 0
-
     var contentSize: CGSize
     
+    private let trailingSpace: CGFloat = 16
+    
+    private let leadingSpace: CGFloat = 16
+
     init(dataSource: ChartDataSource?, isScrolling: Bool, sliderDirection: SliderDirection,
          setFinishedSliderDirection: Bool, labels: [TextLayer]?, contentSize: CGSize) {
         self.dataSource = dataSource
@@ -133,7 +135,6 @@ struct LabelsProcessor {
                     }
                 }
             }
-            print("countCalls \(countCalls)")
         }
     }
     
@@ -142,7 +143,6 @@ struct LabelsProcessor {
         
         var wereHiddenLayers = false
         for index in range {
-            countCalls += 1
             let inverseIndex = range.endIndex - index - 1
             let textLayer = inverse ? labels![inverseIndex] : labels![index]
             let coef: CGFloat = inverse ? -1 : 1

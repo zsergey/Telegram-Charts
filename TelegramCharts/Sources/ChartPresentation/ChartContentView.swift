@@ -57,8 +57,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     private var dateTextLayer: CATextLayer?
 
-    private var yearTextLayer: CATextLayer?
-    
     private var valueTextLayers: [CATextLayer]?
 
     private var dotsTextLayers: [DotLayer]?
@@ -238,9 +236,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             labels = newLabels
         }
 
-//        var labelProcessor = LabelsProcessor(dataSource: dataSource, isScrolling: isScrolling, sliderDirection: sliderDirection,
-//                                             setFinishedSliderDirection: setFinishedSliderDirection, labels: labels, contentSize: frame.size)
-//        labelProcessor.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
+        var labelProcessor = LabelsProcessor(dataSource: dataSource, isScrolling: isScrolling, sliderDirection: sliderDirection,
+                                             setFinishedSliderDirection: setFinishedSliderDirection, labels: labels, contentSize: frame.size)
+        labelProcessor.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
         
         /*
             self.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
@@ -389,10 +387,11 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             return
         }
         
-        // TODO: Текушие значения не правильно отображаются
-        let newSelectedIndex = Int(location.x / dataSource.lineGap)
-        // let newGlobalSelectedIndex = Int((location.x + dataSource.range.start * dataSource.lineGap) / dataSource.lineGap)
-        let newGlobalSelectedIndex = newSelectedIndex + Int(dataSource.range.start)
+        let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap
+
+        
+        let newSelectedIndex = Int((location.x - deltaX) / dataSource.lineGap)
+        let newGlobalSelectedIndex = newSelectedIndex + dataSource.intRange.startIndex
         var isUpdating = dataSource.selectedIndex == nil
         if let selectedIndex = dataSource.selectedIndex,
             selectedIndex != newSelectedIndex {
@@ -409,14 +408,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         verticalLine?.removeFromSuperlayer()
         dotInfo?.removeFromSuperlayer()
         dateTextLayer?.removeFromSuperlayer()
-        yearTextLayer?.removeFromSuperlayer()
         valueTextLayers?.forEach { $0.removeFromSuperlayer() }
         dotsTextLayers?.forEach { $0.removeFromSuperlayer() }
         
         dotInfo = nil
         verticalLine = nil
         dateTextLayer = nil
-        yearTextLayer = nil
         valueTextLayers = nil
         dotsTextLayers = nil
 
@@ -427,7 +424,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
     }
 
-    private func drawDots() {
+    func drawDots() {
         
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
@@ -437,16 +434,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             return
         }
         
-        var visibleChartModels = [ChartModel]()
+        var countVisibleValues = 0
         for index in 0..<dataSource.chartModels.count {
             let chartModel = dataSource.chartModels[index]
             if !chartModel.isHidden {
-                visibleChartModels.append(chartModel)
+                countVisibleValues += 1
             }
-        }
-
-        guard visibleChartModels.count > 0 else {
-            return
         }
         
         CATransaction.setDisableActions(true)
@@ -467,13 +460,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         var dotIndex = 0
         for index in 0..<dataSource.chartModels.count {
             let chartModel = dataSource.chartModels[index]
-            if chartModel.isHidden { continue }
-            
             var points = dataPoints[index]
             
             let dataPoint = points[selectedIndex]
-//            let xValue = (CGFloat(selectedIndex) - dataSource.range.start) * dataSource.lineGap - outerRadius / 2
-            let xValue = CGFloat(selectedIndex) * dataSource.lineGap - outerRadius / 2
+            let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap
+            let xValue = deltaX + CGFloat(selectedIndex) * dataSource.lineGap - outerRadius / 2
+
             let yValue = dataPoint.y  - outerRadius / 2
             let dotFrame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
             
@@ -481,6 +473,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 dotsTextLayers[dotIndex].dotInnerColor = colorScheme.chart.background
                 dotsTextLayers[dotIndex].backgroundColor = chartModel.color.cgColor
                 dotsTextLayers[dotIndex].frame = dotFrame
+                dotsTextLayers[dotIndex].isHidden = chartModel.isHidden
             } else {
                 let dotLayer = DotLayer()
                 dotLayer.dotInnerColor = colorScheme.chart.background
@@ -493,7 +486,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     dotsTextLayers = [DotLayer]()
                 }
                 dotsTextLayers!.append(dotLayer)
+                dotLayer.isHidden = chartModel.isHidden
             }
+            
             dotIndex += 1
             xLine = xValue + outerRadius / 2
         }
@@ -509,20 +504,25 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
 
         // Rect.
-        var rectWidth: CGFloat = 80
-        var maxString = ""
-        for chartModel in visibleChartModels {
-            let data = chartModel.data[globalSelectedIndex]
-            let format = data.value.format
-            if maxString.count < format.count {
-                maxString = format
-            }
-        }
-        rectWidth = rectWidth + CGFloat(max((maxString.count - 2), 0) * 5)
+        let rectWidth: CGFloat = 160
+        // TODO: удалить
+//        var maxString = ""
+//        for index in 0..<dataSource.chartModels.count {
+//            let chartModel = dataSource.chartModels[index]
+//            if chartModel.isHidden {
+//                continue
+//            }
+//            let data = chartModel.data[globalSelectedIndex]
+//            let format = data.value.format
+//            if maxString.count < format.count {
+//                maxString = format
+//            }
+//        }
+//        rectWidth = rectWidth + CGFloat(max((maxString.count - 2), 0) * 5)
         
         let space: CGFloat = 5
         let oneLine: CGFloat = 20
-        let lines = max(visibleChartModels.count, 2)
+        let lines = max(countVisibleValues, 2)
         var rectHeight = CGFloat(lines) * oneLine
         rectHeight = rectHeight - CGFloat(max((lines - 2), 0) * 2)
         var xRect = xLine - rectWidth / 2
@@ -549,11 +549,11 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
         // Date and numbers.
         var drawDate = true
-        let xdata: CGFloat = rect.origin.x + 8 + 80 * 0.6
+        //let xdata: CGFloat = rect.origin.x + 8 + 80 * 0.6
         var ydata: CGFloat = rect.origin.y + 5
         let deltaY = oneLine - 3
-        for index in 0..<visibleChartModels.count {
-            let chartModel = visibleChartModels[index]
+        for index in 0..<dataSource.chartModels.count {
+            let chartModel = dataSource.chartModels[index]
             let data = chartModel.data[globalSelectedIndex]
             if drawDate {
                 let ydate = rect.origin.y + 5
@@ -572,40 +572,34 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     self.dateTextLayer = dateTextLayer
                 }
 
-                let yearFrame = CGRect(x: rect.origin.x + 8,
-                                       y: ydate + deltaY, width: 50, height: 16)
-                if isUpdating {
-                    self.yearTextLayer?.frame = yearFrame
-                    self.yearTextLayer?.string = data.year
-                    self.yearTextLayer?.foregroundColor = colorScheme.dotInfo.text.cgColor
-                } else {
-                    let yaerTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text)
-                    yaerTextLayer.frame = yearFrame
-                        yaerTextLayer.string = data.year
-                    gridLayer.addSublayer(yaerTextLayer)
-                    self.yearTextLayer = yaerTextLayer
-                }
-
                 drawDate = false
             }
             
-            let valueFrame = CGRect(x: xdata,
-                                    y: ydata, width: 50, height: 16)
-            
             if let valueTextLayers = valueTextLayers, index < valueTextLayers.count {
-                valueTextLayers[index].frame = valueFrame
-                valueTextLayers[index].string = data.value.format
-            } else {
-                let dataTextLayer = Painter.createText(textColor: chartModel.color, bold: true)
+                let dataTextLayer = valueTextLayers[index]
+                let xdata = rect.origin.x + rectWidth - dataTextLayer.preferredFrameSize().width
+                let valueFrame = CGRect(x: xdata,
+                                        y: ydata, width: 50, height: 16)
                 dataTextLayer.frame = valueFrame
                 dataTextLayer.string = data.value.format
+                dataTextLayer.isHidden = chartModel.isHidden
+            } else {
+                let dataTextLayer = Painter.createText(textColor: chartModel.color, bold: true)
+                let xdata = rect.origin.x + rectWidth - dataTextLayer.preferredFrameSize().width
+                let valueFrame = CGRect(x: xdata,
+                                        y: ydata, width: 50, height: 16)
+                dataTextLayer.frame = valueFrame
+                dataTextLayer.string = data.value.format
+                dataTextLayer.isHidden = chartModel.isHidden
                 gridLayer.addSublayer(dataTextLayer)
                 if self.valueTextLayers == nil {
                     self.valueTextLayers = [CATextLayer]()
                 }
                 self.valueTextLayers!.append(dataTextLayer)
             }
-            ydata += deltaY
+            if !chartModel.isHidden {
+                ydata += deltaY
+            }
 
         }
         CATransaction.setDisableActions(false)
