@@ -28,12 +28,7 @@ struct PercentageDrawingStyle: DrawingStyleProtocol {
 
     mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
                              viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
-        // TODO
-//        if isPreviewMode {
-//            return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
-//        } else {
-            return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
-//        }
+        return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
     }
     
     private func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {

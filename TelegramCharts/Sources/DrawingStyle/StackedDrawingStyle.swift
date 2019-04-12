@@ -29,14 +29,13 @@ struct StackedDrawingStyle: DrawingStyleProtocol {
     mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
                              viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
         if isPreviewMode {
-            return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
+            return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
         } else {
             return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
         }
     }
     
-    private mutating func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
-        // TODO: здесь сделать на подобии стандартного шорта
+    private mutating func createPathShortOriginal(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
         }

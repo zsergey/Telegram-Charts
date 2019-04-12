@@ -13,7 +13,16 @@ class ChartTableViewCellModel {
     var previewChartDataSource: ChartDataSource
     
     var colorScheme: ColorSchemeProtocol
+    var operations: [String: CalcOperation] = [:]
     
+    let calcInBackground = false
+    lazy var backgroundQueue: OperationQueue = {
+        var queue = OperationQueue()
+        queue.name = "Calc Properties"
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }()
+
     init(chartDataSource: ChartDataSource,
          previewChartDataSource: ChartDataSource,
          colorScheme: ColorSchemeProtocol) {
@@ -58,7 +67,8 @@ extension ChartTableViewCellModel: CellViewModelType {
                 model.isHidden = !model.isHidden
                 cell.model?.chartDataSource.selectedIndex = nil
                 cell.chartView.cleanDots()
-                cell.calcProperties(animateMaxValue: true, changedIsHidden: true)
+                cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
+                cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
                 cell.hideViewsIfNeeded(animated: true)
             }
             button.onLongTapButton = { model, processedLongPressGesture in
@@ -84,7 +94,8 @@ extension ChartTableViewCellModel: CellViewModelType {
                     button.style = .checked
                     cell.model?.chartDataSource.selectedIndex = nil
                     cell.chartView.cleanDots()
-                    cell.calcProperties(animateMaxValue: true, changedIsHidden: true)
+                    cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
+                    cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
                     cell.hideViewsIfNeeded(animated: true)
                 } else {
                     if !processedLongPressGesture {
@@ -150,11 +161,11 @@ extension ChartTableViewCellModel: CellViewModelType {
         }
         cell.sliderView.onBeganTouch = { sliderDirection in
             cell.chartView.sliderDirection = sliderDirection
-            cell.chartView.setNeedsLayout()
+            cell.chartView.drawView()
         }
         cell.sliderView.onEndTouch = { sliderDirection in
             cell.chartView.sliderDirection = sliderDirection
-            cell.chartView.setNeedsLayout()
+            cell.chartView.drawView()
             
             self.calcProperties(of: self.chartDataSource, for: cell.chartView)
         }
@@ -167,20 +178,31 @@ extension ChartTableViewCellModel: CellViewModelType {
     func calcProperties(of dataSource: ChartDataSource,
                         for view: ChartContentView,
                         shouldCalcMaxValue: Bool = true,
-                        animateMaxValue: Bool = true) {
-        // TODO: Calc in background.
-        /*if view.isScrolling {
-            DispatchQueue.global(qos: .background).async {
-                dataSource.calcProperties()
+                        animateMaxValue: Bool = true,
+                        changedIsHidden: Bool = false) {
+
+        if calcInBackground {
+            if let operation = operations[dataSource.uniqueId] {
+                operation.cancel()
+            }
+            let newOperation = CalcOperation(dataSource: dataSource,
+                                             shouldCalcMaxValue: shouldCalcMaxValue,
+                                             animateMaxValue: animateMaxValue,
+                                             changedIsHidden: changedIsHidden)
+            newOperation.completionBlock = {
                 DispatchQueue.main.async {
-                    view.setNeedsLayout()
+                    if !newOperation.isCancelled {
+                        view.drawView()
+                    }
                 }
             }
-        } else { */
+            operations[dataSource.uniqueId] = newOperation
+            backgroundQueue.addOperation(newOperation)
+        } else {
             dataSource.calcProperties(shouldCalcMaxValue: shouldCalcMaxValue,
                                       animateMaxValue: animateMaxValue,
-                                      changedIsHidden: false)
-            view.setNeedsLayout()
-        /*} */
+                                      changedIsHidden: changedIsHidden)
+            view.drawView()
+        }
     }
 }

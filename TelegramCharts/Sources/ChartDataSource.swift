@@ -22,6 +22,8 @@ class ChartDataSource: Updatable {
     
     var range = IndexRange(start: CGFloat(0.0), end: CGFloat(2.0))
     
+    var uniqueId: String = ""
+    
     var intRange: Range<Int> {
         let startIndex = max(Int(range.start) - 1, 0)
         let endIndex = min(Int(viewSize.width / lineGap + range.start) + 2, maxRangePoints.count)

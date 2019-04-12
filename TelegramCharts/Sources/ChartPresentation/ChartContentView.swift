@@ -19,7 +19,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     var colorScheme: ColorSchemeProtocol = DayScheme() {
         didSet {
-            setNeedsLayout()
             updateColors()
         }
     }
@@ -88,6 +87,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
         
+        dataLayer.drawsAsynchronously = true
+        
         clipsToBounds = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTouch))
@@ -115,8 +116,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         drawDotsIfNeeded(location: point)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    func drawView() {
         
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
@@ -147,6 +147,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawCharts() {
+
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
             let paths = dataSource.paths else {
@@ -198,8 +199,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawLabels(byScroll: Bool) {
-        // TODO
-        return
+
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode else {
@@ -439,8 +439,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawHorizontalLines(animated: Bool) {
-//        // TODO
-//        return
+        
         guard let dataSource = dataSource,
             !dataSource.isPreviewMode else {
                 return
@@ -589,6 +588,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
 
     private func drawDots() {
+        
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
             !dataSource.isPreviewMode,

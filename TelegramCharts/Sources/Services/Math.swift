@@ -45,9 +45,4 @@ struct Math {
         return CGFloat(sqrtf(Float(y * y + x * x)))
     }
 
-    // TODO: проверить используется ли
-    static func heightLine(from startPoint: CGPoint, to finishPoint: CGPoint) -> CGFloat {
-        let y = startPoint.y - finishPoint.y
-        return CGFloat(sqrtf(Float(y * y)))
-    }
 }

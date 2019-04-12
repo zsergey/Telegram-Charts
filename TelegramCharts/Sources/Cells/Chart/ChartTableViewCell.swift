@@ -67,38 +67,12 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
     
-    func calcProperties(animateMaxValue: Bool, changedIsHidden: Bool) {
-        if let model = model {
-            // TODO: Calc in background.
-            /* if chartView.isScrolling || previewChartView.isScrolling {
-                DispatchQueue.global(qos: .background).async {
-                    model.chartDataSource.calcProperties()
-                    model.previewChartDataSource.calcProperties()
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        self.setNeedsLayout()
-                        self.chartView.setNeedsLayout()
-                        self.previewChartView.setNeedsLayout()
-                    }
-                }
-            } else {*/
-                model.chartDataSource.calcProperties(animateMaxValue: animateMaxValue,
-                                                     changedIsHidden: changedIsHidden)
-                model.previewChartDataSource.calcProperties(animateMaxValue: animateMaxValue,
-                                                            changedIsHidden: changedIsHidden)
-                self.setNeedsLayout()
-                self.chartView.setNeedsLayout()
-                self.previewChartView.setNeedsLayout()
-            /*} */
-        }
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
         if let model = model {
             
-            model.setupFilterButtons(on: self)
+             model.setupFilterButtons(on: self)
             
             if model.chartDataSource.viewSize != chartView.frame.size ||
                 model.previewChartDataSource.viewSize != previewChartView.frame.size {
@@ -106,7 +80,13 @@ class ChartTableViewCell: UITableViewCell {
                 model.chartDataSource.viewSize = self.chartView.frame.size
                 model.previewChartDataSource.viewSize = self.previewChartView.frame.size
                 
-                calcProperties(animateMaxValue: false, changedIsHidden: false)
+                model.calcProperties(of: model.chartDataSource, for: chartView, animateMaxValue: false, changedIsHidden: false)
+                model.calcProperties(of: model.previewChartDataSource, for: previewChartView, animateMaxValue: false, changedIsHidden: false)
+
+                //calcProperties(animateMaxValue: false, changedIsHidden: false)
+            } else {
+                self.chartView.drawView()
+                self.previewChartView.drawView()
             }
         }
     }

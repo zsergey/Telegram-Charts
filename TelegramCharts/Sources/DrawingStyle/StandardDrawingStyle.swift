@@ -34,6 +34,34 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
             return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
         }
     }
+
+    // TODO: Показать алгоритм Коле
+    private func createPathShortSmooth(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
+        guard dataPoints.count > 0 else {
+            return nil
+        }
+        let path = CGMutablePath()
+        let startPoint = dataPoints[0]
+        path.move(to: startPoint)
+        
+        var currentX = dataPoints[0].x
+        var currentY = dataPoints[0].y
+        var maxY: CGFloat = 0
+        for i in 1..<dataPoints.count {
+            let point = dataPoints[i]
+            if truncf(Float(currentX)) == truncf(Float(point.x)) {
+                if point.y > maxY {
+                    maxY = point.y
+                }
+            } else {
+                path.addLine(to: CGPoint(x: currentX, y: max(maxY, currentY)))
+                maxY = 0
+                currentX = point.x
+                currentY = point.y
+            }
+        }
+        return path
+    }
     
     private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {

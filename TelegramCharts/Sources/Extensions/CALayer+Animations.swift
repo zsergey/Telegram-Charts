@@ -41,20 +41,4 @@ extension CALayer {
 
 }
 
-extension CAShapeLayer {
-    
-    // TODO: проверить, может в итоге ненужна будет
-    func changePath(to path: CGPath, animationDuration: CFTimeInterval) {
-        if animationDuration == 0 {
-            self.path = path
-        } else {
-            let animation = CABasicAnimation(keyPath: "path")
-            animation.fromValue = self.path
-            animation.toValue = path
-            animation.duration = animationDuration
-            animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            self.add(animation, forKey: "path")
-            self.path = path
-        }
-    }
-}
+

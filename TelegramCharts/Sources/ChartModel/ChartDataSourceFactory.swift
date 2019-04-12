@@ -22,12 +22,12 @@ struct ChartDataSourceFactory {
         charts += ChartModelFactory.make(fromResource: "chart_data_5", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview1", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview2", minLineLength: 2)
-        charts += ChartModelFactory.make(fromResource: "overview3", minLineLength: 2)
+        charts += ChartModelFactory.make(fromResource: "overview3", minLineLength: 10)
         charts += ChartModelFactory.make(fromResource: "overview4")
         charts += ChartModelFactory.make(fromResource: "overview5")
         var names = Array(repeating: "FOLLOWERS", count: 4)
-        names += ["LINES", "FOLLOWERS", "INTERACTIONS", "MESSAGES", "VIEWS", "APPS"]
-        
+        names += ["CALLS", "FOLLOWERS", "INTERACTIONS", "MESSAGES", "VIEWS", "APPS"]
+        let uniqueIdKey = "DataSource"
         for index in 0..<charts.count {
             let chartModels = charts[index]
             var name = ""
@@ -36,13 +36,14 @@ struct ChartDataSourceFactory {
             }
             
             let main = ChartDataSource(chartModels: chartModels, name: name)
+            main.uniqueId = "Main" + uniqueIdKey + String(index)
             chartDataSource.append(main)
             
             let preview = ChartDataSource(chartModels: chartModels, name: name)
+            preview.uniqueId = "Preview" + uniqueIdKey + String(index)
             preview.isPreviewMode = true
             previewChartDataSource.append(preview)
         }
-        
         let result = СoupleChartDataSource(main: chartDataSource, preview: previewChartDataSource)
         return result
     }

@@ -110,7 +110,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func update(link: CADisplayLink) {
         calcPerformance(link)
-        // TODO
         tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 

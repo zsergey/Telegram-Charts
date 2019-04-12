@@ -56,6 +56,7 @@
 		ADC5E892225FB7F20062A4AE /* BacKButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC5E891225FB7F20062A4AE /* BacKButton.swift */; };
 		ADC861C4225E10E900E697C8 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC861C3225E10E900E697C8 /* Math.swift */; };
 		ADC861C6225E253800E697C8 /* overview6.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC861C5225E253800E697C8 /* overview6.json */; };
+		ADC8D1ED22608B440087EDB3 /* CalcOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8D1EC22608B440087EDB3 /* CalcOperation.swift */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
 		ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
 		ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
@@ -123,6 +124,7 @@
 		ADC5E891225FB7F20062A4AE /* BacKButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BacKButton.swift; sourceTree = "<group>"; };
 		ADC861C3225E10E900E697C8 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		ADC861C5225E253800E697C8 /* overview6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview6.json; sourceTree = "<group>"; };
+		ADC8D1EC22608B440087EDB3 /* CalcOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalcOperation.swift; sourceTree = "<group>"; };
 		ADCD101E22441697006A9856 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		ADDBBDC4224010010090E2AD /* ValueLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueLayer.swift; sourceTree = "<group>"; };
 		ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Animations.swift"; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				ADB3E9FB22441F4F007CC2F2 /* ChartTableViewCellModel.swift */,
 				ADB3E9E222441BE9007CC2F2 /* ChartTableViewCell.swift */,
 				ADB3E9E322441BE9007CC2F2 /* ChartTableViewCell.xib */,
+				ADC8D1EC22608B440087EDB3 /* CalcOperation.swift */,
 			);
 			path = Chart;
 			sourceTree = "<group>";
@@ -500,6 +503,7 @@
 				AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */,
 				AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */,
 				AD17FF3B2244A9CC0073F0BB /* Updatable.swift in Sources */,
+				ADC8D1ED22608B440087EDB3 /* CalcOperation.swift in Sources */,
 				ADE577252236FE620006200D /* UIColorExtensions.swift in Sources */,
 				AD9226D02238CBA800A5B7D6 /* ChartModel.swift in Sources */,
 				AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */,
