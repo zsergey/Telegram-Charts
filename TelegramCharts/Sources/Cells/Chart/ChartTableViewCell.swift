@@ -82,8 +82,6 @@ class ChartTableViewCell: UITableViewCell {
                 
                 model.calcProperties(of: model.chartDataSource, for: chartView, animateMaxValue: false, changedIsHidden: false)
                 model.calcProperties(of: model.previewChartDataSource, for: previewChartView, animateMaxValue: false, changedIsHidden: false)
-
-                //calcProperties(animateMaxValue: false, changedIsHidden: false)
             } else {
                 self.chartView.drawView()
                 self.previewChartView.drawView()

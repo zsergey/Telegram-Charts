@@ -67,9 +67,9 @@ extension ChartTableViewCellModel: CellViewModelType {
                 model.isHidden = !model.isHidden
                 cell.model?.chartDataSource.selectedIndex = nil
                 cell.chartView.cleanDots()
+                cell.hideViewsIfNeeded(animated: true)
                 cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                 cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
-                cell.hideViewsIfNeeded(animated: true)
             }
             button.onLongTapButton = { model, processedLongPressGesture in
                 var needsUpdate = false
@@ -94,9 +94,9 @@ extension ChartTableViewCellModel: CellViewModelType {
                     button.style = .checked
                     cell.model?.chartDataSource.selectedIndex = nil
                     cell.chartView.cleanDots()
+                    cell.hideViewsIfNeeded(animated: true)
                     cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                     cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
-                    cell.hideViewsIfNeeded(animated: true)
                 } else {
                     if !processedLongPressGesture {
                         FeedbackGenerator.notificationOccurred(.warning)

@@ -25,13 +25,13 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     var isScrolling = false
 
-    var sliderDirection: SliderDirection = .right
+    var sliderDirection: SliderDirection = .left
     
     private var setFinishedSliderDirection = true
     
     private var isJustReused = true
     
-    private let labelWidth: CGFloat = 40
+    static let labelWidth: CGFloat = 40
     
     private let dataLayer: CALayer = CALayer()
     
@@ -86,8 +86,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
-        
-        dataLayer.drawsAsynchronously = true
         
         clipsToBounds = true
         
@@ -199,25 +197,27 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawLabels(byScroll: Bool) {
-
+        
+        // return
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
-            !dataSource.isPreviewMode else {
+            !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else {
             return
         }
         
         let isUpdating = labels != nil
         var newLabels = isUpdating ? nil : [TextLayer]()
-
+        
         for index in 0..<dataSource.maxRangePoints.count {
             let textLayer = isUpdating ? labels![index] : TextLayer()
             
-            let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2
+            let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - ChartContentView.labelWidth / 2
             
+            // Changing only frame when is updating.
             CATransaction.setDisableActions(true)
             textLayer.frame = CGRect(x: x,
                                      y: mainLayer.frame.size.height - dataSource.bottomSpace / 2 - 4,
-                                     width: labelWidth,
+                                     width: ChartContentView.labelWidth,
                                      height: 16)
             if !isUpdating {
                 textLayer.foregroundColor = colorScheme.chart.text.cgColor
@@ -237,181 +237,21 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if !isUpdating {
             labels = newLabels
         }
-        
-        hideWrongLabelsUseSliderDirection(byScroll: byScroll)
-        if self.setFinishedSliderDirection {
-            self.sliderDirection = .finished
-            hideWrongLabelsUseSliderDirection(byScroll: byScroll)
-            self.setFinishedSliderDirection = false
-        }
-    }
-    
-    func hideWrongLabelsUseSliderDirection(byScroll: Bool) {
-        switch sliderDirection {
-        case .center, .finished, .none:
-            self.hideWrongLabels(isFirstCall: false, byScroll: byScroll)
-        case .left, .right:
-            self.hideWrongLabels(isFirstCall: true, byScroll: byScroll)
-        }
-    }
- 
-    func hideWrongLabels(isFirstCall: Bool, byScroll: Bool) {
-        guard let dataSource = dataSource,
-            dataSource.chartModels.count > 0,
-            !dataSource.isPreviewMode else {
-                return
-        }
-        
-        let skipHidden = !isFirstCall
-        
-        // It's really the first call of the func.
-        if isFirstCall && setFinishedSliderDirection {
-            if sliderDirection == .left || sliderDirection == .right {
-                labels?.forEach { label in
-                    label.toOpacity = 1
-                    if !isScrolling {
-                        label.opacity = 1
-                    }
-                }
-            }
-        }
 
-        // Drop isStatic. We'll find another one next time.
-        if sliderDirection != .left && sliderDirection != .right {
-            labels?.forEach { $0.isStatic = false }
-        }
+//        var labelProcessor = LabelsProcessor(dataSource: dataSource, isScrolling: isScrolling, sliderDirection: sliderDirection,
+//                                             setFinishedSliderDirection: setFinishedSliderDirection, labels: labels, contentSize: frame.size)
+//        labelProcessor.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
         
-        if sliderDirection == .left || sliderDirection == .right {
-            
-            var theIndex = 0
-            var staticIndex: Int?
-            for index in 0..<dataSource.maxRangePoints.count {
-                let textLayer = labels![index]
-                if textLayer.isStatic {
-                    staticIndex = index
-                    break
-                }
+        /*
+            self.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
+            if self.setFinishedSliderDirection {
+                self.sliderDirection = .finished
+                self.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
+                self.setFinishedSliderDirection = false
             }
-            
-            if let staticIndex = staticIndex {
-                theIndex = staticIndex
-            } else {
-                if setFinishedSliderDirection {
-                    let x = sliderDirection == .left ? self.frame.size.width - labelWidth / 2 : labelWidth / 2
-                    theIndex = Int((x + dataSource.range.start * dataSource.lineGap + labelWidth / 2) / dataSource.lineGap)
-                    let textLayer = labels![theIndex]
-                    textLayer.isStatic = true
-                } else {
-                    let range = 0..<dataSource.maxRangePoints.count
-                    for index in range {
-                        let aIndex = sliderDirection == .left ? range.endIndex - index - 1 : index
-                        let textLayer = labels![aIndex]
-                        if textLayer.toOpacity == 1 {
-                            let textLayerX = (CGFloat(aIndex) - dataSource.range.start) * dataSource.lineGap - labelWidth / 2
-                            if textLayerX > -labelWidth / 2 && textLayerX < self.frame.size.width - labelWidth / 2 {
-                                textLayer.isStatic = true
-                                theIndex = aIndex
-                                break
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if sliderDirection == .left {
-                let inverseRange = 0..<theIndex + 1
-                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true, byScroll: byScroll)
-                
-                let indexRange = theIndex..<dataSource.maxRangePoints.count
-                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false, byScroll: byScroll)
-            } else {
-                let indexRange = theIndex..<dataSource.maxRangePoints.count
-                doMagic(in: indexRange, skipHidden: skipHidden, inverse: false, byScroll: byScroll)
-                
-                let inverseRange = 0..<theIndex + 1
-                doMagic(in: inverseRange, skipHidden: skipHidden, inverse: true, byScroll: byScroll)
-            }
-        } else if sliderDirection == .finished {
-            if let labels = labels {
-                for textLayer in labels {
-                    let toOpacity: Float = textLayer.toOpacity >= 0.5 ? 1 : 0
-                    if textLayer.opacity != toOpacity {
-                        if byScroll && toOpacity == 0 {
-                            textLayer.opacity = 0
-                        } else {
-                            textLayer.changeOpacity(from: textLayer.opacity, to: toOpacity,
-                                                    animationDuration: UIView.animationDuration)
-                        }
-                    }
-                }
-            }
-        }
+        }*/
     }
     
-    func doMagic(in range: Range<Int>, skipHidden: Bool, inverse: Bool, byScroll: Bool) {
-        var lastFrame: CGRect = .zero
-        
-        var wereHiddenLayers = false
-        for index in range {
-            let inverseIndex = range.endIndex - index - 1
-            let textLayer = inverse ? labels![inverseIndex] : labels![index]
-            let coef: CGFloat = inverse ? -1 : 1
-            
-            if skipHidden, textLayer.toOpacity == 0 {
-                continue
-            }
-            
-            let startXFrame = textLayer.frame.origin.x - textLayer.frame.size.width * coef / 2
-            
-            if lastFrame == .zero {
-                textLayer.toOpacity = 1
-                if !isScrolling {
-                    textLayer.opacity = 1
-                }
-                lastFrame = textLayer.frame
-            } else {
-                let endXLastFrame = lastFrame.origin.x + lastFrame.size.width * coef / 2 + labelWidth * coef
-                let condition = inverse ? startXFrame < endXLastFrame : startXFrame > endXLastFrame
-                if condition {
-                    textLayer.toOpacity = 1
-                    if !isScrolling {
-                        textLayer.opacity = 1
-                    }
-                    lastFrame = textLayer.frame
-                } else {
-                    let delta = inverse ? startXFrame - endXLastFrame : endXLastFrame - startXFrame
-                    var opacity = max(Float(1 - delta / textLayer.frame.size.width), 0)
-                    
-                    if sliderDirection == .center ||
-                        sliderDirection == .none,
-                        opacity >= 0.5 {
-                        opacity = 1
-                    }
-                    
-                    if sliderDirection == .finished, opacity >= 0.5 {
-                        // nothing to change.
-                    } else {
-                        textLayer.toOpacity = opacity
-                        if !isScrolling {
-                            textLayer.opacity = opacity
-                        }
-                    }
-                    
-                    if !isScrolling {
-                        textLayer.opacity = opacity
-                    }
-                    if opacity == 0 {
-                        lastFrame = .zero
-                        wereHiddenLayers = true
-                    }
-                }
-            }
-        }
-        
-        if wereHiddenLayers {
-            hideWrongLabels(isFirstCall: false, byScroll: byScroll)
-        }
-    }
     
     func updateColors() {
         guard let dataSource = dataSource else {
