@@ -153,11 +153,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 return
         }
         
-        // TODO
-//        if dataSource.isPreviewMode {
-//            return
-//        }
-        
         let isUpdating = chartLines != nil
         var newChartLines = isUpdating ? nil : [CAShapeLayer]()
 
@@ -444,8 +439,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawHorizontalLines(animated: Bool) {
-        // TODO
-        return
+//        // TODO
+//        return
         guard let dataSource = dataSource,
             !dataSource.isPreviewMode else {
                 return

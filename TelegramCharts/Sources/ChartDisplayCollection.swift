@@ -85,7 +85,8 @@ private extension ChartDisplayCollection {
     }
     
     func calcChartHeight(dataSource: ChartDataSource) -> CGFloat {
-        let mainHeight: CGFloat = 400
+        let titleHeight: CGFloat = 20
+        let mainHeight: CGFloat = 380
         let oneLineHeight: CGFloat = 41
         let additionalHeight: CGFloat = 4
         let leadingSpace: CGFloat = 16
@@ -108,6 +109,6 @@ private extension ChartDisplayCollection {
             }
         }
         
-        return mainHeight + countLines * oneLineHeight + additionalHeight
+        return mainHeight + countLines * oneLineHeight + additionalHeight + titleHeight
     }
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,16 +20,19 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Section Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RPY-kJ-cL6">
-                        <rect key="frame" x="16" y="60" width="288" height="18"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <rect key="frame" x="16" y="65.5" width="304" height="17"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="17" id="6DR-DY-LXU"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailingMargin" secondItem="RPY-kJ-cL6" secondAttribute="trailing" id="0Jv-TV-fZS"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="RPY-kJ-cL6" secondAttribute="bottom" id="s7f-aa-R1T"/>
-                    <constraint firstItem="RPY-kJ-cL6" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="tau-dR-Ba8"/>
+                    <constraint firstAttribute="trailing" secondItem="RPY-kJ-cL6" secondAttribute="trailing" id="CV5-f0-Ul9"/>
+                    <constraint firstItem="RPY-kJ-cL6" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="dHz-gL-Evl"/>
+                    <constraint firstAttribute="bottom" secondItem="RPY-kJ-cL6" secondAttribute="bottom" constant="6" id="zsS-5s-HMd"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

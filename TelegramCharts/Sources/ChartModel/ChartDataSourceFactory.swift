@@ -19,13 +19,14 @@ struct ChartDataSourceFactory {
         charts += ChartModelFactory.make(fromResource: "chart_data_2")
         charts += ChartModelFactory.make(fromResource: "chart_data_3")
         charts += ChartModelFactory.make(fromResource: "chart_data_4")
-        charts += ChartModelFactory.make(fromResource: "chart_data_5", minLineLength: 3)
+        charts += ChartModelFactory.make(fromResource: "chart_data_5", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview1", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview2", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview3", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview4")
         charts += ChartModelFactory.make(fromResource: "overview5")
-        var names = ["FOLLOWERS", "INTERACTIONS", "MESSAGES", "VIEWS", "APPS"]
+        var names = Array(repeating: "FOLLOWERS", count: 4)
+        names += ["LINES", "FOLLOWERS", "INTERACTIONS", "MESSAGES", "VIEWS", "APPS"]
         
         for index in 0..<charts.count {
             let chartModels = charts[index]

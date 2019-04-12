@@ -53,6 +53,7 @@
 		ADC5E88E225F85B60062A4AE /* chart_data_5.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC5E889225F85B60062A4AE /* chart_data_5.json */; };
 		ADC5E88F225F85B60062A4AE /* chart_data_1.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC5E88A225F85B60062A4AE /* chart_data_1.json */; };
 		ADC5E890225F85B60062A4AE /* chart_data_4.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC5E88B225F85B60062A4AE /* chart_data_4.json */; };
+		ADC5E892225FB7F20062A4AE /* BacKButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC5E891225FB7F20062A4AE /* BacKButton.swift */; };
 		ADC861C4225E10E900E697C8 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC861C3225E10E900E697C8 /* Math.swift */; };
 		ADC861C6225E253800E697C8 /* overview6.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC861C5225E253800E697C8 /* overview6.json */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
@@ -119,6 +120,7 @@
 		ADC5E889225F85B60062A4AE /* chart_data_5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_5.json; sourceTree = "<group>"; };
 		ADC5E88A225F85B60062A4AE /* chart_data_1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_1.json; sourceTree = "<group>"; };
 		ADC5E88B225F85B60062A4AE /* chart_data_4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chart_data_4.json; sourceTree = "<group>"; };
+		ADC5E891225FB7F20062A4AE /* BacKButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BacKButton.swift; sourceTree = "<group>"; };
 		ADC861C3225E10E900E697C8 /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
 		ADC861C5225E253800E697C8 /* overview6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview6.json; sourceTree = "<group>"; };
 		ADCD101E22441697006A9856 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				AD1C5D15225B1C6700F9A083 /* CheckButton.swift */,
+				ADC5E891225FB7F20062A4AE /* BacKButton.swift */,
 				ADFF33B1224527160019A4D4 /* Section */,
 				ADB3E9E122441BD6007CC2F2 /* Chart */,
 			);
@@ -517,6 +520,7 @@
 				AD9226DE223A286E00A5B7D6 /* IntExtensions.swift in Sources */,
 				ADB3E9FA22441E4A007CC2F2 /* UITableViewExtenions.swift in Sources */,
 				AD9226D2223A122B00A5B7D6 /* DrawingStyleProtocol.swift in Sources */,
+				ADC5E892225FB7F20062A4AE /* BacKButton.swift in Sources */,
 				ADC5E884225F582F0062A4AE /* CurveDrawingStyle.swift in Sources */,
 				AD107ADF225D168800D84D3F /* PercentageDrawingStyle.swift in Sources */,
 				ADB3E9F622441D85007CC2F2 /* ReusableCell.swift in Sources */,

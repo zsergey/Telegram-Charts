@@ -21,6 +21,9 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
     
+    @IBOutlet var zoomOutButton: BacKButton!
+    @IBOutlet var dateLabel: UILabel!
+
     var filterButtons: [CheckButton] = []
 
     override func prepareForReuse() {
@@ -91,6 +94,8 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
 
+    @IBAction func tapZoomOutButton(_ sender: Any) {
+    }
 }
 
 extension ChartTableViewCell: Updatable {
