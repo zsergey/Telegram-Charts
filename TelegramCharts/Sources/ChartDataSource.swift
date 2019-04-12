@@ -426,7 +426,15 @@ class ChartDataSource: Updatable {
             let nameValue = "name: \(chartModel.name)"
             let cachKey = mapValue + ", " + previewValue + ", " + nameValue + ", " + rangeValue + ", " + maxValueCachedKey
             
-            let points = convertModelsToPoints(entries: data, maxValue: maxValue)
+            var points = convertModelsToPoints(entries: data, maxValue: maxValue)
+
+            if !isPreviewMode {
+                // Correct x for smoth scrolling of charts.
+                let deltaX = (CGFloat(loopRange.startIndex) - range.start) * lineGap
+                for i in 0..<points.count {
+                    points[i] = CGPoint(x: points[i].x + deltaX, y: points[i].y)
+                }
+            }
             
             if let path = fetchBezierPath(for: chartModel, points: points, key: cachKey) {
                 if isUpdating {
