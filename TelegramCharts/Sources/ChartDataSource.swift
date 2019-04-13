@@ -45,7 +45,7 @@ class ChartDataSource: Updatable {
     
     var startX: CGFloat = 0
     
-    var viewSize: CGSize = .zero
+    var viewSize: CGSize = .zero 
     
     var chartModels: [ChartModel] {
         didSet {

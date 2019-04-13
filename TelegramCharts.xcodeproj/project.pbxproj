@@ -30,6 +30,7 @@
 		AD2AD47A22483D2800B16492 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = AD2AD47922483D2800B16492 /* README.md */; };
 		AD68E210223D255700576C20 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD68E20F223D255700576C20 /* SliderView.swift */; };
 		AD71D8EB2261E3FB00701EC0 /* overview5_5.json in Resources */ = {isa = PBXBuildFile; fileRef = AD71D8EA2261E3FB00701EC0 /* overview5_5.json */; };
+		AD71D8EF22627BA500701EC0 /* UIImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD71D8EE22627BA500701EC0 /* UIImageExtensions.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* ChartContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartContentView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
 		AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */; };
@@ -100,6 +101,7 @@
 		AD2AD47922483D2800B16492 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		AD68E20F223D255700576C20 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
 		AD71D8EA2261E3FB00701EC0 /* overview5_5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview5_5.json; sourceTree = "<group>"; };
+		AD71D8EE22627BA500701EC0 /* UIImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtensions.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* ChartContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartContentView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotLayer.swift; sourceTree = "<group>"; };
 		AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeProtocol.swift; sourceTree = "<group>"; };
@@ -388,6 +390,7 @@
 				ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */,
 				ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */,
 				ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */,
+				AD71D8EE22627BA500701EC0 /* UIImageExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 				AD2AD4762247B15600B16492 /* TextLayer.swift in Sources */,
 				ADDBBDC92241F2210090E2AD /* Date+Formatter.swift in Sources */,
 				AD17FF41224646FA0073F0BB /* ChartDataSource.swift in Sources */,
+				AD71D8EF22627BA500701EC0 /* UIImageExtensions.swift in Sources */,
 				ADE577142236E8920006200D /* AppDelegate.swift in Sources */,
 				AD17FF312244978F0073F0BB /* ChartDisplayCollection.swift in Sources */,
 				AD9226D7223A12B800A5B7D6 /* NightScheme.swift in Sources */,

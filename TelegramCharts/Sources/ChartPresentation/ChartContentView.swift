@@ -66,6 +66,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     private var labelsTextLayers: [CATextLayer]?
 
     private var dotsTextLayers: [DotLayer]?
+    
+    private var shadowImage = UIImageView(frame: .zero)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -91,6 +93,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
         layer.addSublayer(selectedValuesLayer)
+        addSubview(shadowImage)
         
         clipsToBounds = true
         
@@ -315,6 +318,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if dataSource.selectedIndex != nil {
             drawSelectedValues(animated: false)
         }
+
+        self.shadowImage.image = UIImage(size: self.shadowImage.frame.size, gradientColor: [colorScheme.chart.background, colorScheme.chart.background.withAlphaComponent(0)])
     }
     
     func drawHorizontalLines(animated: Bool) {
@@ -779,5 +784,10 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         
         dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
         gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+    }
+    
+    func updateFrameShadow() {
+        let shadowFrame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 20)
+        self.shadowImage.frame = shadowFrame
     }
 }
