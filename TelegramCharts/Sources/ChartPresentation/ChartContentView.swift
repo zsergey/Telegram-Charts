@@ -217,7 +217,11 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 lineLayer.opacity = chartModel.opacity
                 lineLayer.strokeColor = chartModel.color.cgColor
                 lineLayer.fillColor = fillColor.cgColor
-                lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
+                if dataSource.stacked || dataSource.singleBar {
+                    lineLayer.lineWidth = 0
+                } else {
+                    lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
+                }
                 lineLayer.lineCap = chartModel.drawingStyle.lineCap
                 lineLayer.lineJoin = chartModel.drawingStyle.lineJoin
                 dataLayer.addSublayer(lineLayer)
@@ -363,16 +367,10 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
                 let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
                 let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
-                var toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
+                let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
                 newValueLayer.lineColor = index == gridValues.count - 1 ? colorScheme.chart.accentGrid : colorScheme.chart.grid
                 newValueLayer.textColor = dataSource.yScaled ? dataSource.chartModels[i].color : colorScheme.chart.text
 
-                // Correct last and first lines.
-                var onePixel: CGFloat = 0
-                if index == 0 { onePixel = -1 }
-                if index == gridValues.count - 1 { onePixel = 1 }
-                toNewPoint = CGPoint(x: toNewPoint.x, y: toNewPoint.y + onePixel)
-                
                 if newLineValue == 0 {
                     let isHidden = dataSource.yScaled ? dataSource.chartModels[i].isHidden : dataSource.isAllChartsHidden
                     if index == gridValues.count - 1, !isHidden {
@@ -403,7 +401,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     newValueLayer.lineValue = lineValue
                     newValueLayer.opacity = 1
                     let height = dataSource.calcHeight(for: lineValue, with: minMaxGap)
-                    let rect = CGRect(x: 0, y: height + onePixel, width: frame.size.width, height: heightGrid)
+                    let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
                     newValueLayer.frame = rect
                 }
             }
@@ -549,8 +547,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 selectedValuesLayer.addSublayer(lineLayer)
             }
             path.move(to: CGPoint(x: xLine, y: topLine))
-            let theOnePixel: CGFloat = 1 // from drawing horizontal lines
-            path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace + theOnePixel))
+            path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace))
             lineLayer.path = path.cgPath
             lineLayer.strokeColor = colorScheme.chart.accentGrid.cgColor
             if !isUpdating {
