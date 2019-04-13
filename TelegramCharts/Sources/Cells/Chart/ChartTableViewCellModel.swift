@@ -44,7 +44,7 @@ extension ChartTableViewCellModel: CellViewModelType {
         setupPreviewChartView(on: cell)
         setupColors(on: cell)
     }
-    
+
     func setupFilterButtons(on cell: ChartTableViewCell) {
         guard cell.filterButtons.isEmpty, chartDataSource.chartModels.count > 1 else {
             return
@@ -69,10 +69,12 @@ extension ChartTableViewCellModel: CellViewModelType {
                 }
                 button.setNextStyle()
                 FeedbackGenerator.impactOccurred(style: .medium)
+                let wasAllChartsHidden = self.chartDataSource.isAllChartsHidden
                 model.isHidden = !model.isHidden
                 cell.updateDotsIfNeeded()
                 cell.hideViewsIfNeeded(animated: true)
                 self.setupAnimatingCharts()
+                self.setupOneChartsVisible(wasAllChartsHidden)
                 cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                 cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
             }
@@ -81,6 +83,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                     return
                 }
                 var needsUpdate = false
+                let wasAllChartsHidden = self.chartDataSource.isAllChartsHidden
                 self.chartDataSource.chartModels.forEach {
                     if $0 == model {
                         if $0.isHidden == true {
@@ -104,6 +107,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                     cell.updateDotsIfNeeded()
                     cell.hideViewsIfNeeded(animated: true)
                     self.setupAnimatingCharts()
+                    self.setupOneChartsVisible(wasAllChartsHidden)
                     cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                     cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
                 } else {
@@ -133,6 +137,16 @@ extension ChartTableViewCellModel: CellViewModelType {
         }
     }
     
+    func setupOneChartsVisible(_ wasAllChartsHidden: Bool) {
+        if wasAllChartsHidden {
+            var count = 0
+            chartDataSource.chartModels.forEach { count = count + Int(truncating: !$0.isHidden as NSNumber) }
+            chartDataSource.isOneChartsVisible = count == 1
+        } else {
+            chartDataSource.isOneChartsVisible = false
+        }
+    }
+
     func setupChartView(on cell: ChartTableViewCell) {
         cell.chartView.dataSource = chartDataSource
         self.chartDataSource.selectedIndex = nil

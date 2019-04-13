@@ -68,7 +68,9 @@ class ChartDataSource: Updatable {
         chartModels.forEach { result = result && $0.isHidden }
         return result
     }
-    
+
+    var isOneChartsVisible: Bool = false
+
     var isDetailedView: Bool = false
     
     private let trailingSpace: CGFloat = 16
@@ -279,13 +281,20 @@ class ChartDataSource: Updatable {
             if countPoints <= 0 {
                 lineGap = 0
             } else {
-                lineGap = viewSize.width / (CGFloat(countPoints) - 1)
+                var count = CGFloat(countPoints) - 1
+                if stacked, !percentage {
+                    count = CGFloat(countPoints)
+                }
+                lineGap = viewSize.width / count
             }
         } else {
             topSpace = 40.0
             bottomSpace = 20.0
             topHorizontalLine = percentage ? 1 : 95 / 100.0
-            let value = range.end - range.start - 1
+            var value = range.end - range.start - 1
+            if stacked, !percentage {
+                value = range.end - range.start
+            }
             if value <= 0 {
                 lineGap = 0
             } else {
@@ -311,12 +320,15 @@ class ChartDataSource: Updatable {
         for i in loopRange {
             var dataValue = data[i].value
             if chartModel.runValueAnimation {
-                if data[i].targetValue != 0 {
-                    dataValue = 0
+                if !isAllChartsHidden, !isOneChartsVisible {
+                    if data[i].targetValue != 0 {
+                        dataValue = 0
+                    }
+                    let value = Math.calcEaseInOut(for: frameAnimation, totalTime: framesInAnimationDuration)
+                    let toAddValue = CGFloat(data[i].deltaToTargetValue) * value
+                    dataValue = dataValue + Int(toAddValue)
+
                 }
-                let value = Math.calcEaseInOut(for: frameAnimation, totalTime: framesInAnimationDuration)
-                let toAddValue = CGFloat(data[i].deltaToTargetValue) * value
-                dataValue = dataValue + Int(toAddValue)
             } else if chartModel.isHidden {
                 dataValue = 0
             }

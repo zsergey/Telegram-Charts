@@ -165,6 +165,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             if isUpdating {
                 lineLayer.path = path
                 CATransaction.setDisableActions(true)
+                //lineLayer.changePath(to: path, animationDuration: UIView.animationDuration)
                 if chartModel.opacity != lineLayer.opacity {
                     let toValue: Float = chartModel.opacity
                     let fromValue: Float = lineLayer.opacity
