@@ -30,6 +30,10 @@ class ChartDataSource: Updatable {
         return startIndex..<endIndex
     }
     
+    var deltaX: CGFloat {
+        return (CGFloat(intRange.startIndex) - range.start) * lineGap + trailingSpace
+    }
+    
     var selectedPeriod: String {
         let loopRange = intRange
         let startDate = self.maxRangePoints[loopRange.startIndex].date.fullDate
@@ -288,7 +292,7 @@ class ChartDataSource: Updatable {
                 lineGap = viewSize.width / count
             }
         } else {
-            topSpace = 40.0
+            topSpace = 30.0 // 40
             bottomSpace = 20.0
             topHorizontalLine = percentage ? 1 : 95 / 100.0
             var value = range.end - range.start - 1
@@ -407,6 +411,7 @@ class ChartDataSource: Updatable {
         // Preparing datas.
         allData = nil
         let loopRange = intRange
+        let delta = deltaX
         var preparedData = [[PointModel]]()
         for index in 0..<chartModels.count {
             let chartModel = chartModels[index]
@@ -457,9 +462,8 @@ class ChartDataSource: Updatable {
 
             if !isPreviewMode {
                 // Correct x for smoth scrolling of charts.
-                let deltaX = (CGFloat(loopRange.startIndex) - range.start) * lineGap
                 for i in 0..<points.count {
-                    points[i] = CGPoint(x: points[i].x + deltaX + trailingSpace, y: points[i].y)
+                    points[i] = CGPoint(x: points[i].x + delta, y: points[i].y)
                 }
             }
             

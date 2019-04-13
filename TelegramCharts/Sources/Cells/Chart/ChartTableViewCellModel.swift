@@ -71,7 +71,11 @@ extension ChartTableViewCellModel: CellViewModelType {
                 FeedbackGenerator.impactOccurred(style: .medium)
                 let wasAllChartsHidden = self.chartDataSource.isAllChartsHidden
                 model.isHidden = !model.isHidden
-                cell.updateDotsIfNeeded()
+                cell.drawSelectedValuesIfNeeded()
+                if self.chartDataSource.isAllChartsHidden {
+                    self.chartDataSource.selectedIndex = nil
+                    cell.chartView.cleanSelectedValues()
+                }
                 cell.hideViewsIfNeeded(animated: true)
                 self.setupAnimatingCharts()
                 self.setupOneChartsVisible(wasAllChartsHidden)
@@ -104,7 +108,11 @@ extension ChartTableViewCellModel: CellViewModelType {
                     button.setNextStyle()
                     cell.filterButtons.forEach { $0.style = .unChecked }
                     button.style = .checked
-                    cell.updateDotsIfNeeded()
+                    cell.drawSelectedValuesIfNeeded()
+                    if self.chartDataSource.isAllChartsHidden {
+                        self.chartDataSource.selectedIndex = nil
+                        cell.chartView.cleanSelectedValues()
+                    }
                     cell.hideViewsIfNeeded(animated: true)
                     self.setupAnimatingCharts()
                     self.setupOneChartsVisible(wasAllChartsHidden)
@@ -113,6 +121,7 @@ extension ChartTableViewCellModel: CellViewModelType {
                 } else {
                     if !processedLongPressGesture {
                         FeedbackGenerator.notificationOccurred(.warning)
+                        button.shake()
                     }
                 }
             }
@@ -149,13 +158,12 @@ extension ChartTableViewCellModel: CellViewModelType {
 
     func setupChartView(on cell: ChartTableViewCell) {
         cell.chartView.dataSource = chartDataSource
-        self.chartDataSource.selectedIndex = nil
-        cell.chartView.cleanDots()
+        cell.drawSelectedValuesIfNeeded()
         cell.hideViewsIfNeeded(animated: false)
         
         chartDataSource.onChangeMaxValue = {
             self.calcProperties(of: self.chartDataSource, for: cell.chartView, shouldCalcMaxValue: false)
-            cell.updateDotsIfNeeded()
+            cell.drawSelectedValuesIfNeeded()
         }
         chartDataSource.onSetNewTargetMaxValue = {
             DispatchQueue.main.async {
@@ -184,7 +192,7 @@ extension ChartTableViewCellModel: CellViewModelType {
             self.chartDataSource.sliderWidth = sliderWidth
             self.chartDataSource.startX = startX
             self.chartDataSource.selectedIndex = nil
-            cell.chartView.cleanDots()
+            cell.chartView.cleanSelectedValues()
             cell.dateLabel.text = self.chartDataSource.selectedPeriod
 
             self.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: value)

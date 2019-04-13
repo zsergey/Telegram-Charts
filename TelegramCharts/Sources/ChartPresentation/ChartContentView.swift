@@ -39,6 +39,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     private let gridLayer: CALayer = CALayer()
 
+    private let selectedValuesLayer: CALayer = CALayer()
+
     private var chartLines: [CAShapeLayer]?
 
     private var gridLines: [ValueLayer]?
@@ -53,11 +55,15 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     private var verticalLine: CAShapeLayer?
 
-    private var dotInfo: CAShapeLayer?
+    private var selectedValuesInfo: CAShapeLayer?
     
     private var dateTextLayer: CATextLayer?
 
     private var valueTextLayers: [CATextLayer]?
+
+    private var precentegTextLayers: [CATextLayer]?
+
+    private var labelsTextLayers: [CATextLayer]?
 
     private var dotsTextLayers: [DotLayer]?
 
@@ -84,7 +90,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
-
+        layer.addSublayer(selectedValuesLayer)
+        
         clipsToBounds = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTouch))
@@ -99,17 +106,45 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let dataSource = dataSource else {
+            return true
+        }
+        if !dataSource.isPreviewMode,
+            let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+            let velocity = panGestureRecognizer.velocity(in: self)
+            return abs(velocity.y) > abs(velocity.x)
+        }
         return true
     }
     
     @objc private func handleTouch(recognizer: UIPanGestureRecognizer) {
-        let point = recognizer.location(in: self)
-        drawDotsIfNeeded(location: point)
+        guard let dataSource = dataSource else {
+            return
+        }
+        
+        let location = recognizer.location(in: self)
+        if let selectedValuesInfo = selectedValuesInfo {
+            let frame = CGRect(x: selectedValuesInfo.frame.origin.x,
+                               y: selectedValuesInfo.frame.origin.y + dataSource.topSpace,
+                               width: selectedValuesInfo.frame.width,
+                               height: selectedValuesInfo.frame.height)
+            if location.x >= frame.origin.x, location.x <= frame.origin.x + frame.size.width,
+                location.y >= frame.origin.y, location.y <= frame.origin.y + frame.size.height {
+                dataSource.selectedIndex = nil
+                cleanSelectedValues()
+                return
+            }
+        }
+        drawSelectedValuesIfNeeded(location: location, animated: true)
     }
 
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
-        let point = recognizer.location(in: self)
-        drawDotsIfNeeded(location: point)
+        guard !isScrolling else {
+            return
+        }
+        
+        let location = recognizer.location(in: self)
+        drawSelectedValuesIfNeeded(location: location, animated: true)
     }
     
     func drawView() {
@@ -130,6 +165,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         self.gridLayer.frame = CGRect(x: 0, y: dataSource.topSpace,
                                       width: self.frame.width,
                                       height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
+        self.selectedValuesLayer.frame = self.gridLayer.frame
 
         if isJustReused {
             drawHorizontalLines(animated: false)
@@ -273,7 +309,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
         }
         if dataSource.selectedIndex != nil {
-            drawDots()
+            drawSelectedValues(animated: false)
         }
     }
     
@@ -378,7 +414,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
     }
 
-    private func drawDotsIfNeeded(location: CGPoint) {
+    private func drawSelectedValuesIfNeeded(location: CGPoint, animated: Bool) {
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
             !dataSource.isPreviewMode else {
@@ -388,9 +424,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             return
         }
         
-        let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap + dataSource.trailingSpace
-        
-        var newSelectedIndex = Int((location.x - deltaX) / dataSource.lineGap)
+        var newSelectedIndex = Int((location.x - dataSource.deltaX) / dataSource.lineGap)
         if newSelectedIndex < 0 {
             newSelectedIndex = 0
         }
@@ -406,23 +440,30 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if isUpdating {
             dataSource.selectedIndex = newSelectedIndex
             dataSource.globalSelectedIndex = newGlobalSelectedIndex
-            drawDots()
+            drawSelectedValues(animated: animated)
         }
     }
     
-    func cleanDots() {
+    func cleanSelectedValues() {
         verticalLine?.removeFromSuperlayer()
-        dotInfo?.removeFromSuperlayer()
+        selectedValuesInfo?.removeFromSuperlayer()
         dateTextLayer?.removeFromSuperlayer()
         valueTextLayers?.forEach { $0.removeFromSuperlayer() }
+        labelsTextLayers?.forEach { $0.removeFromSuperlayer() }
+        precentegTextLayers?.forEach { $0.removeFromSuperlayer() }
         dotsTextLayers?.forEach { $0.removeFromSuperlayer() }
         
-        dotInfo = nil
+        selectedValuesInfo = nil
         verticalLine = nil
         dateTextLayer = nil
         valueTextLayers = nil
+        precentegTextLayers = nil
+        labelsTextLayers = nil
         dotsTextLayers = nil
 
+        selectedValuesLayer.sublayers?.forEach {
+            $0.removeFromSuperlayer()
+        }
         dataLayer.sublayers?.forEach {
             if $0 is DotLayer {
                 $0.removeFromSuperlayer()
@@ -430,7 +471,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
     }
 
-    func drawDots() {
+    func drawSelectedValues(animated: Bool) {
         
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
@@ -439,177 +480,281 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let globalSelectedIndex = dataSource.globalSelectedIndex else {
             return
         }
-        
-        var countVisibleValues = 0
+
+        // Preparing some data.
+        var countVisibleValues = 1 // for date
+        var totalValue = 0
+        let hasAdditionalRow = dataSource.stacked && !dataSource.singleBar && !dataSource.percentage
+        if hasAdditionalRow {
+            countVisibleValues += 1
+        }
+        var lastVisibleIndex = 0
         for index in 0..<dataSource.chartModels.count {
             let chartModel = dataSource.chartModels[index]
+            let pointModel = chartModel.data[globalSelectedIndex]
             if !chartModel.isHidden {
                 countVisibleValues += 1
+                totalValue += pointModel.value
+                lastVisibleIndex = index
             }
         }
-        
-        CATransaction.setDisableActions(true)
+        var percentageValues: [Int] = []
+        var totalPercentage = 100
+        var maxPercentageWidth: CGFloat = 0
+        if dataSource.percentage {
+            percentageValues = []
+            for index in 0..<dataSource.chartModels.count {
+                if totalValue == 0 {
+                    percentageValues.append(0)
+                    continue
+                }
+                let chartModel = dataSource.chartModels[index]
+                let pointModel = chartModel.data[globalSelectedIndex]
+                if index == lastVisibleIndex {
+                    percentageValues.append(totalPercentage)
+                } else {
+                    let value = chartModel.isHidden ? 0 : pointModel.value
+                    let percentageValue = Int(CGFloat(value) * CGFloat(100) / CGFloat(totalValue))
+                    percentageValues.append(percentageValue)
+                    totalPercentage -= percentageValue
+                }
+                if !chartModel.isHidden {
+                    let percentageTextLayer = Painter.createText(textColor: self.colorScheme.dotInfo.text)
+                    percentageTextLayer.string = "\(percentageValues[index])%"
+                    let percentageWidth = percentageTextLayer.preferredFrameSize().width
+                    if percentageWidth > maxPercentageWidth {
+                        maxPercentageWidth = percentageWidth
+                    }
+                }
+            }
+        }
+
+        let xValue = dataSource.deltaX + CGFloat(selectedIndex) * dataSource.lineGap - outerRadius / 2
+        let xLine = xValue + outerRadius / 2
 
         // Line.
-        let path = UIBezierPath()
-        
-        let isUpdating = verticalLine != nil
-        let lineLayer = isUpdating ? verticalLine! : CAShapeLayer()
-        if !isUpdating {
-            lineLayer.fillColor = UIColor.clear.cgColor
-            lineLayer.lineWidth = 0.5
-            gridLayer.addSublayer(lineLayer)
+        var topLine = -dataSource.topSpace + 12
+        if dataSource.percentage {
+            topLine = 0
         }
-        
-        // Dots.
-        var xLine: CGFloat = 0
-        var dotIndex = 0
-        for index in 0..<dataSource.chartModels.count {
-            let chartModel = dataSource.chartModels[index]
-            var points = dataPoints[index]
-            
-            let dataPoint = points[selectedIndex]
-            let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap + dataSource.trailingSpace
-            let xValue = deltaX + CGFloat(selectedIndex) * dataSource.lineGap - outerRadius / 2
 
-            let yValue = dataPoint.y - outerRadius / 2
-            let dotFrame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
-            
-            if let dotsTextLayers = dotsTextLayers, dotIndex < dotsTextLayers.count {
-                dotsTextLayers[dotIndex].dotInnerColor = colorScheme.chart.background
-                dotsTextLayers[dotIndex].backgroundColor = chartModel.color.cgColor
-                dotsTextLayers[dotIndex].frame = dotFrame
-                dotsTextLayers[dotIndex].isHidden = chartModel.isHidden
-            } else {
-                let dotLayer = DotLayer()
-                dotLayer.dotInnerColor = colorScheme.chart.background
-                dotLayer.innerRadius = innerRadius
-                dotLayer.backgroundColor = chartModel.color.cgColor
-                dotLayer.cornerRadius = outerRadius / 2
-                dotLayer.frame = dotFrame
-                gridLayer.addSublayer(dotLayer)
-                if dotsTextLayers == nil {
-                    dotsTextLayers = [DotLayer]()
-                }
-                dotsTextLayers!.append(dotLayer)
-                dotLayer.isHidden = chartModel.isHidden
+        let needsDrawLine = dataSource.percentage || (!dataSource.singleBar && !dataSource.stacked)
+        if needsDrawLine {
+            let path = UIBezierPath()
+            let isUpdating = verticalLine != nil
+            let lineLayer = isUpdating ? verticalLine! : CAShapeLayer()
+            if !isUpdating {
+                lineLayer.fillColor = UIColor.clear.cgColor
+                lineLayer.lineWidth = 0.5
+                selectedValuesLayer.addSublayer(lineLayer)
             }
-            
-            dotIndex += 1
-            xLine = xValue + outerRadius / 2
-        }
-        
-        // Path line.
-        path.move(to: CGPoint(x: xLine, y: -dataSource.topSpace / 2))
-        let theOnePixel: CGFloat = 1 // from drawing horizontal lines
-        path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace + theOnePixel))
-        lineLayer.path = path.cgPath
-        lineLayer.strokeColor = colorScheme.chart.accentGrid.cgColor
-        if !isUpdating {
-            self.verticalLine = lineLayer
+            path.move(to: CGPoint(x: xLine, y: topLine))
+            let theOnePixel: CGFloat = 1 // from drawing horizontal lines
+            path.addLine(to: CGPoint(x: xLine, y: self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace + theOnePixel))
+            lineLayer.path = path.cgPath
+            lineLayer.strokeColor = colorScheme.chart.accentGrid.cgColor
+            if !isUpdating {
+                self.verticalLine = lineLayer
+            }
         }
 
-        // Rect.
-        let rectWidth: CGFloat = 160
-        // TODO: удалить
-//        var maxString = ""
-//        for index in 0..<dataSource.chartModels.count {
-//            let chartModel = dataSource.chartModels[index]
-//            if chartModel.isHidden {
-//                continue
-//            }
-//            let data = chartModel.data[globalSelectedIndex]
-//            let format = data.value.format
-//            if maxString.count < format.count {
-//                maxString = format
-//            }
-//        }
-//        rectWidth = rectWidth + CGFloat(max((maxString.count - 2), 0) * 5)
+        // Dots.
+        var dotIndex = 0
+        if !dataSource.stacked, !dataSource.singleBar {
+            for index in 0..<dataSource.chartModels.count {
+                let chartModel = dataSource.chartModels[index]
+                var points = dataPoints[index]
+                
+                let dataPoint = points[selectedIndex]
+                let yValue = dataPoint.y - outerRadius / 2
+                let dotFrame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
+                
+                if let dotsTextLayers = dotsTextLayers, dotIndex < dotsTextLayers.count {
+                    dotsTextLayers[dotIndex].dotInnerColor = colorScheme.chart.background
+                    dotsTextLayers[dotIndex].backgroundColor = chartModel.color.cgColor
+                    dotsTextLayers[dotIndex].frame = dotFrame
+                    dotsTextLayers[dotIndex].isHidden = chartModel.isHidden
+                } else {
+                    let dotLayer = DotLayer()
+                    dotLayer.dotInnerColor = colorScheme.chart.background
+                    dotLayer.innerRadius = innerRadius
+                    dotLayer.backgroundColor = chartModel.color.cgColor
+                    dotLayer.cornerRadius = outerRadius / 2
+                    dotLayer.frame = dotFrame
+                    selectedValuesLayer.addSublayer(dotLayer)
+                    if dotsTextLayers == nil {
+                        dotsTextLayers = [DotLayer]()
+                    }
+                    dotsTextLayers!.append(dotLayer)
+                    dotLayer.isHidden = chartModel.isHidden
+                }
+                
+                dotIndex += 1
+            }
+        }
         
-        let space: CGFloat = 5
-        let oneLine: CGFloat = 20
-        let lines = max(countVisibleValues, 2)
-        var rectHeight = CGFloat(lines) * oneLine
-        rectHeight = rectHeight - CGFloat(max((lines - 2), 0) * 2)
+        // View with values.
+        let topDate: CGFloat = 5
+        let trailingDate: CGFloat = 10
+        let pointModel = dataSource.maxRangePoints[globalSelectedIndex]
+        let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
+        dateTextLayer.string = pointModel.fullDate
+        let rectWidth: CGFloat = 145
+
+        let isUpdating = selectedValuesInfo != nil
+        let textLayer = Painter.createText(textColor: .clear)
+        textLayer.string = "0"
+        let heightForOneLine: CGFloat = textLayer.preferredFrameSize().height
+        
         var xRect = xLine - rectWidth / 2
         if xRect < 0 {
-            xRect = 0
+            xRect = xLine + dataSource.trailingSpace
         }
         if xRect > self.frame.size.width - rectWidth {
-            xRect = self.frame.size.width - rectWidth
+            xRect = xLine - rectWidth - dataSource.trailingSpace
         }
-        let rect = CGRect(x: xRect, y: -dataSource.topSpace + space,
-                          width: rectWidth, height: rectHeight)
+
+        if !animated {
+            CATransaction.setDisableActions(true)
+        }
+
+        let letterSpace: CGFloat = 2
+        let extraBottom: CGFloat = 3
+        var heightRect = heightForOneLine * CGFloat(countVisibleValues) + 2 * topDate + extraBottom
+        heightRect += CGFloat(countVisibleValues - 1) * letterSpace
+        let extraTop: CGFloat = dataSource.percentage ? 4 : 0
+        let rect = CGRect(x: xRect, y: topLine + extraTop,
+                          width: rectWidth, height: heightRect)
         let corners: UIRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
         
         if isUpdating {
-            self.dotInfo?.path = Painter.createRectPath(rect: rect, byRoundingCorners: corners, cornerRadius: 4).cgPath
-            self.dotInfo?.fillColor = colorScheme.dotInfo.background.cgColor
+            self.selectedValuesInfo?.path = Painter.createRectPath(rect: CGRect(x: 0, y: 0, width: rect.width, height: rect.height), byRoundingCorners: corners, cornerRadius: 6).cgPath
+            self.selectedValuesInfo?.fillColor = colorScheme.dotInfo.background.cgColor
+            self.selectedValuesInfo?.frame = rect
         } else {
-            let dotInfo = Painter.createRect(rect: rect, byRoundingCorners: corners,
+            let dotInfo = Painter.createRect(rect: CGRect(x: 0, y: 0, width: rect.width, height: rect.height), byRoundingCorners: corners,
                                              fillColor: colorScheme.dotInfo.background,
-                                             cornerRadius: 4)
-            gridLayer.addSublayer(dotInfo)
-            self.dotInfo = dotInfo
+                                             cornerRadius: 6)
+            selectedValuesLayer.addSublayer(dotInfo)
+            dotInfo.frame = rect
+            self.selectedValuesInfo = dotInfo
         }
 
-        // Date and numbers.
+        // Date, labels and values.
         var drawDate = true
-        //let xdata: CGFloat = rect.origin.x + 8 + 80 * 0.6
-        var ydata: CGFloat = rect.origin.y + 5
-        let deltaY = oneLine - 3
-        for index in 0..<dataSource.chartModels.count {
-            let chartModel = dataSource.chartModels[index]
-            let data = chartModel.data[globalSelectedIndex]
-            if drawDate {
-                let ydate = rect.origin.y + 5
-                let isUpdating = self.dateTextLayer != nil
-                let dateFrame = CGRect(x: rect.origin.x + 8,
-                                       y: ydate, width: 50, height: 16)
-                if isUpdating {
-                    self.dateTextLayer?.frame = dateFrame
-                    self.dateTextLayer?.string = data.dateDot
-                    self.dateTextLayer?.foregroundColor = colorScheme.dotInfo.text.cgColor
-                } else {
-                    let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
-                    dateTextLayer.frame = dateFrame
-                    dateTextLayer.string = data.dateDot
-                    gridLayer.addSublayer(dateTextLayer)
-                    self.dateTextLayer = dateTextLayer
+        var ydata: CGFloat = rect.origin.y + topDate
+        let deltaY = heightForOneLine + letterSpace
+        let drawLabledValue: (Int, String, Int, Bool, UIColor) -> () = { index, name, value, isHidden, valueColor in
+            
+            // Percentage.
+            if dataSource.percentage, index < percentageValues.count {
+                let updatePercentageTextLayer: (CATextLayer) -> Void = { textLayer in
+                    textLayer.string = "\(percentageValues[index])%"
+                    textLayer.isHidden = isHidden
+                    let x = rect.origin.x + trailingDate + maxPercentageWidth - textLayer.preferredFrameSize().width
+                    let valueFrame = CGRect(x: x, y: ydata, width: maxPercentageWidth, height: 16)
+                    textLayer.frame = valueFrame
+                    textLayer.foregroundColor = self.colorScheme.dotInfo.text.cgColor
                 }
-
-                drawDate = false
+                if let precentegTextLayers = self.precentegTextLayers, index < precentegTextLayers.count {
+                    let percentageTextLayer = precentegTextLayers[index]
+                    updatePercentageTextLayer(percentageTextLayer)
+                } else {
+                    let percentageTextLayer = Painter.createText(textColor: self.colorScheme.dotInfo.text)
+                    updatePercentageTextLayer(percentageTextLayer)
+                    self.selectedValuesLayer.addSublayer(percentageTextLayer)
+                    if self.precentegTextLayers == nil {
+                        self.precentegTextLayers = [CATextLayer]()
+                    }
+                    self.precentegTextLayers!.append(percentageTextLayer)
+                }
             }
             
-            if let valueTextLayers = valueTextLayers, index < valueTextLayers.count {
-                let dataTextLayer = valueTextLayers[index]
-                let xdata = rect.origin.x + rectWidth - dataTextLayer.preferredFrameSize().width
-                let valueFrame = CGRect(x: xdata,
-                                        y: ydata, width: 50, height: 16)
-                dataTextLayer.frame = valueFrame
-                dataTextLayer.string = data.value.format
-                dataTextLayer.isHidden = chartModel.isHidden
+            // Labels.
+            let updateLabelTextLayer: (CATextLayer) -> Void = { textLayer in
+                textLayer.string = name
+                textLayer.isHidden = isHidden
+                let space: CGFloat = 5
+                let trailing: CGFloat = self.dataSource?.percentage ?? false ? maxPercentageWidth + space : 0
+                let x = trailing + rect.origin.x + trailingDate
+                let valueFrame = CGRect(x: x, y: ydata, width: 60, height: 16)
+                textLayer.frame = valueFrame
+                textLayer.foregroundColor = self.colorScheme.dotInfo.text.cgColor
+            }
+            if let labelsTextLayers = self.labelsTextLayers, index < labelsTextLayers.count {
+                let labelTextLayer = labelsTextLayers[index]
+                updateLabelTextLayer(labelTextLayer)
             } else {
-                let dataTextLayer = Painter.createText(textColor: chartModel.color, bold: true)
-                let xdata = rect.origin.x + rectWidth - dataTextLayer.preferredFrameSize().width
-                let valueFrame = CGRect(x: xdata,
-                                        y: ydata, width: 50, height: 16)
-                dataTextLayer.frame = valueFrame
-                dataTextLayer.string = data.value.format
-                dataTextLayer.isHidden = chartModel.isHidden
-                gridLayer.addSublayer(dataTextLayer)
+                let labelTextLayer = Painter.createText(textColor: self.colorScheme.dotInfo.text)
+                updateLabelTextLayer(labelTextLayer)
+                self.selectedValuesLayer.addSublayer(labelTextLayer)
+                if self.labelsTextLayers == nil {
+                    self.labelsTextLayers = [CATextLayer]()
+                }
+                self.labelsTextLayers!.append(labelTextLayer)
+            }
+            
+            // Values.
+            let updateDataTextLayer: (CATextLayer) -> Void = { textLayer in
+                textLayer.string = value.format
+                textLayer.isHidden = isHidden
+                let x = rect.origin.x + rectWidth - trailingDate - textLayer.preferredFrameSize().width
+                let valueFrame = CGRect(x: x, y: ydata, width: 50, height: 16)
+                textLayer.frame = valueFrame
+            }
+            if let valueTextLayers = self.valueTextLayers, index < valueTextLayers.count {
+                let dataTextLayer = valueTextLayers[index]
+                dataTextLayer.foregroundColor = valueColor.cgColor
+                updateDataTextLayer(dataTextLayer)
+            } else {
+                let dataTextLayer = Painter.createText(textColor: valueColor, bold: true)
+                updateDataTextLayer(dataTextLayer)
+                self.selectedValuesLayer.addSublayer(dataTextLayer)
                 if self.valueTextLayers == nil {
                     self.valueTextLayers = [CATextLayer]()
                 }
                 self.valueTextLayers!.append(dataTextLayer)
             }
+            
+        }
+        
+        for index in 0..<dataSource.chartModels.count {
+            let chartModel = dataSource.chartModels[index]
+            let pointModel = chartModel.data[globalSelectedIndex]
+            if drawDate {
+                let ydate = rect.origin.y + topDate
+                let isUpdating = self.dateTextLayer != nil
+                let dateFrame = CGRect(x: rect.origin.x + trailingDate,
+                                       y: ydate, width: rectWidth - 2 * trailingDate, height: 16)
+                let updateDateTextLayer: (CATextLayer?) -> Void = { textLayer in
+                    textLayer?.frame = dateFrame
+                    textLayer?.string = pointModel.fullDate
+                    textLayer?.foregroundColor = self.colorScheme.dotInfo.text.cgColor
+                }
+                if isUpdating {
+                    updateDateTextLayer(self.dateTextLayer)
+                } else {
+                    let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
+                    updateDateTextLayer(dateTextLayer)
+                    selectedValuesLayer.addSublayer(dateTextLayer)
+                    self.dateTextLayer = dateTextLayer
+                }
+                ydata += deltaY
+                drawDate = false
+            }
+            
+            drawLabledValue(index, chartModel.name, pointModel.value, chartModel.isHidden, chartModel.color)
+
             if !chartModel.isHidden {
                 ydata += deltaY
             }
-
         }
-        CATransaction.setDisableActions(false)
-
+        
+        drawLabledValue(dataSource.chartModels.count, "All", totalValue, !hasAdditionalRow, self.colorScheme.dotInfo.text)
+        
+        if !animated {
+            CATransaction.setDisableActions(false)
+        }
     }
     
     func prepareForReuse() {
@@ -624,11 +769,16 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         setFinishedSliderDirection = true
         isScrolling = true
         
+        valueTextLayers = nil
+        labelsTextLayers = nil
+        
         mainLayer.sublayers?.forEach {
             if $0 is TextLayer {
                 $0.removeFromSuperlayer()
             }
         }
+        
+        cleanSelectedValues()
         
         dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
         gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }

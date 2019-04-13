@@ -86,7 +86,7 @@ class CheckButton: UIControl {
         didSet {
             updateStyle()
             updateTitle()
-            setNeedsLayout()
+            animateChangingStyle()
         }
     }
     
@@ -145,6 +145,7 @@ class CheckButton: UIControl {
         longPressGesture.minimumPressDuration = 0.2
         addGestureRecognizer(longPressGesture)
         self.updateStyle()
+        self.titleLabel.frame = self.bounds
     }
 
     @objc func touchDownButton(_ button: UIButton) {
@@ -169,19 +170,31 @@ class CheckButton: UIControl {
         processedLongPressGesture = true
     }
     
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        switch self.style {
-        case .unChecked:
-            self.titleLabel.frame = self.bounds
-            self.imageView.alpha = 0
-        case .checked:
-            self.titleLabel.frame = CGRect(x: self.textOffset,
-                                           y: self.bounds.origin.y,
-                                           width: self.bounds.width - self.textOffset,
-                                           height: self.bounds.height)
-            self.imageView.alpha = 1
+    func animateChangingStyle() {
+        let centerX = (self.frame.width - self.titleLabel.frame.width) / 2
+        UIView.animateEaseInOut(with: UIView.animationDuration) {
+            switch self.style {
+            case .unChecked:
+                self.titleLabel.frame = CGRect(x: centerX,
+                                               y: self.titleLabel.frame.origin.y,
+                                               width: self.titleLabel.frame.width,
+                                               height: self.titleLabel.frame.height)
+                self.imageView.frame = CGRect(x: 0,
+                                              y: self.imageView.frame.origin.y,
+                                              width: self.imageView.frame.width,
+                                              height: self.imageView.frame.height)
+                self.imageView.alpha = 0
+            case .checked:
+                self.titleLabel.frame = CGRect(x: self.textOffset / 2 + centerX,
+                                               y: self.titleLabel.frame.origin.y,
+                                               width: self.titleLabel.frame.width,
+                                               height: self.titleLabel.frame.height)
+                self.imageView.frame = CGRect(x: self.textOffset / 2,
+                                              y: self.imageView.frame.origin.y,
+                                              width: self.imageView.frame.width,
+                                              height: self.imageView.frame.height)
+                self.imageView.alpha = 1
+            }
         }
     }
     
@@ -233,6 +246,11 @@ class CheckButton: UIControl {
                               width: size.width + space + textOffset,
                               height: frame.size.height)
         frame = newFrame
+        
+        self.titleLabel.frame = CGRect(x: self.titleLabel.frame.origin.x,
+                                       y: self.titleLabel.frame.origin.y,
+                                       width: self.titleLabel.intrinsicContentSize.width,
+                                       height: self.titleLabel.frame.height)
     }
     
     func updateBorder() {
@@ -250,4 +268,14 @@ class CheckButton: UIControl {
         layer.borderWidth = borderWidth
     }
     
+    func shake() {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.07
+        animation.repeatCount = 4
+        animation.autoreverses = true
+        animation.fromValue = NSValue(cgPoint: CGPoint(x: self.center.x - 4, y: self.center.y))
+        animation.toValue = NSValue(cgPoint: CGPoint(x: self.center.x + 4, y: self.center.y))
+        self.layer.add(animation, forKey: "position")
+    }
+
 }

@@ -218,6 +218,5 @@ extension ChartViewController {
         let nextMode = colorScheme is DayScheme ? "Night Mode" : "Day Mode"
         sender.title = nextMode
     }
-
 }
 

@@ -90,9 +90,9 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
 
-    func updateDotsIfNeeded() {
+    func drawSelectedValuesIfNeeded() {
         if model?.chartDataSource.selectedIndex != nil {
-            chartView.drawDots()
+            chartView.drawSelectedValues(animated: false)
         }
     }
     
@@ -121,6 +121,7 @@ extension ChartTableViewCell: ColorUpdatable {
             self.filterButtons.forEach {
                 $0.unCheckedBackgroundColor = model.colorScheme.chart.background
             }
+            self.dateLabel.textColor = model.colorScheme.title
             self.chartView.colorScheme = model.colorScheme
             self.previewChartView.colorScheme = model.colorScheme
             self.sliderView.colorScheme = model.colorScheme

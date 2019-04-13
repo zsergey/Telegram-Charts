@@ -19,7 +19,7 @@ struct NightScheme: ColorSchemeProtocol {
     }
 
     var title: UIColor {
-        return UIColor(hex: "#FEFEFE")!
+        return UIColor(hex: "#FFFFFF")!
     }
     
     var statusBarStyle: UIStatusBarStyle {

@@ -24,12 +24,8 @@ struct PointModel {
         return date.format
     }
     
-    var dateDot: String {
-        return date.formatDot
-    }
-    
-    var year: String {
-        return date.year
+    var fullDate: String {
+        return date.fullDate
     }
 }
 
