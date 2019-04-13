@@ -34,7 +34,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     static let labelWidth: CGFloat = 40
     
     private let dataLayer: CALayer = CALayer()
-    
+
     private let mainLayer: CALayer = CALayer()
     
     private let gridLayer: CALayer = CALayer()
@@ -84,7 +84,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
-        
+
         clipsToBounds = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTouch))
@@ -130,7 +130,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         self.gridLayer.frame = CGRect(x: 0, y: dataSource.topSpace,
                                       width: self.frame.width,
                                       height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
-        
+
         if isJustReused {
             drawHorizontalLines(animated: false)
             isJustReused = false
@@ -196,7 +196,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     func drawLabels(byScroll: Bool) {
         
-        // return
+        // TODO даты надо переписать
+        return
+        
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else {

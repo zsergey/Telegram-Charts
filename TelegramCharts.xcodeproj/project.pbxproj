@@ -58,6 +58,7 @@
 		ADC861C6225E253800E697C8 /* overview6.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC861C5225E253800E697C8 /* overview6.json */; };
 		ADC8D1ED22608B440087EDB3 /* CalcOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8D1EC22608B440087EDB3 /* CalcOperation.swift */; };
 		ADC8D1F12260AD9B0087EDB3 /* LabelsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8D1F02260AD9B0087EDB3 /* LabelsProcessor.swift */; };
+		ADC8D1F9226130400087EDB3 /* overview3_3.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC8D1F8226130400087EDB3 /* overview3_3.json */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
 		ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
 		ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
@@ -127,6 +128,7 @@
 		ADC861C5225E253800E697C8 /* overview6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview6.json; sourceTree = "<group>"; };
 		ADC8D1EC22608B440087EDB3 /* CalcOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalcOperation.swift; sourceTree = "<group>"; };
 		ADC8D1F02260AD9B0087EDB3 /* LabelsProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelsProcessor.swift; sourceTree = "<group>"; };
+		ADC8D1F8226130400087EDB3 /* overview3_3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview3_3.json; sourceTree = "<group>"; };
 		ADCD101E22441697006A9856 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		ADDBBDC4224010010090E2AD /* ValueLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueLayer.swift; sourceTree = "<group>"; };
 		ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Animations.swift"; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 		AD107ACF225B58E100D84D3F /* 3 */ = {
 			isa = PBXGroup;
 			children = (
+				ADC8D1F8226130400087EDB3 /* overview3_3.json */,
 				AD107AD0225B58E100D84D3F /* overview3.json */,
 			);
 			path = 3;
@@ -465,6 +468,7 @@
 				ADFF33B9224527620019A4D4 /* SectionTableViewCell.xib in Resources */,
 				ADC5E88D225F85B60062A4AE /* chart_data_2.json in Resources */,
 				AD107AD6225B58E100D84D3F /* chart_data_max.json in Resources */,
+				ADC8D1F9226130400087EDB3 /* overview3_3.json in Resources */,
 				AD107AD5225B58E100D84D3F /* chart_data.json in Resources */,
 				AD2AD47A22483D2800B16492 /* README.md in Resources */,
 				ADE5770F2236E8920006200D /* Assets.xcassets in Resources */,

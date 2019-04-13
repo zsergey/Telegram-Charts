@@ -611,9 +611,10 @@ class ChartDataSource: Updatable {
                 let toAddValue = deltaToTargetValues[index] * value
                 maxValues[index] = maxValues[index] + toAddValue
             }
-            onChangeMaxValue?()
         }
         
+        onChangeMaxValue?()
+
         frameAnimation += 1
         if frameAnimation >= framesInAnimationDuration {
             runMaxValueAnimation = false

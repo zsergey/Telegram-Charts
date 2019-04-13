@@ -72,7 +72,7 @@ class ChartTableViewCell: UITableViewCell {
         
         if let model = model {
             
-             model.setupFilterButtons(on: self)
+            model.setupFilterButtons(on: self)
             
             if model.chartDataSource.viewSize != chartView.frame.size ||
                 model.previewChartDataSource.viewSize != previewChartView.frame.size {

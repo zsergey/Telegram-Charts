@@ -157,8 +157,11 @@ class CheckButton: UIControl {
 
     @objc func touchUpInside(_ button: UIButton) {
         processedLongPressGesture = false
-        style = style == .checked ? .unChecked : .checked
         onTapButton?(chartModel)
+    }
+    
+    func setNextStyle() {
+        style = style == .checked ? .unChecked : .checked
     }
     
     @objc func longTapButton(_ button: UIButton) {

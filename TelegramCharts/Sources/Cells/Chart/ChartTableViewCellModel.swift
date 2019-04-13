@@ -14,6 +14,7 @@ class ChartTableViewCellModel {
     
     var colorScheme: ColorSchemeProtocol
     var operations: [String: CalcOperation] = [:]
+    var isAnimatingCharts: Bool = false
     
     let calcInBackground = false
     lazy var backgroundQueue: OperationQueue = {
@@ -63,14 +64,22 @@ extension ChartTableViewCellModel: CellViewModelType {
             button.title = chartModel.name
             button.style = chartModel.isHidden ? .unChecked : .checked
             button.onTapButton = { model in
+                guard !self.isAnimatingCharts else {
+                    return
+                }
+                button.setNextStyle()
                 FeedbackGenerator.impactOccurred(style: .medium)
                 model.isHidden = !model.isHidden
                 cell.updateDotsIfNeeded()
                 cell.hideViewsIfNeeded(animated: true)
+                self.setupAnimatingCharts()
                 cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                 cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
             }
             button.onLongTapButton = { model, processedLongPressGesture in
+                guard !self.isAnimatingCharts else {
+                    return
+                }
                 var needsUpdate = false
                 self.chartDataSource.chartModels.forEach {
                     if $0 == model {
@@ -89,10 +98,12 @@ extension ChartTableViewCellModel: CellViewModelType {
                     if !processedLongPressGesture {
                         FeedbackGenerator.impactOccurred(style: .heavy)
                     }
+                    button.setNextStyle()
                     cell.filterButtons.forEach { $0.style = .unChecked }
                     button.style = .checked
                     cell.updateDotsIfNeeded()
                     cell.hideViewsIfNeeded(animated: true)
+                    self.setupAnimatingCharts()
                     cell.model?.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: true, changedIsHidden: true)
                     cell.model?.calcProperties(of: self.previewChartDataSource, for: cell.previewChartView, animateMaxValue: true, changedIsHidden: true)
                 } else {
@@ -112,6 +123,13 @@ extension ChartTableViewCellModel: CellViewModelType {
             x += button.frame.size.width + leadingSpace / 2
             
             cell.filterButtons.append(button)
+        }
+    }
+    
+    func setupAnimatingCharts() {
+        isAnimatingCharts = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + UIView.animationDuration) {
+            self.isAnimatingCharts = false
         }
     }
     
