@@ -30,6 +30,10 @@ class ValueLayer: CALayer {
         super.init()
     }
     
+    let trailingSpace: CGFloat = 16
+    
+    let leadingSpace: CGFloat = 16
+
     override init(layer: Any) {
         super.init(layer: layer)
     }
@@ -53,8 +57,8 @@ class ValueLayer: CALayer {
         let height: CGFloat = 0
         
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0, y: height))
-        path.addLine(to: CGPoint(x: frame.size.width, y: height))
+        path.move(to: CGPoint(x: trailingSpace, y: height))
+        path.addLine(to: CGPoint(x: frame.size.width - leadingSpace, y: height))
         
         let lineLayer = CAShapeLayer()
         lineLayer.path = path.cgPath
@@ -66,9 +70,9 @@ class ValueLayer: CALayer {
         
         let textLayer = Painter.createText(textColor: textColor)
         textLayer.string = lineValue.format
-        var x: CGFloat = 0
+        var x: CGFloat = trailingSpace
         if alignment == .right {
-            x = frame.size.width - textLayer.preferredFrameSize().width
+            x = frame.size.width - textLayer.preferredFrameSize().width - leadingSpace
         }
         textLayer.frame = CGRect(x: x, y: height - 18, width: 50, height: 16)
         addSublayer(textLayer)

@@ -25,7 +25,7 @@ class ChartDataSource: Updatable {
     var uniqueId: String = ""
     
     var intRange: Range<Int> {
-        let startIndex = max(Int(range.start) - 1, 0)
+        let startIndex = max(Int(range.start - leadingSpace / lineGap), 0)
         let endIndex = min(Int(viewSize.width / lineGap + range.start) + 2, maxRangePoints.count)
         return startIndex..<endIndex
     }
@@ -73,9 +73,9 @@ class ChartDataSource: Updatable {
 
     var isDetailedView: Bool = false
     
-    private let trailingSpace: CGFloat = 16
+    let trailingSpace: CGFloat = 16
     
-    private let leadingSpace: CGFloat = 16
+    let leadingSpace: CGFloat = 16
 
     private(set) var lineGap: CGFloat = 60.0
     
@@ -169,7 +169,7 @@ class ChartDataSource: Updatable {
                     var max: CGFloat = 0
                     for i in loopRange {
                         let x = (CGFloat(i) - range.start) * lineGap
-                        if x >= 0, x <= viewSize.width {
+                        if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
                             let value = CGFloat(chartModel.data[i].value)
                             if value > max {
                                 max = value
@@ -201,7 +201,7 @@ class ChartDataSource: Updatable {
                 if chartModel.isHidden { continue }
                 for i in loopRange {
                     let x = (CGFloat(i) - range.start) * lineGap
-                    if x >= 0, x <= viewSize.width {
+                    if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
                         let value = CGFloat(chartModel.data[i].value)
                         if value > max {
                             max = value
@@ -239,7 +239,7 @@ class ChartDataSource: Updatable {
                         continue
                     }
                     let x = (CGFloat(i) - range.start) * lineGap
-                    if x >= 0, x <= viewSize.width {
+                    if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
                         value += chartModel.data[i].value
                     }
                 }
@@ -298,7 +298,7 @@ class ChartDataSource: Updatable {
             if value <= 0 {
                 lineGap = 0
             } else {
-                lineGap = viewSize.width / value
+                lineGap = (viewSize.width - leadingSpace - trailingSpace) / value
             }
         }
     }
@@ -459,7 +459,7 @@ class ChartDataSource: Updatable {
                 // Correct x for smoth scrolling of charts.
                 let deltaX = (CGFloat(loopRange.startIndex) - range.start) * lineGap
                 for i in 0..<points.count {
-                    points[i] = CGPoint(x: points[i].x + deltaX, y: points[i].y)
+                    points[i] = CGPoint(x: points[i].x + deltaX + trailingSpace, y: points[i].y)
                 }
             }
             

@@ -20,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D1j-Q1-j7B" customClass="ChartContentView" customModule="TelegramCharts" customModuleProvider="target">
-                        <rect key="frame" x="16" y="20" width="352" height="303"/>
+                        <rect key="frame" x="0.0" y="20" width="384" height="303"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="303" id="acD-iu-QfR"/>
@@ -72,12 +72,12 @@
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="D1j-Q1-j7B" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="52v-qY-cB5"/>
+                    <constraint firstItem="D1j-Q1-j7B" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="52v-qY-cB5"/>
                     <constraint firstItem="D1j-Q1-j7B" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="766-7f-U3w"/>
                     <constraint firstItem="bxy-Km-QCO" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="A07-Zs-UVy"/>
                     <constraint firstItem="bxy-Km-QCO" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="DPO-sV-eb2"/>
                     <constraint firstItem="p3f-YW-M9F" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="GHy-P4-u17"/>
-                    <constraint firstAttribute="trailing" secondItem="D1j-Q1-j7B" secondAttribute="trailing" constant="16" id="Pqe-US-T1a"/>
+                    <constraint firstAttribute="trailing" secondItem="D1j-Q1-j7B" secondAttribute="trailing" id="Pqe-US-T1a"/>
                     <constraint firstItem="zPe-1h-dVe" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="UDZ-EK-3Ui"/>
                     <constraint firstItem="p4w-D1-gJH" firstAttribute="top" secondItem="D1j-Q1-j7B" secondAttribute="bottom" constant="18" id="dXN-Is-qay"/>
                     <constraint firstAttribute="trailing" secondItem="p4w-D1-gJH" secondAttribute="trailing" id="eCI-f4-KhL"/>

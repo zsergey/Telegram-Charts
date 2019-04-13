@@ -22,9 +22,9 @@ struct ChartDataSourceFactory {
         charts += ChartModelFactory.make(fromResource: "chart_data_5", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview1", minLineLength: 2)
         charts += ChartModelFactory.make(fromResource: "overview2", minLineLength: 2)
-        charts += ChartModelFactory.make(fromResource: "overview3_3", minLineLength: 10)
+        charts += ChartModelFactory.make(fromResource: "overview3", minLineLength: 10)
         charts += ChartModelFactory.make(fromResource: "overview4")
-        charts += ChartModelFactory.make(fromResource: "overview5_5")
+        charts += ChartModelFactory.make(fromResource: "overview5")
         var names = Array(repeating: "FOLLOWERS", count: 4)
         names += ["CALLS", "FOLLOWERS", "INTERACTIONS", "MESSAGES", "VIEWS", "APPS"]
         let uniqueIdKey = "DataSource"

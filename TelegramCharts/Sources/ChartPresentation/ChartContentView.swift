@@ -196,8 +196,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawLabels(byScroll: Bool) {
-        
-        // TODO даты надо переписать
         return
         
         guard let dataSource = dataSource,
@@ -212,7 +210,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         for index in 0..<dataSource.maxRangePoints.count {
             let textLayer = isUpdating ? labels![index] : TextLayer()
             
-            let x = (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - ChartContentView.labelWidth / 2
+            let x = dataSource.trailingSpace + (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - ChartContentView.labelWidth / 2
             
             // Changing only frame when is updating.
             CATransaction.setDisableActions(true)
@@ -390,10 +388,15 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             return
         }
         
-        let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap
-
+        let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap + dataSource.trailingSpace
         
-        let newSelectedIndex = Int((location.x - deltaX) / dataSource.lineGap)
+        var newSelectedIndex = Int((location.x - deltaX) / dataSource.lineGap)
+        if newSelectedIndex < 0 {
+            newSelectedIndex = 0
+        }
+        if newSelectedIndex >= dataSource.maxRangePoints.count {
+            newSelectedIndex = dataSource.maxRangePoints.count - 1
+        }
         let newGlobalSelectedIndex = newSelectedIndex + dataSource.intRange.startIndex
         var isUpdating = dataSource.selectedIndex == nil
         if let selectedIndex = dataSource.selectedIndex,
@@ -466,10 +469,10 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             var points = dataPoints[index]
             
             let dataPoint = points[selectedIndex]
-            let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap
+            let deltaX = (CGFloat(dataSource.intRange.startIndex) - dataSource.range.start) * dataSource.lineGap + dataSource.trailingSpace
             let xValue = deltaX + CGFloat(selectedIndex) * dataSource.lineGap - outerRadius / 2
 
-            let yValue = dataPoint.y  - outerRadius / 2
+            let yValue = dataPoint.y - outerRadius / 2
             let dotFrame = CGRect(x: xValue, y: yValue, width: outerRadius, height: outerRadius)
             
             if let dotsTextLayers = dotsTextLayers, dotIndex < dotsTextLayers.count {
