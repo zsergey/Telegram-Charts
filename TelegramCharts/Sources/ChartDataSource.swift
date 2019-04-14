@@ -427,6 +427,8 @@ class ChartDataSource: Updatable {
         let isUpdatingPoints = dataPoints != nil
         var newDataPoints = isUpdatingPoints ? nil : [[CGPoint]]()
         
+        
+        
         // Preparing datas.
         allData = nil
         let loopRange = intRange

@@ -42,6 +42,8 @@ struct ChartModelFactory {
                         for index in 0..<count {
                             if let date = dataX[index] as? Date,
                                 let value = dataY[index] as? Int {
+                                DateCache.shared.shortFormat(for: date)
+                                DateCache.shared.fullFormat(for: date)
                                 let pointModel = PointModel(value: value, date: date)
                                 pointModels.append(pointModel)
                             }

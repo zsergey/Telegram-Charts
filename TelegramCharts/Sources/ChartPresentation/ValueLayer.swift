@@ -52,19 +52,23 @@ class ValueLayer: CALayer {
     
     override func layoutSublayers() {
         super.layoutSublayers()
-        sublayers?.forEach { $0.removeFromSuperlayer() }
         
         backgroundColor = lineColor.cgColor
         
-        let textLayer = Painter.createCATextLayer(textColor: textColor)
-        textLayer.string = lineValue.format
-        var x: CGFloat = 0
-        if alignment == .right {
-            x = frame.size.width - textLayer.preferredFrameSize().width
+        if let textLayer = textLayer {
+            textLayer.string = lineValue.format
+        } else {
+            let textLayer = Painter.createCATextLayer(textColor: textColor)
+            textLayer.string = lineValue.format
+            var x: CGFloat = 0
+            if alignment == .right {
+                x = frame.size.width - textLayer.preferredFrameSize().width
+            }
+            let height: CGFloat = 0
+            textLayer.frame = CGRect(x: x, y: height - 18, width: 50, height: 16)
+            addSublayer(textLayer)
+            self.textLayer = textLayer
         }
-        let height: CGFloat = 0
-        textLayer.frame = CGRect(x: x, y: height - 18, width: 50, height: 16)
-        addSublayer(textLayer)
-        self.textLayer = textLayer
+        
     }
 }

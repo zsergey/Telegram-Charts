@@ -92,6 +92,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     private func setupView() {
+        self.backgroundColor = .clear
+
         mainLayer.addSublayer(dataLayer)
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
@@ -155,13 +157,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         drawSelectedValuesIfNeeded(location: location, animated: true)
     }
     
-    func drawView() {
+    override func layoutSubviews() {
+        super.layoutSubviews()
         
-        guard let dataSource = dataSource,
-            let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
+        guard let dataSource = dataSource else {
             return
         }
-        self.backgroundColor = .clear
 
         let width = CGFloat(dataSource.countPoints) * dataSource.lineGap
         let height = self.frame.size.height
@@ -174,6 +175,14 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                                       width: self.frame.width,
                                       height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
         self.selectedValuesLayer.frame = self.gridLayer.frame
+    }
+    
+    func drawView() {
+        
+        guard let dataSource = dataSource,
+            let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
+            return
+        }
 
         if isJustReused {
             drawHorizontalLines(animated: false)

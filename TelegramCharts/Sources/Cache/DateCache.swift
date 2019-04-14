@@ -15,6 +15,7 @@ class DateCache {
 
     static var shared = DateCache()
     
+    @discardableResult
     func shortFormat(for date: Date) -> String {
         if let value = chachedShortDates[date] {
             return value
@@ -24,7 +25,8 @@ class DateCache {
         chachedShortDates[date] = value
         return value
     }
-
+    
+    @discardableResult
     func fullFormat(for date: Date) -> String {
         if let value = chachedFullDates[date] {
             return value
