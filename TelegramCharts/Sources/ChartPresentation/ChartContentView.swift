@@ -400,7 +400,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         for index in 0..<dataSource.maxRangePoints.count {
             let textLayer = isUpdating ? labels![index] : TextLayer()
             
-            let x = dataSource.trailingSpace + (CGFloat(index) - dataSource.range.start) * dataSource.lineGap - ChartContentView.labelWidth / 2
+            let x = dataSource.trailingSpace + (CGFloat(index) - dataSource.range.lowerBound) * dataSource.lineGap - ChartContentView.labelWidth / 2
             
             // Changing only frame when is updating.
             CATransaction.setDisableActions(true)

@@ -78,17 +78,3 @@ class ChartModel {
         self.drawingStyle.minLineLength = minLineLength
     }
 }
-
-class IndexRange: CustomStringConvertible {
-    var start: CGFloat
-    var end: CGFloat
-    
-    init(start: CGFloat, end: CGFloat) {
-        self.start = start
-        self.end = end
-    }
-    
-    var description: String {
-        return "IndexRange [(\(start), \(end)])"
-    }
-}

@@ -18,10 +18,10 @@ enum SliderDirection {
 
 class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     
-    var onChangeRange: ((IndexRange, CGFloat, CGFloat, Bool) ->())?
+    var onChangeRange: ((Range<CGFloat>, CGFloat, CGFloat, Bool) ->())?
     var onBeganTouch: ((SliderDirection) ->())?
     var onEndTouch: ((SliderDirection) ->())?
-    var currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(2.0))
+    var currentRange: Range<CGFloat> = 0.0..<2.0
 
     var chartModels: [ChartModel]? {
         didSet {
@@ -111,7 +111,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
     
     private func setupView() {
         layer.addSublayer(mainLayer)
-        
+
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
         panGesture.minimumNumberOfTouches = 1
@@ -234,8 +234,7 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         }
         let startIndex = startX / indexGap
         let endIndex = (startX + sliderWidth) / indexGap + 1
-        currentRange.start = startIndex
-        currentRange.end = endIndex
+        currentRange = startIndex..<endIndex
         onChangeRange?(currentRange, sliderWidth, startX, value)
     }
     
@@ -428,6 +427,6 @@ class SliderView: UIView, Reusable, UIGestureRecognizerDelegate {
         sliderDirection = .finished
         sliderWidth = 0
         startX = 0
-        currentRange = IndexRange(start: CGFloat(0.0), end: CGFloat(2.0))
+        currentRange = 0.0..<2.0
     }
 }

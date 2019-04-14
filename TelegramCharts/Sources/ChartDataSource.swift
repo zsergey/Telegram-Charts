@@ -20,18 +20,18 @@ class СoupleChartDataSource {
 
 class ChartDataSource: Updatable {
     
-    var range = IndexRange(start: CGFloat(0.0), end: CGFloat(2.0))
+    var range: Range<CGFloat> = 0.0..<2.0
     
     var uniqueId: String = ""
     
     var intRange: Range<Int> {
-        let startIndex = max(Int(range.start - leadingSpace / lineGap), 0)
-        let endIndex = min(Int(viewSize.width / lineGap + range.start) + 2, maxRangePoints.count)
+        let startIndex = max(Int(range.lowerBound - leadingSpace / lineGap), 0)
+        let endIndex = min(Int(viewSize.width / lineGap + range.lowerBound) + 2, maxRangePoints.count)
         return startIndex..<endIndex
     }
     
     var deltaX: CGFloat {
-        return (CGFloat(intRange.startIndex) - range.start) * lineGap + trailingSpace
+        return (CGFloat(intRange.startIndex) - range.lowerBound) * lineGap + trailingSpace
     }
     
     var selectedPeriod: String {
@@ -146,6 +146,12 @@ class ChartDataSource: Updatable {
         }
     }
     
+    var chachedStandardMaxValues = [Range<CGFloat>: CGFloat]()
+
+    var chachedStackedMaxValues = [Range<CGFloat>: CGFloat]()
+    
+    var chachedYScaledMaxValues = [Range<CGFloat>: [CGFloat]]()
+
     private func calcYScaledMaxValue(animateMaxValue value: Bool) {
         if isPreviewMode {
             // Individual maximum in full range.
@@ -161,57 +167,67 @@ class ChartDataSource: Updatable {
             setMaxValues(newMaxValues, animated: value)
         } else {
             // Individual maximum in specific range.
-            var newMaxValues = self.maxValues
-            let loopRange = intRange
-            for index in 0..<chartModels.count {
-                let chartModel = chartModels[index]
-                if chartModel.isHidden {
-                    newMaxValues[index] = 0
-                } else {
-                    var max: CGFloat = 0
-                    for i in loopRange {
-                        let x = (CGFloat(i) - range.start) * lineGap
-                        if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
-                            let value = CGFloat(chartModel.data[i].value)
-                            if value > max {
-                                max = value
+            if let maxValues = chachedYScaledMaxValues[range] {
+                setMaxValues(maxValues, animated: value)
+            } else {
+                var newMaxValues = self.maxValues
+                let loopRange = intRange
+                for index in 0..<chartModels.count {
+                    let chartModel = chartModels[index]
+                    if chartModel.isHidden {
+                        newMaxValues[index] = 0
+                    } else {
+                        var max: CGFloat = 0
+                        for i in loopRange {
+                            let x = (CGFloat(i) - range.lowerBound) * lineGap
+                            if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
+                                let value = CGFloat(chartModel.data[i].value)
+                                if value > max {
+                                    max = value
+                                }
                             }
                         }
+                        newMaxValues[index] = max
                     }
-                    newMaxValues[index] = max
                 }
+                chachedYScaledMaxValues[range] = newMaxValues
+                setMaxValues(newMaxValues, animated: value)
             }
-            setMaxValues(newMaxValues, animated: value)
         }
     }
     
     private func calcStandardMaxValue(animateMaxValue value: Bool) {
         if isPreviewMode {
             // One maximum in full range.
-            let max: CGFloat = chartModels.map { chartModel in
+            let maxValue: CGFloat = chartModels.map { chartModel in
                 if chartModel.isHidden {
                     return 0
                 } else {
                     return CGFloat(chartModel.data.max()?.value ?? 0)
                 }}.compactMap { $0 }.max() ?? 0
-            setMaxValues([max], animated: value)
+            setMaxValues([maxValue], animated: value)
         } else {
             // One maximum in specific range.
-            var max: CGFloat = 0
-            let loopRange = intRange
-            for chartModel in chartModels {
-                if chartModel.isHidden { continue }
-                for i in loopRange {
-                    let x = (CGFloat(i) - range.start) * lineGap
-                    if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
-                        let value = CGFloat(chartModel.data[i].value)
-                        if value > max {
-                            max = value
+            if let maxValue = chachedStandardMaxValues[range] {
+                setMaxValues([maxValue], animated: value)
+            } else {
+                var maxValue: CGFloat = 0
+                let loopRange = intRange
+                for chartModel in chartModels {
+                    if chartModel.isHidden { continue }
+                    for i in loopRange {
+                        let x = (CGFloat(i) - range.lowerBound) * lineGap
+                        if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
+                            let value = CGFloat(chartModel.data[i].value)
+                            if value > maxValue {
+                                maxValue = value
+                            }
                         }
                     }
                 }
+                chachedStandardMaxValues[range] = maxValue
+                setMaxValues([maxValue], animated: value)
             }
-            setMaxValues([max], animated: value)
         }
     }
     
@@ -232,22 +248,27 @@ class ChartDataSource: Updatable {
             setMaxValues([sumMax], animated: value)
         } else {
             // Sum all maximums in specific range.
-            var sumMax: CGFloat = 0
-            let loopRange = intRange
-            for i in loopRange {
-                var value: Int = 0
-                for chartModel in chartModels {
-                    if chartModel.isHidden {
-                        continue
+            if let maxValue = chachedStackedMaxValues[range] {
+                setMaxValues([maxValue], animated: value)
+            } else {
+                var maxValue: CGFloat = 0
+                let loopRange = intRange
+                for i in loopRange {
+                    var value: Int = 0
+                    for chartModel in chartModels {
+                        if chartModel.isHidden {
+                            continue
+                        }
+                        let x = (CGFloat(i) - range.lowerBound) * lineGap
+                        if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
+                            value += chartModel.data[i].value
+                        }
                     }
-                    let x = (CGFloat(i) - range.start) * lineGap
-                    if x >= -trailingSpace, x <= viewSize.width - leadingSpace {
-                        value += chartModel.data[i].value
-                    }
+                    maxValue = max(maxValue, CGFloat(value))
                 }
-                sumMax = max(sumMax, CGFloat(value))
+                chachedStackedMaxValues[range] = maxValue
+                setMaxValues([maxValue], animated: value)
             }
-            setMaxValues([sumMax], animated: value)
         }
     }
     
@@ -293,9 +314,9 @@ class ChartDataSource: Updatable {
             topSpace = 30.0 // 40
             bottomSpace = 20.0
             topHorizontalLine = percentage ? 1 : 95 / 100.0
-            var value = range.end - range.start - 1
+            var value = range.upperBound - range.lowerBound - 1
             if stacked, !percentage {
-                value = range.end - range.start
+                value = range.upperBound - range.lowerBound
             }
             if value <= 0 {
                 lineGap = 0

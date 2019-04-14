@@ -28,11 +28,7 @@ struct StackedDrawingStyle: DrawingStyleProtocol {
 
     mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
                              viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
-        if isPreviewMode {
-            return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
-        } else {
-            return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
-        }
+        return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
     }
     
     private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {

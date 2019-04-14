@@ -88,7 +88,7 @@ struct LabelsProcessor {
             } else {
                 if setFinishedSliderDirection {
                     let x = sliderDirection == .left ? (contentSize.width - trailingSpace - leadingSpace) - ChartContentView.labelWidth / 2 : ChartContentView.labelWidth / 2
-                    theIndex = Int((x + dataSource.range.start * dataSource.lineGap + ChartContentView.labelWidth / 2) / dataSource.lineGap)
+                    theIndex = Int((x + dataSource.range.lowerBound * dataSource.lineGap + ChartContentView.labelWidth / 2) / dataSource.lineGap)
                     let textLayer = labels![theIndex]
                     textLayer.isStatic = true
                 } else {
@@ -97,7 +97,7 @@ struct LabelsProcessor {
                         let aIndex = sliderDirection == .left ? range.endIndex - index - 1 : index
                         let textLayer = labels![aIndex]
                         if textLayer.toOpacity == 1 {
-                            let textLayerX = (CGFloat(aIndex) - dataSource.range.start) * dataSource.lineGap - ChartContentView.labelWidth / 2
+                            let textLayerX = (CGFloat(aIndex) - dataSource.range.lowerBound) * dataSource.lineGap - ChartContentView.labelWidth / 2
                             if textLayerX > -ChartContentView.labelWidth / 2 && textLayerX < (contentSize.width - trailingSpace - leadingSpace) - ChartContentView.labelWidth / 2 {
                                 textLayer.isStatic = true
                                 theIndex = aIndex

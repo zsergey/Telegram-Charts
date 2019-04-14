@@ -112,7 +112,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func update(link: CADisplayLink) {
         calcPerformance(link)
-        tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
+        // tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
