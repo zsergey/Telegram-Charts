@@ -59,12 +59,11 @@ class ValueLayer: CALayer {
         let textLayer = Painter.createCATextLayer(textColor: textColor)
         textLayer.string = lineValue.format
         var x: CGFloat = 0
-        let width = textLayer.preferredFrameSize().width
         if alignment == .right {
-            x = frame.size.width - width
+            x = frame.size.width - textLayer.preferredFrameSize().width
         }
         let height: CGFloat = 0
-        textLayer.frame = CGRect(x: x, y: height - 18, width: width, height: 16)
+        textLayer.frame = CGRect(x: x, y: height - 18, width: 50, height: 16)
         addSublayer(textLayer)
         self.textLayer = textLayer
     }

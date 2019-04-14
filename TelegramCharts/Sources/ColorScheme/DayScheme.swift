@@ -10,54 +10,59 @@ import UIKit
 
 struct DayScheme: ColorSchemeProtocol {
     
-    var background: UIColor {
-        return UIColor(hex: "#F7F7F7")!
-    }
+    var background: UIColor
     
-    var selectedCellView: UIView {
-        return view(by: UIColor(hex: "#F6F8FA")!)
-    }
-
-    var title: UIColor {
-        return UIColor(hex: "#000000")!
-    }
-
-    var statusBarStyle: UIStatusBarStyle {
-        return .default
-    }
+    var selectedCellView: UIView
     
-    var separator: UIColor {
-        return UIColor(hex: "#C8C7CC")!
-    }
+    var title: UIColor
     
-    var separatorImageName: String {
-        return "DayColorSeparator"
-    }
+    var statusBarStyle: UIStatusBarStyle
     
-    var button: ButtonColor {
-        return ButtonColor(normal: UIColor(hex: "#327FDE")!)
-    }
+    var separator: UIColor
+    
+    var separatorImageName: String
+    
+    var button: ButtonColor
+    
+    var section: SectionColor
+    
+    var chart: ChartColor
+    
+    var slider: SliderColor
+    
+    var dotInfo: DotInfo
+    
+    init() {
+        
+        background = UIColor(hex: "#F7F7F7")!
+        
+        selectedCellView = UIView()
+        
+        title = UIColor(hex: "#000000")!
+        
+        statusBarStyle = .default
+        
+        separator = UIColor(hex: "#C8C7CC")!
+        
+        separatorImageName = "DayColorSeparator"
+        
+        button = ButtonColor(normal: UIColor(hex: "#327FDE")!)
+        
+        section = SectionColor(background: UIColor(hex: "#EFEFF4")!,
+                               text: UIColor(hex: "#6D6D72")!)
+        
+        chart = ChartColor(background: UIColor(hex: "#FEFEFE")!,
+                           grid: UIColor(hex: "#CFD1D2", alpha: 0.4)!,
+                           accentGrid: UIColor(hex: "#CFD1D2")!,
+                           text: UIColor(hex: "#999EA2")!)
+        
+        slider = SliderColor(thumb: UIColor(hex: "#C3D1DF")!,
+                             background: UIColor(hex: "#F7F8FA", alpha: 0.8)!,
+                             arrow: UIColor(hex: "#FFFFFF")!)
 
-    var section: SectionColor {
-        return SectionColor(background: UIColor(hex: "#EFEFF4")!,
-                            text: UIColor(hex: "#6D6D72")!)
-    }
-
-    var chart: ChartColor {
-        return ChartColor(background: UIColor(hex: "#FEFEFE")!,
-                          grid: UIColor(hex: "#CFD1D2", alpha: 0.4)!, 
-                          accentGrid: UIColor(hex: "#CFD1D2")!,
-                          text: UIColor(hex: "#999EA2")!)
-    }
-
-    var slider: SliderColor {
-        return SliderColor(thumb: UIColor(hex: "#C3D1DF")!,
-                           background: UIColor(hex: "#F7F8FA", alpha: 0.8)!,
-                           arrow: UIColor(hex: "#FFFFFF")!)
-    }
-
-    var dotInfo: DotInfo {
-        return DotInfo(background: UIColor(hex: "#F4F4F9")!,
-                       text: UIColor(hex: "#6D6D72")!)
+        dotInfo = DotInfo(background: UIColor(hex: "#F4F4F9")!,
+                          text: UIColor(hex: "#6D6D72")!)
+        
+        selectedCellView = self.view(by: UIColor(hex: "#F6F8FA")!)
     }
 }

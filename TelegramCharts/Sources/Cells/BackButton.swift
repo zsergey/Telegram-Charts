@@ -1,5 +1,5 @@
 //
-//  BacKButton.swift
+//  BackButton.swift
 //  TelegramCharts
 //
 //  Created by Sergey Zapuhlyak on 4/11/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BacKButton: UIButton {
+class BackButton: UIButton {
     
     var originalTintColor: UIColor!
     

@@ -21,7 +21,7 @@ class ChartTableViewCell: UITableViewCell {
         }
     }
     
-    @IBOutlet var zoomOutButton: BacKButton!
+    @IBOutlet var zoomOutButton: BackButton!
     @IBOutlet var dateLabel: UILabel!
 
     var filterButtons: [CheckButton] = []
