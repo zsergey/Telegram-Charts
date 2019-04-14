@@ -19,14 +19,6 @@ struct PointModel {
         self.targetValue = value
         self.date = date
     }
-    
-    var stringDate: String {
-        return date.format
-    }
-    
-    var fullDate: String {
-        return date.fullDate
-    }
 }
 
 extension PointModel: Comparable {

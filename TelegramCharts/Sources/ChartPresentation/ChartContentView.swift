@@ -415,7 +415,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 textLayer.contentsScale = UIScreen.main.scale
                 textLayer.font = CTFontCreateWithName(UIFont.systemFont(ofSize: 0).fontName as CFString, 0, nil)
                 textLayer.fontSize = 12
-                textLayer.string = dataSource.maxRangePoints[index].stringDate
+                textLayer.string = DateCache.shared.shortFormat(for: dataSource.maxRangePoints[index].date)
                 textLayer.opacity = 0
                 textLayer.toOpacity = 0
                 mainLayer.addSublayer(textLayer)
@@ -653,7 +653,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         let trailingDate: CGFloat = 10
         let pointModel = dataSource.maxRangePoints[globalSelectedIndex]
         let dateTextLayer = Painter.createText(textColor: colorScheme.dotInfo.text, bold: true)
-        dateTextLayer.string = pointModel.fullDate
+        dateTextLayer.string = DateCache.shared.fullFormat(for: pointModel.date)
         let rectWidth: CGFloat = 145
 
         let isUpdating = selectedValuesInfo != nil
@@ -783,7 +783,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                                        y: ydate, width: rectWidth - 2 * trailingDate, height: 16)
                 let updateDateTextLayer: (BgTextLayer?) -> Void = { textLayer in
                     textLayer?.frame = dateFrame
-                    textLayer?.string = pointModel.fullDate
+                    textLayer?.string = DateCache.shared.fullFormat(for: pointModel.date)
                     textLayer?.foregroundColor = self.colorScheme.dotInfo.text.cgColor
                 }
                 if isUpdating {

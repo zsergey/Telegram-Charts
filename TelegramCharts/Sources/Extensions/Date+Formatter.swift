@@ -10,13 +10,13 @@ import Foundation
 
 extension Date {
     
-    var format: String {
+    var shortFormat: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "d MMM"
         return formatter.string(from: self)
     }
 
-    var fullDate: String {
+    var fullFormat: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, d MMM YYYY"
         return formatter.string(from: self)

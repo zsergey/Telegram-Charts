@@ -36,8 +36,8 @@ class ChartDataSource: Updatable {
     
     var selectedPeriod: String {
         let loopRange = intRange
-        let startDate = self.maxRangePoints[loopRange.startIndex].date.fullDate
-        let endDate = self.maxRangePoints[loopRange.endIndex - 1].date.fullDate
+        let startDate = DateCache.shared.fullFormat(for: maxRangePoints[loopRange.startIndex].date)
+        let endDate = DateCache.shared.fullFormat(for: maxRangePoints[loopRange.endIndex - 1].date)
         return startDate + " - " + endDate
     }
 

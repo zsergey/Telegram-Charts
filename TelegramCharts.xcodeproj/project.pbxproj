@@ -33,6 +33,7 @@
 		AD71D8EF22627BA500701EC0 /* UIImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD71D8EE22627BA500701EC0 /* UIImageExtensions.swift */; };
 		AD71D8F12262AA8A00701EC0 /* BgTextLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD71D8F02262AA8A00701EC0 /* BgTextLayer.swift */; };
 		AD71D8F322630DC400701EC0 /* ChartLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD71D8F222630DC400701EC0 /* ChartLayer.swift */; };
+		AD71D8F522637D7A00701EC0 /* DateCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD71D8F422637D7A00701EC0 /* DateCache.swift */; };
 		AD9226CB2238BEEF00A5B7D6 /* ChartContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C82238BEEF00A5B7D6 /* ChartContentView.swift */; };
 		AD9226CC2238BEEF00A5B7D6 /* DotLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */; };
 		AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */; };
@@ -106,6 +107,7 @@
 		AD71D8EE22627BA500701EC0 /* UIImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtensions.swift; sourceTree = "<group>"; };
 		AD71D8F02262AA8A00701EC0 /* BgTextLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BgTextLayer.swift; sourceTree = "<group>"; };
 		AD71D8F222630DC400701EC0 /* ChartLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartLayer.swift; sourceTree = "<group>"; };
+		AD71D8F422637D7A00701EC0 /* DateCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCache.swift; sourceTree = "<group>"; };
 		AD9226C82238BEEF00A5B7D6 /* ChartContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChartContentView.swift; sourceTree = "<group>"; };
 		AD9226C92238BEEF00A5B7D6 /* DotLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotLayer.swift; sourceTree = "<group>"; };
 		AD9226CD2238C76E00A5B7D6 /* ColorSchemeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeProtocol.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				AD17FF3C224613DD0073F0BB /* TapticFeedback.swift */,
 				AD2AD4772248207300B16492 /* Painter.swift */,
 				ADC861C3225E10E900E697C8 /* Math.swift */,
+				AD71D8F422637D7A00701EC0 /* DateCache.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -519,6 +522,7 @@
 				AD17FF3F224619950073F0BB /* ChartDataSourceFactory.swift in Sources */,
 				AD107ADD225C6B4900D84D3F /* StackedDrawingStyle.swift in Sources */,
 				AD9226DA223A135D00A5B7D6 /* StandardDrawingStyle.swift in Sources */,
+				AD71D8F522637D7A00701EC0 /* DateCache.swift in Sources */,
 				AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */,
 				AD17FF3B2244A9CC0073F0BB /* Updatable.swift in Sources */,
 				ADC8D1ED22608B440087EDB3 /* CalcOperation.swift in Sources */,
