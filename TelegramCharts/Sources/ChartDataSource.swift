@@ -145,12 +145,17 @@ class ChartDataSource: Updatable {
             addZeroValue()
         }
     }
-    
-    var chachedStandardMaxValues = [Range<CGFloat>: CGFloat]()
 
-    var chachedStackedMaxValues = [Range<CGFloat>: CGFloat]()
-    
-    var chachedYScaledMaxValues = [Range<CGFloat>: [CGFloat]]()
+    var mapKey: String {
+        return chartModels.map { String(Int(truncating: $0.isHidden as NSNumber))}.reduce("", +)
+    }
+
+    typealias RangeMaxValue = [Range<CGFloat>: CGFloat]
+    typealias RangeMaxValues = [Range<CGFloat>: [CGFloat]]
+
+    var chachedStandardMaxValues = [String: RangeMaxValue]()
+    var chachedStackedMaxValues = [String: RangeMaxValue]()
+    var chachedYScaledMaxValues = [String: RangeMaxValues]()
 
     private func calcYScaledMaxValue(animateMaxValue value: Bool) {
         if isPreviewMode {
@@ -167,7 +172,8 @@ class ChartDataSource: Updatable {
             setMaxValues(newMaxValues, animated: value)
         } else {
             // Individual maximum in specific range.
-            if let maxValues = chachedYScaledMaxValues[range] {
+            if let chachedValues = chachedYScaledMaxValues[mapKey],
+                let maxValues = chachedValues[range] {
                 setMaxValues(maxValues, animated: value)
             } else {
                 var newMaxValues = self.maxValues
@@ -190,7 +196,11 @@ class ChartDataSource: Updatable {
                         newMaxValues[index] = max
                     }
                 }
-                chachedYScaledMaxValues[range] = newMaxValues
+
+                var dictionary = chachedYScaledMaxValues[mapKey] == nil ? RangeMaxValues() : chachedYScaledMaxValues[mapKey]!
+                dictionary[range] = newMaxValues
+                chachedYScaledMaxValues[mapKey] = dictionary
+
                 setMaxValues(newMaxValues, animated: value)
             }
         }
@@ -208,7 +218,8 @@ class ChartDataSource: Updatable {
             setMaxValues([maxValue], animated: value)
         } else {
             // One maximum in specific range.
-            if let maxValue = chachedStandardMaxValues[range] {
+            if let chachedValues = chachedStandardMaxValues[mapKey],
+                let maxValue = chachedValues[range] {
                 setMaxValues([maxValue], animated: value)
             } else {
                 var maxValue: CGFloat = 0
@@ -225,7 +236,11 @@ class ChartDataSource: Updatable {
                         }
                     }
                 }
-                chachedStandardMaxValues[range] = maxValue
+                
+                var dictionary = chachedStandardMaxValues[mapKey] == nil ? RangeMaxValue() : chachedStandardMaxValues[mapKey]!
+                dictionary[range] = maxValue
+                chachedStandardMaxValues[mapKey] = dictionary
+                
                 setMaxValues([maxValue], animated: value)
             }
         }
@@ -248,9 +263,11 @@ class ChartDataSource: Updatable {
             setMaxValues([sumMax], animated: value)
         } else {
             // Sum all maximums in specific range.
-            if let maxValue = chachedStackedMaxValues[range] {
+            if let chachedValues = chachedStackedMaxValues[mapKey],
+                let maxValue = chachedValues[range] {
                 setMaxValues([maxValue], animated: value)
             } else {
+
                 var maxValue: CGFloat = 0
                 let loopRange = intRange
                 for i in loopRange {
@@ -266,7 +283,11 @@ class ChartDataSource: Updatable {
                     }
                     maxValue = max(maxValue, CGFloat(value))
                 }
-                chachedStackedMaxValues[range] = maxValue
+                
+                var dictionary = chachedStackedMaxValues[mapKey] == nil ? RangeMaxValue() : chachedStackedMaxValues[mapKey]!
+                dictionary[range] = maxValue
+                chachedStackedMaxValues[mapKey] = dictionary
+
                 setMaxValues([maxValue], animated: value)
             }
         }
