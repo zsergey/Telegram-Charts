@@ -344,6 +344,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 let oldValueLayer = gridLines[key]![index]
 
                 newValueLayer.fixedTextColor = dataSource.yScaled
+                newValueLayer.isZeroLine = isZeroLine
+                    
                 newValueLayer.alignment = i == 0 ? .left : .right
                 newValueLayer.contentBackground = colorScheme.chart.background
                 
@@ -371,18 +373,22 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     // gridLayer.addSublayer(newValueLayer)
                     //newValueLayer.opacity = 1
                 }*/
-                
+
                 let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
                 let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
                 CATransaction.setDisableActions(true)
                 oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
                 oldValueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
                 
-                newValueLayer.lineValue = newLineValue
-                newValueLayer.opacity = 0
-                newValueLayer.frame = fromNewFrame
-                newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
-                newValueLayer.changeOpacity(from: 0, to: 1, animationDuration: duration)
+                let isHidden = dataSource.yScaled ? chartModel.isHidden : dataSource.isAllChartsHidden
+                let showLayer = !newValueLayer.isZeroLine || (newValueLayer.isZeroLine && !isHidden)
+                if showLayer {
+                    newValueLayer.lineValue = newLineValue
+                    newValueLayer.opacity = 0
+                    newValueLayer.frame = fromNewFrame
+                    newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
+                    newValueLayer.changeOpacity(from: 0, to: 1, animationDuration: duration)
+                }
 
                 newGridLinesToRemove.append(oldValueLayer)
                 newGridLines.append(newValueLayer)

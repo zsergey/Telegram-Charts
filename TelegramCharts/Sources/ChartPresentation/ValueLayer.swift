@@ -16,7 +16,9 @@ class ValueLayer: CALayer {
     }
     
     var fixedTextColor: Bool = false
-    
+
+    var isZeroLine: Bool = false
+
     static let lineWidth: CGFloat = 0.5
     
     var lineValue: Int = 0 { didSet { setNeedsLayout() } }
@@ -54,9 +56,13 @@ class ValueLayer: CALayer {
         super.layoutSublayers()
         
         backgroundColor = lineColor.cgColor
-        
+
         if let textLayer = textLayer {
-            textLayer.string = lineValue.format
+            if lineValue == 0, !isZeroLine {
+                textLayer.string = ""
+            } else {
+                textLayer.string = lineValue.format
+            }
         } else {
             let textLayer = Painter.createCATextLayer(textColor: textColor)
             textLayer.string = lineValue.format
