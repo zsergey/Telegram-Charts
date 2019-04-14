@@ -23,6 +23,7 @@ extension SectionTableViewCell: ColorUpdatable {
                 model.colorScheme = model.colorScheme.next()
             }
             self.label.textColor = model.colorScheme.section.text
+            self.label.backgroundColor = model.colorScheme.section.background
             self.backgroundColor = model.colorScheme.section.background
         }
     }

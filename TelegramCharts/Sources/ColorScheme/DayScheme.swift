@@ -45,7 +45,7 @@ struct DayScheme: ColorSchemeProtocol {
 
     var chart: ChartColor {
         return ChartColor(background: UIColor(hex: "#FEFEFE")!,
-                          grid: UIColor(hex: "#CFD1D2", alpha: 0.4)!,
+                          grid: UIColor(hex: "#CFD1D2", alpha: 0.4)!, 
                           accentGrid: UIColor(hex: "#CFD1D2")!,
                           text: UIColor(hex: "#999EA2")!)
     }

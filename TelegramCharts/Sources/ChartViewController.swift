@@ -47,6 +47,8 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.tableView.separatorColor = self.colorScheme.separator
 
                 navigationBar?.barTintColor = self.colorScheme.background
+                // TODO:
+                // navigationBar?.tintColor = self.colorScheme.background
                 navigationBar?.titleTextAttributes = [.foregroundColor: self.colorScheme.title]
                 if self.needsLayoutNavigationBar {
                     navigationBar?.layoutIfNeeded()

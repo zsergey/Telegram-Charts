@@ -14,6 +14,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         didSet {
             let isPreviewMode = dataSource?.isPreviewMode ?? false
             layer.cornerRadius = isPreviewMode ? SliderView.thumbCornerRadius : 0 // TODO: Performance
+            if isPreviewMode {
+                shadowImage.removeFromSuperview()
+            }
         }
     }
     
@@ -41,12 +44,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
     private let selectedValuesLayer: CALayer = CALayer()
 
-    private var chartLines: [CAShapeLayer]?
+    private var chartLines: [String: ChartLayer] = [:]
 
-    private var gridLines: [ValueLayer]?
-
-    private var gridLinesToRemove: [ValueLayer]?
+    private var gridLines: [String: [ValueLayer]] = [:]
     
+    private var gridLinesToRemove: [String: [ValueLayer]] = [:]
+
     private var labels: [TextLayer]?
     
     private var innerRadius: CGFloat = 4
@@ -57,13 +60,13 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
     private var selectedValuesInfo: CAShapeLayer?
     
-    private var dateTextLayer: CATextLayer?
+    private var dateTextLayer: BgTextLayer?
 
-    private var valueTextLayers: [CATextLayer]?
+    private var valueTextLayers: [BgTextLayer]?
 
-    private var precentegTextLayers: [CATextLayer]?
+    private var precentegTextLayers: [BgTextLayer]?
 
-    private var labelsTextLayers: [CATextLayer]?
+    private var labelsTextLayers: [BgTextLayer]?
 
     private var dotsTextLayers: [DotLayer]?
     
@@ -93,7 +96,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
         layer.addSublayer(selectedValuesLayer)
-        addSubview(shadowImage)
+        //addSubview(shadowImage) // TODO
+                
+        updateFrameShadow()
         
         clipsToBounds = true
         
@@ -172,73 +177,215 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
         if isJustReused {
             drawHorizontalLines(animated: false)
-            isJustReused = false
         }
         self.drawCharts()
         
         if !isScrolling {
             drawLabels(byScroll: false)
         }
+        
+        if isJustReused {
+            isJustReused = false
+        }
     }
     
     func drawCharts() {
 
         guard let dataSource = dataSource,
-            let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
-            let paths = dataSource.paths else {
+            let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
                 return
         }
         
-        let isUpdating = chartLines != nil
-        var newChartLines = isUpdating ? nil : [CAShapeLayer]()
-
+        if isJustReused {
+            // Hiding all charts when it is reusing.
+            for (_, chartLayer) in chartLines{
+                chartLayer.opacity = 0
+            }
+        }
+        
         let range = 0..<dataSource.chartModels.count
         for standartIndex in range {
             var inverseIndex = range.endIndex - standartIndex - 1
             inverseIndex = dataSource.stacked ? inverseIndex : standartIndex
             
             let chartModel = dataSource.chartModels[inverseIndex]
-            let lineLayer = isUpdating ? chartLines![standartIndex] : CAShapeLayer()
-            let path = paths[inverseIndex]
+            let key = dataSource.uniqueId + chartModel.name
+            if isJustReused {
+                chartLines[key]?.opacity = 1
+                continue
+            }
             
-            if isUpdating {
-                lineLayer.path = path
+            let path = dataSource.paths[key]
+
+            if let chartLayer = chartLines[key] {
+                chartLayer.path = path
                 CATransaction.setDisableActions(true)
-                //lineLayer.changePath(to: path, animationDuration: UIView.animationDuration)
-                if chartModel.opacity != lineLayer.opacity {
+                if chartModel.opacity != chartLayer.opacity {
                     let toValue: Float = chartModel.opacity
-                    let fromValue: Float = lineLayer.opacity
-                    lineLayer.changeOpacity(from: fromValue, to: toValue,
+                    let fromValue: Float = chartLayer.opacity
+                    chartLayer.changeOpacity(from: fromValue, to: toValue,
                                             animationDuration: UIView.animationDuration)
                 }
+                
             } else {
+                let chartLayer = ChartLayer()
                 var fillColor = UIColor.clear
                 if chartModel.drawingStyle.isCustomFillColor {
                     fillColor = chartModel.color
                 }
-                lineLayer.path = path
-                lineLayer.opacity = chartModel.opacity
-                lineLayer.strokeColor = chartModel.color.cgColor
-                lineLayer.fillColor = fillColor.cgColor
+                chartLayer.path = path
+                chartLayer.opacity = chartModel.opacity
+                chartLayer.strokeColor = chartModel.color.cgColor
+                chartLayer.fillColor = fillColor.cgColor
                 if dataSource.stacked || dataSource.singleBar {
-                    lineLayer.lineWidth = 0
+                    chartLayer.lineWidth = 0
                 } else {
-                    lineLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
+                    chartLayer.lineWidth = dataSource.isPreviewMode ? 1.0 : 2.0
                 }
-                lineLayer.lineCap = chartModel.drawingStyle.lineCap
-                lineLayer.lineJoin = chartModel.drawingStyle.lineJoin
-                dataLayer.addSublayer(lineLayer)
+                chartLayer.lineCap = chartModel.drawingStyle.lineCap
+                chartLayer.lineJoin = chartModel.drawingStyle.lineJoin
+                dataLayer.addSublayer(chartLayer)
+                
+                chartLines[key] = chartLayer
+            }
 
-                newChartLines!.append(lineLayer)
+        }
+    }
+    
+    func drawHorizontalLines(animated: Bool) {
+
+        guard let dataSource = dataSource,
+            !dataSource.isPreviewMode else {
+                return
+        }
+        
+        if isJustReused {
+            // Hiding all charts when it is reusing.
+            for (_, layers) in gridLinesToRemove {
+                layers.forEach { $0.opacity = 0 }
+            }
+            for (_, layers) in gridLines {
+                layers.forEach { $0.opacity = 0}
+            }
+        }
+
+        // Creating ValueLayer for reusing.
+        for i in 0..<dataSource.maxValues.count {
+            let chartModel = dataSource.chartModels[i]
+            let key = dataSource.uniqueId + chartModel.name
+            if gridLines[key] == nil, gridLinesToRemove[key] == nil {
+                
+                var newGridLines = [ValueLayer]()
+                var newGridLinesToRemove = [ValueLayer]()
+                
+                let gridValues: [CGFloat] = dataSource.percentage ? [0.0, 0.25, 0.5, 0.75, 1] : [0.0, 0.2, 0.4, 0.6, 0.8, 1]
+                gridValues.forEach { _ in
+                    let newValueLayer = ValueLayer()
+                    newValueLayer.opacity = 1
+                    gridLayer.addSublayer(newValueLayer)
+                    newGridLines.append(newValueLayer)
+                    
+                    let oldValueLayer = ValueLayer()
+                    oldValueLayer.opacity = 0
+                    gridLayer.addSublayer(oldValueLayer)
+                    newGridLinesToRemove.append(oldValueLayer)
+                }
+                
+                gridLines[key] = newGridLines
+                gridLinesToRemove[key] = newGridLinesToRemove
             }
         }
         
-        if !isUpdating {
-            chartLines = newChartLines
+        for i in 0..<dataSource.maxValues.count {
+            let chartModel = dataSource.chartModels[i]
+            let key = dataSource.uniqueId + chartModel.name
+            
+            if isJustReused {
+                gridLines[key]?.forEach {
+                    $0.opacity = 1
+                }
+                continue
+            }
+            
+            let maxValue = dataSource.maxValues[i]
+            let newMaxValue = dataSource.targetMaxValues[i]
+            
+            let minMaxGap = CGFloat(maxValue - dataSource.minValue) * dataSource.topHorizontalLine
+            let newMinMaxGap = CGFloat(newMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
+            
+            let heightGrid: CGFloat = 1
+            let widthGrid: CGFloat = self.frame.size.width
+            
+            var newGridLines = [ValueLayer]()
+            var newGridLinesToRemove = [ValueLayer]()
+            
+            let gridValues: [CGFloat] = dataSource.percentage ? [0.0, 0.25, 0.5, 0.75, 1] : [0.0, 0.2, 0.4, 0.6, 0.8, 1]
+            for index in 0..<gridValues.count {
+                
+                let value = gridValues[index]
+                var duration: CFTimeInterval = 0
+                if animated {
+                    duration = value == 1 ? 0 : UIView.animationDuration
+                }
+                let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap)
+                let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
+                
+                let isZeroLine = index == gridValues.count - 1
+                let newValueLayer = gridLinesToRemove[key]![index]
+                let oldValueLayer = gridLines[key]![index]
+
+                newValueLayer.fixedTextColor = dataSource.yScaled
+                newValueLayer.alignment = i == 0 ? .left : .right
+                newValueLayer.contentBackground = colorScheme.chart.background
+                
+                let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
+                let fromNewFrame = CGRect(x: dataSource.trailingSpace, y: fromNewHeight, width: frame.size.width - dataSource.trailingSpace - dataSource.leadingSpace, height: heightGrid)
+                let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
+                let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
+                newValueLayer.lineColor = isZeroLine ? colorScheme.chart.accentGrid : colorScheme.chart.grid
+                newValueLayer.textColor = dataSource.yScaled ? chartModel.color : colorScheme.chart.text
+                
+                /* TODO: Fix a bug with zero line.
+                var newValueFromOpacity: Float = 0
+                var newValueToOpacity: Float = 1
+                if newLineValue == 0 {
+                    let isHidden = dataSource.yScaled ? chartModel.isHidden : dataSource.isAllChartsHidden
+                    if isZeroLine, !isHidden {
+                        // Add zero line only if a chart is showing.
+                        // gridLayer.addSublayer(newValueLayer)
+                    } else {
+                    
+                        newValueFromOpacity = 1
+                        newValueToOpacity = 0
+                    }
+                } else {
+                    // gridLayer.addSublayer(newValueLayer)
+                    //newValueLayer.opacity = 1
+                }*/
+                
+                let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
+                let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
+                CATransaction.setDisableActions(true)
+                oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
+                oldValueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
+                
+                newValueLayer.lineValue = newLineValue
+                newValueLayer.opacity = 0
+                newValueLayer.frame = fromNewFrame
+                newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
+                newValueLayer.changeOpacity(from: 0, to: 1, animationDuration: duration)
+
+                newGridLinesToRemove.append(oldValueLayer)
+                newGridLines.append(newValueLayer)
+            }
+            
+            gridLines[key] = newGridLines
+            gridLinesToRemove[key] = newGridLinesToRemove
         }
     }
     
     func drawLabels(byScroll: Bool) {
+        
         return
         
         guard let dataSource = dataSource,
@@ -300,16 +447,15 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             return
         }
         // TODO: here you should update colors.
-        if let gridLines = gridLines {
-            gridLines.forEach {
-                
+        for (_, layers) in gridLines {
+            layers.forEach {
                 let lineColor = $0.lineValue == 0 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
-                let textColor = dataSource.yScaled ? nil : colorScheme.chart.text
                 $0.updateColors(lineColor: lineColor,
                                 background: colorScheme.chart.background,
-                                textColor: textColor)
+                                textColor: colorScheme.chart.text)
             }
         }
+
         if let labels = labels {
             labels.forEach {
                 $0.foregroundColor = colorScheme.chart.text.cgColor
@@ -318,105 +464,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if dataSource.selectedIndex != nil {
             drawSelectedValues(animated: false)
         }
-
-        self.shadowImage.image = UIImage(size: self.shadowImage.frame.size, gradientColor: [colorScheme.chart.background, colorScheme.chart.background.withAlphaComponent(0)])
+        
+        if !dataSource.isPreviewMode {
+            self.shadowImage.image = UIImage(size: self.shadowImage.frame.size, gradientColor: [colorScheme.chart.background, colorScheme.chart.background.withAlphaComponent(0)])
+        }
     }
     
-    func drawHorizontalLines(animated: Bool) {
-        
-        guard let dataSource = dataSource,
-            !dataSource.isPreviewMode else {
-                return
-        }
-
-        gridLinesToRemove?.forEach { $0.removeFromSuperlayer() }
-        var newGridLines = [ValueLayer]()
-        var newGridLinesToRemove = [ValueLayer]()
-
-        for i in 0..<dataSource.maxValues.count {
-            
-            let maxValue = dataSource.maxValues[i]
-            let newMaxValue = dataSource.targetMaxValues[i]
-            
-            let minMaxGap = CGFloat(maxValue - dataSource.minValue) * dataSource.topHorizontalLine
-            let newMinMaxGap = CGFloat(newMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
-            
-            let heightGrid: CGFloat = 30
-            let widthGrid: CGFloat = self.frame.size.width
-            let isUpdating = self.gridLines != nil
-            
-            let gridValues: [CGFloat] = dataSource.percentage ? [0.0, 0.25, 0.5, 0.75, 1] : [0.0, 0.2, 0.4, 0.6, 0.8, 1]
-            for index in 0..<gridValues.count {
-                
-                let value = gridValues[index]
-                var duration: CFTimeInterval = 0
-                if animated {
-                    duration = value == 1 ? 0 : UIView.animationDuration
-                }
-                
-                let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap)
-                let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
-                
-                let indexOldValue = index + i * gridValues.count
-                var oldValueLayer: ValueLayer? = nil
-                if isUpdating {
-                    if indexOldValue < gridLines!.count {
-                        oldValueLayer = gridLines![indexOldValue]
-                    }
-                }
-                
-                let newValueLayer = ValueLayer()
-                newValueLayer.alignment = i == 0 ? .left : .right
-                newValueLayer.contentBackground = colorScheme.chart.background
-                
-                let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
-                let fromNewFrame = CGRect(x: 0, y: fromNewHeight, width: frame.size.width, height: heightGrid)
-                let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
-                let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
-                newValueLayer.lineColor = index == gridValues.count - 1 ? colorScheme.chart.accentGrid : colorScheme.chart.grid
-                newValueLayer.textColor = dataSource.yScaled ? dataSource.chartModels[i].color : colorScheme.chart.text
-
-                if newLineValue == 0 {
-                    let isHidden = dataSource.yScaled ? dataSource.chartModels[i].isHidden : dataSource.isAllChartsHidden
-                    if index == gridValues.count - 1, !isHidden {
-                        // Add zero line only if a chart is showing.
-                        gridLayer.addSublayer(newValueLayer)
-                    }
-                } else {
-                    gridLayer.addSublayer(newValueLayer)
-                }
-                newGridLines.append(newValueLayer)
-
-                if let oldValueLayer = oldValueLayer {
-                    let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
-                    let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
-                    CATransaction.setDisableActions(true)
-                    oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
-                    oldValueLayer.changeOpacity(from: 1, to: 0, animationDuration: duration)
-                    newGridLinesToRemove.append(oldValueLayer)
-                }
-                
-                if isUpdating {
-                    newValueLayer.lineValue = newLineValue
-                    newValueLayer.opacity = 0
-                    newValueLayer.frame = fromNewFrame
-                    newValueLayer.moveTo(point: toNewPoint, animationDuration: duration)
-                    newValueLayer.changeOpacity(from: 0, to: 1, animationDuration: duration)
-                } else {
-                    newValueLayer.lineValue = lineValue
-                    newValueLayer.opacity = 1
-                    let height = dataSource.calcHeight(for: lineValue, with: minMaxGap)
-                    let rect = CGRect(x: 0, y: height, width: frame.size.width, height: heightGrid)
-                    newValueLayer.frame = rect
-                }
-            }
-        }
-        
-        gridLines = newGridLines
-        gridLinesToRemove = newGridLinesToRemove
-
-    }
-
     private func drawSelectedValuesIfNeeded(location: CGPoint, animated: Bool) {
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
@@ -475,7 +528,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
 
     func drawSelectedValues(animated: Bool) {
-        
+        return
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
             !dataSource.isPreviewMode,
@@ -650,7 +703,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             
             // Percentage.
             if dataSource.percentage, index < percentageValues.count {
-                let updatePercentageTextLayer: (CATextLayer) -> Void = { textLayer in
+                let updatePercentageTextLayer: (BgTextLayer) -> Void = { textLayer in
                     textLayer.string = "\(percentageValues[index])%"
                     textLayer.isHidden = isHidden
                     let x = rect.origin.x + trailingDate + maxPercentageWidth - textLayer.preferredFrameSize().width
@@ -666,14 +719,14 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     updatePercentageTextLayer(percentageTextLayer)
                     self.selectedValuesLayer.addSublayer(percentageTextLayer)
                     if self.precentegTextLayers == nil {
-                        self.precentegTextLayers = [CATextLayer]()
+                        self.precentegTextLayers = [BgTextLayer]()
                     }
                     self.precentegTextLayers!.append(percentageTextLayer)
                 }
             }
             
             // Labels.
-            let updateLabelTextLayer: (CATextLayer) -> Void = { textLayer in
+            let updateLabelTextLayer: (BgTextLayer) -> Void = { textLayer in
                 textLayer.string = name
                 textLayer.isHidden = isHidden
                 let space: CGFloat = 5
@@ -691,13 +744,13 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 updateLabelTextLayer(labelTextLayer)
                 self.selectedValuesLayer.addSublayer(labelTextLayer)
                 if self.labelsTextLayers == nil {
-                    self.labelsTextLayers = [CATextLayer]()
+                    self.labelsTextLayers = [BgTextLayer]()
                 }
                 self.labelsTextLayers!.append(labelTextLayer)
             }
             
             // Values.
-            let updateDataTextLayer: (CATextLayer) -> Void = { textLayer in
+            let updateDataTextLayer: (BgTextLayer) -> Void = { textLayer in
                 textLayer.string = value.format
                 textLayer.isHidden = isHidden
                 let x = rect.origin.x + rectWidth - trailingDate - textLayer.preferredFrameSize().width
@@ -713,7 +766,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 updateDataTextLayer(dataTextLayer)
                 self.selectedValuesLayer.addSublayer(dataTextLayer)
                 if self.valueTextLayers == nil {
-                    self.valueTextLayers = [CATextLayer]()
+                    self.valueTextLayers = [BgTextLayer]()
                 }
                 self.valueTextLayers!.append(dataTextLayer)
             }
@@ -728,7 +781,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 let isUpdating = self.dateTextLayer != nil
                 let dateFrame = CGRect(x: rect.origin.x + trailingDate,
                                        y: ydate, width: rectWidth - 2 * trailingDate, height: 16)
-                let updateDateTextLayer: (CATextLayer?) -> Void = { textLayer in
+                let updateDateTextLayer: (BgTextLayer?) -> Void = { textLayer in
                     textLayer?.frame = dateFrame
                     textLayer?.string = pointModel.fullDate
                     textLayer?.foregroundColor = self.colorScheme.dotInfo.text.cgColor
@@ -760,30 +813,24 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func prepareForReuse() {
-        chartLines = nil
-        
-        gridLines = nil
         labels = nil
         dataSource = nil
         isJustReused = true
-        
+
         sliderDirection = .right
         setFinishedSliderDirection = true
         isScrolling = true
-        
+
         valueTextLayers = nil
         labelsTextLayers = nil
-        
-        mainLayer.sublayers?.forEach {
+
+        mainLayer.sublayers?.forEach { //
             if $0 is TextLayer {
                 $0.removeFromSuperlayer()
             }
         }
-        
+
         cleanSelectedValues()
-        
-        dataLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
-        gridLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
     }
     
     func updateFrameShadow() {

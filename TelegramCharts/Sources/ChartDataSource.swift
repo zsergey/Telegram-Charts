@@ -50,7 +50,7 @@ class ChartDataSource: Updatable {
     var chartModels: [ChartModel] {
         didSet {
             dataPoints = nil
-            paths = nil
+            paths.removeAll()
             findMaxRangePoints()
         }
     }
@@ -105,7 +105,7 @@ class ChartDataSource: Updatable {
     
     private(set) var dataPoints: [[CGPoint]]?
 
-    private(set) var paths: [CGPath]?
+    private(set) var paths: [String: CGPath] = [:]
     
     private(set) var maxRangePoints: [PointModel] = []
     
@@ -122,8 +122,6 @@ class ChartDataSource: Updatable {
     public var framesInAnimationDuration: Int {
         return Int(CFTimeInterval(60) * UIView.animationDuration)
     }
-    
-    private var cachedPaths = [String : CGPath]()
     
     init(chartModels: [ChartModel], name: String) {
         self.name = name
@@ -404,9 +402,9 @@ class ChartDataSource: Updatable {
     }
     
     private func calcPointsAndMakePaths() {
-        let isUpdating = dataPoints != nil && self.paths != nil
-        var newDataPoints = isUpdating ? nil : [[CGPoint]]()
-        var newPaths = isUpdating ? nil : [CGPath]()
+        
+        let isUpdatingPoints = dataPoints != nil
+        var newDataPoints = isUpdatingPoints ? nil : [[CGPoint]]()
         
         // Preparing datas.
         allData = nil
@@ -430,11 +428,6 @@ class ChartDataSource: Updatable {
             lastVisibleIndex = fetchLastVisibleIndex()
         }
         
-        let mapKey = chartModels.map { String(Int(truncating: $0.isHidden as NSNumber))}.reduce("", +)
-        let previewKey = String(Int(truncating: isPreviewMode as NSNumber))
-        let maxValueCachedKey = "max \(maxValues.reduce(0, +))"
-        let rangeValue = "range [\(loopRange.startIndex), \(loopRange.endIndex)]"
-
         for index in 0..<chartModels.count {
             
             let chartModel = chartModels[index]
@@ -453,10 +446,6 @@ class ChartDataSource: Updatable {
             } else if stacked {
                 data = Array(data[loopRange])
             }
-            let mapValue = "map: \(mapKey)"
-            let previewValue = "preview: \(previewKey)"
-            let nameValue = "name: \(chartModel.name)"
-            let cachKey = mapValue + ", " + previewValue + ", " + nameValue + ", " + rangeValue + ", " + maxValueCachedKey
             
             var points = convertModelsToPoints(entries: data, maxValue: maxValue)
 
@@ -467,15 +456,12 @@ class ChartDataSource: Updatable {
                 }
             }
             
-            if let path = fetchBezierPath(for: chartModel, points: points, key: cachKey) {
-                if isUpdating {
-                    self.paths?[index] = path
-                } else {
-                    newPaths!.append(path)
-                }
+            if let path = chartModel.drawingStyle.createPath(dataPoints: points, lineGap: lineGap,
+                                                             viewSize: viewDataSize, isPreviewMode: isPreviewMode) {
+                paths[uniqueId + chartModel.name] = path
             }
 
-            if isUpdating {
+            if isUpdatingPoints {
                 self.dataPoints?[index] = points
             } else {
                 newDataPoints!.append(points)
@@ -485,23 +471,9 @@ class ChartDataSource: Updatable {
         // Clean.
         allData = nil
         
-        if !isUpdating {
+        if !isUpdatingPoints {
             self.dataPoints = newDataPoints
-            self.paths = newPaths
         }
-    }
-    
-    private func fetchBezierPath(for chartModel: ChartModel, points: [CGPoint], key: String) -> CGPath? {
-        var path: CGPath?
-        // TODO: удалить кэширование
-//        if let cachedPath = cachedPaths[key] {
-//            path = cachedPath
-//        } else {
-            path = chartModel.drawingStyle.createPath(dataPoints: points, lineGap: lineGap,
-                                                      viewSize: viewDataSize, isPreviewMode: isPreviewMode)
-//            cachedPaths[key] = path
-//        }
-        return path
     }
     
     private func calcNewTargetsValuesIfNeeded() {

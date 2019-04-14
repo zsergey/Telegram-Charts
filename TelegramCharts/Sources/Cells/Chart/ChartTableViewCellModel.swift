@@ -16,7 +16,8 @@ class ChartTableViewCellModel {
     var operations: [String: CalcOperation] = [:]
     var isAnimatingCharts: Bool = false
     
-    let calcInBackground = false
+    weak var cell: ChartTableViewCell!
+    
     lazy var backgroundQueue: OperationQueue = {
         var queue = OperationQueue()
         queue.name = "Calc Properties"
@@ -37,6 +38,7 @@ extension ChartTableViewCellModel: CellViewModelType {
     
     func setup(on cell: ChartTableViewCell) {
         
+        self.cell = cell
         cell.model = self
         
         setupSliderView(on: cell)
@@ -219,18 +221,22 @@ extension ChartTableViewCellModel: CellViewModelType {
                         animateMaxValue: Bool = true,
                         changedIsHidden: Bool = false) {
 
-        if calcInBackground {
+        // TODO: поидее нужно сделать чтобы первый расчет был в бэкгроунде.
+        let callInBackground = false
+        if callInBackground && view.isScrolling {
+            
             if let operation = operations[dataSource.uniqueId] {
                 operation.cancel()
             }
             let newOperation = CalcOperation(dataSource: dataSource,
+                                             for: view,
                                              shouldCalcMaxValue: shouldCalcMaxValue,
                                              animateMaxValue: animateMaxValue,
                                              changedIsHidden: changedIsHidden)
             newOperation.completionBlock = {
                 DispatchQueue.main.async {
                     if !newOperation.isCancelled {
-                        view.drawView()
+                        newOperation.view.drawView()
                     }
                 }
             }

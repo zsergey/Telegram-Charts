@@ -15,6 +15,8 @@ class ValueLayer: CALayer {
         case right
     }
     
+    var fixedTextColor: Bool = false
+    
     static let lineWidth: CGFloat = 0.5
     
     var lineValue: Int = 0 { didSet { setNeedsLayout() } }
@@ -23,17 +25,16 @@ class ValueLayer: CALayer {
     var alignment: Alignment = .left
     var contentBackground: UIColor = .white
 
-    var lineLayer: CAShapeLayer?
     var textLayer: CATextLayer?
-
-    override init() {
-        super.init()
-    }
     
     let trailingSpace: CGFloat = 16
     
     let leadingSpace: CGFloat = 16
 
+    override init() {
+        super.init()
+    }
+    
     override init(layer: Any) {
         super.init(layer: layer)
     }
@@ -42,10 +43,9 @@ class ValueLayer: CALayer {
         super.init(coder: aDecoder)
     }
     
-    func updateColors(lineColor: UIColor, background: UIColor, textColor: UIColor?) {
-        lineLayer?.strokeColor = lineColor.cgColor
-        lineLayer?.fillColor = background.cgColor
-        if let textColor = textColor {
+    func updateColors(lineColor: UIColor, background: UIColor, textColor: UIColor) {
+        backgroundColor = lineColor.cgColor
+        if !fixedTextColor {
             textLayer?.foregroundColor = textColor.cgColor
         }
     }
@@ -54,29 +54,18 @@ class ValueLayer: CALayer {
         super.layoutSublayers()
         sublayers?.forEach { $0.removeFromSuperlayer() }
         
-        let height: CGFloat = 0
+        backgroundColor = lineColor.cgColor
         
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: trailingSpace, y: height))
-        path.addLine(to: CGPoint(x: frame.size.width - leadingSpace, y: height))
-        
-        let lineLayer = CAShapeLayer()
-        lineLayer.path = path.cgPath
-        lineLayer.fillColor = contentBackground.cgColor
-        lineLayer.strokeColor = lineColor.cgColor
-        lineLayer.lineWidth = ValueLayer.lineWidth
-        addSublayer(lineLayer)
-        self.lineLayer = lineLayer
-        
-        let textLayer = Painter.createText(textColor: textColor)
+        let textLayer = Painter.createCATextLayer(textColor: textColor)
         textLayer.string = lineValue.format
-        var x: CGFloat = trailingSpace
+        var x: CGFloat = 0
+        let width = textLayer.preferredFrameSize().width
         if alignment == .right {
-            x = frame.size.width - textLayer.preferredFrameSize().width - leadingSpace
+            x = frame.size.width - width
         }
-        textLayer.frame = CGRect(x: x, y: height - 18, width: 50, height: 16)
+        let height: CGFloat = 0
+        textLayer.frame = CGRect(x: x, y: height - 18, width: width, height: 16)
         addSublayer(textLayer)
         self.textLayer = textLayer
     }
-
 }

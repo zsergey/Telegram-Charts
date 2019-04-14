@@ -11,16 +11,19 @@ import Foundation
 class CalcOperation: Operation {
 
     let dataSource: ChartDataSource
+    let view: ChartContentView
     let shouldCalcMaxValue: Bool
     let animateMaxValue: Bool
     let changedIsHidden: Bool
 
     init(dataSource: ChartDataSource,
+         for view: ChartContentView,
          shouldCalcMaxValue: Bool,
          animateMaxValue: Bool,
          changedIsHidden: Bool) {
 
         self.dataSource = dataSource
+        self.view = view
         self.shouldCalcMaxValue = shouldCalcMaxValue
         self.animateMaxValue = animateMaxValue
         self.changedIsHidden = changedIsHidden

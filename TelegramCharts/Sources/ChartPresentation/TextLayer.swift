@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TextLayer: CATextLayer {
+class TextLayer: BgTextLayer {
     
     var isStatic: Bool = false
     var toOpacity = Float(0)

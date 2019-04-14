@@ -126,6 +126,7 @@ extension ChartTableViewCell: ColorUpdatable {
             self.chartView.colorScheme = model.colorScheme
             self.previewChartView.colorScheme = model.colorScheme
             self.sliderView.colorScheme = model.colorScheme
+            self.dateLabel.backgroundColor = model.colorScheme.chart.background
         }
     }
 }
