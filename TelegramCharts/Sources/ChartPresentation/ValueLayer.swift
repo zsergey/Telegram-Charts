@@ -64,7 +64,7 @@ class ValueLayer: CALayer {
                 textLayer.string = lineValue.format
             }
         } else {
-            let textLayer = Painter.createCATextLayer(textColor: textColor)
+            let textLayer = Painter.createText(textColor: textColor)
             textLayer.string = lineValue.format
             var x: CGFloat = 0
             if alignment == .right {

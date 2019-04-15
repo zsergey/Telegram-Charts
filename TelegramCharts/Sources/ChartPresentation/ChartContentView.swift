@@ -60,13 +60,13 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
     private var selectedValuesInfo: CAShapeLayer?
     
-    private var dateTextLayer: BgTextLayer?
+    private var dateTextLayer: CATextLayer?
 
-    private var valueTextLayers: [BgTextLayer]?
+    private var valueTextLayers: [CATextLayer]?
 
-    private var precentegTextLayers: [BgTextLayer]?
+    private var precentegTextLayers: [CATextLayer]?
 
-    private var labelsTextLayers: [BgTextLayer]?
+    private var labelsTextLayers: [CATextLayer]?
 
     private var dotsTextLayers: [DotLayer]?
     
@@ -543,7 +543,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
 
     func drawSelectedValues(animated: Bool) {
-        return
+
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
             !dataSource.isPreviewMode,
@@ -718,7 +718,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             
             // Percentage.
             if dataSource.percentage, index < percentageValues.count {
-                let updatePercentageTextLayer: (BgTextLayer) -> Void = { textLayer in
+                let updatePercentageTextLayer: (CATextLayer) -> Void = { textLayer in
                     textLayer.string = "\(percentageValues[index])%"
                     textLayer.isHidden = isHidden
                     let x = rect.origin.x + trailingDate + maxPercentageWidth - textLayer.preferredFrameSize().width
@@ -734,14 +734,14 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     updatePercentageTextLayer(percentageTextLayer)
                     self.selectedValuesLayer.addSublayer(percentageTextLayer)
                     if self.precentegTextLayers == nil {
-                        self.precentegTextLayers = [BgTextLayer]()
+                        self.precentegTextLayers = [CATextLayer]()
                     }
                     self.precentegTextLayers!.append(percentageTextLayer)
                 }
             }
             
             // Labels.
-            let updateLabelTextLayer: (BgTextLayer) -> Void = { textLayer in
+            let updateLabelTextLayer: (CATextLayer) -> Void = { textLayer in
                 textLayer.string = name
                 textLayer.isHidden = isHidden
                 let space: CGFloat = 5
@@ -759,13 +759,13 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 updateLabelTextLayer(labelTextLayer)
                 self.selectedValuesLayer.addSublayer(labelTextLayer)
                 if self.labelsTextLayers == nil {
-                    self.labelsTextLayers = [BgTextLayer]()
+                    self.labelsTextLayers = [CATextLayer]()
                 }
                 self.labelsTextLayers!.append(labelTextLayer)
             }
             
             // Values.
-            let updateDataTextLayer: (BgTextLayer) -> Void = { textLayer in
+            let updateDataTextLayer: (CATextLayer) -> Void = { textLayer in
                 textLayer.string = value.format
                 textLayer.isHidden = isHidden
                 let x = rect.origin.x + rectWidth - trailingDate - textLayer.preferredFrameSize().width
@@ -781,7 +781,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 updateDataTextLayer(dataTextLayer)
                 self.selectedValuesLayer.addSublayer(dataTextLayer)
                 if self.valueTextLayers == nil {
-                    self.valueTextLayers = [BgTextLayer]()
+                    self.valueTextLayers = [CATextLayer]()
                 }
                 self.valueTextLayers!.append(dataTextLayer)
             }
@@ -796,7 +796,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 let isUpdating = self.dateTextLayer != nil
                 let dateFrame = CGRect(x: rect.origin.x + trailingDate,
                                        y: ydate, width: rectWidth - 2 * trailingDate, height: 16)
-                let updateDateTextLayer: (BgTextLayer?) -> Void = { textLayer in
+                let updateDateTextLayer: (CATextLayer?) -> Void = { textLayer in
                     textLayer?.frame = dateFrame
                     textLayer?.string = DateCache.shared.fullFormat(for: pointModel.date)
                     textLayer?.foregroundColor = self.colorScheme.dotInfo.text.cgColor
