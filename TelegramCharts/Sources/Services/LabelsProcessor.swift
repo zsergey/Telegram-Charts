@@ -76,10 +76,12 @@ struct LabelsProcessor {
             var theIndex = 0
             var staticIndex: Int?
             for index in 0..<dataSource.maxRangePoints.count {
-                let textLayer = labels![index]
-                if textLayer.isStatic {
-                    staticIndex = index
-                    break
+                if labels != nil, index < labels!.count {
+                    let textLayer = labels![index]
+                    if textLayer.isStatic {
+                        staticIndex = index
+                        break
+                    }
                 }
             }
             
@@ -89,19 +91,23 @@ struct LabelsProcessor {
                 if setFinishedSliderDirection {
                     let x = sliderDirection == .left ? (contentSize.width - trailingSpace - leadingSpace) - ChartContentView.labelWidth / 2 : ChartContentView.labelWidth / 2
                     theIndex = Int((x + dataSource.range.lowerBound * dataSource.lineGap + ChartContentView.labelWidth / 2) / dataSource.lineGap)
-                    let textLayer = labels![theIndex]
-                    textLayer.isStatic = true
+                    if labels != nil, theIndex < labels!.count {
+                        let textLayer = labels![theIndex]
+                        textLayer.isStatic = true
+                    }
                 } else {
                     let range = 0..<dataSource.maxRangePoints.count
                     for index in range {
                         let aIndex = sliderDirection == .left ? range.endIndex - index - 1 : index
-                        let textLayer = labels![aIndex]
-                        if textLayer.toOpacity == 1 {
-                            let textLayerX = (CGFloat(aIndex) - dataSource.range.lowerBound) * dataSource.lineGap - ChartContentView.labelWidth / 2
-                            if textLayerX > -ChartContentView.labelWidth / 2 && textLayerX < (contentSize.width - trailingSpace - leadingSpace) - ChartContentView.labelWidth / 2 {
-                                textLayer.isStatic = true
-                                theIndex = aIndex
-                                break
+                        if labels != nil, aIndex < labels!.count {
+                            let textLayer = labels![aIndex]
+                            if textLayer.toOpacity == 1 {
+                                let textLayerX = (CGFloat(aIndex) - dataSource.range.lowerBound) * dataSource.lineGap - ChartContentView.labelWidth / 2
+                                if textLayerX > -ChartContentView.labelWidth / 2 && textLayerX < (contentSize.width - trailingSpace - leadingSpace) - ChartContentView.labelWidth / 2 {
+                                    textLayer.isStatic = true
+                                    theIndex = aIndex
+                                    break
+                                }
                             }
                         }
                     }
@@ -144,6 +150,13 @@ struct LabelsProcessor {
         var wereHiddenLayers = false
         for index in range {
             let inverseIndex = range.endIndex - index - 1
+            if labels == nil {
+                continue
+            }
+            if inverseIndex >= labels!.count || index >= labels!.count {
+                continue
+            }
+            
             let textLayer = inverse ? labels![inverseIndex] : labels![index]
             let coef: CGFloat = inverse ? -1 : 1
             

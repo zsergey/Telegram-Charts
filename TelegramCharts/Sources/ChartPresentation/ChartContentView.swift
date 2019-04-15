@@ -432,7 +432,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawLabels(byScroll: Bool) {
-        return
+
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else {
@@ -475,7 +475,15 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         var labelProcessor = LabelsProcessor(dataSource: dataSource, isScrolling: isScrolling, sliderDirection: sliderDirection,
                                              setFinishedSliderDirection: setFinishedSliderDirection, labels: labels, contentSize: frame.size)
         labelProcessor.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
-        
+        if byScroll {
+            labels?.forEach { label in
+                if label.opacity < 0.5 {
+                    label.opacity = 0
+                } else if label.opacity >= 0.5 {
+                    label.opacity = 1
+                }
+            }
+        }
         /*
             self.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
             if self.setFinishedSliderDirection {
