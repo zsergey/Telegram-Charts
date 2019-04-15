@@ -64,6 +64,7 @@
 		ADC8D1F12260AD9B0087EDB3 /* LabelsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADC8D1F02260AD9B0087EDB3 /* LabelsProcessor.swift */; };
 		ADC8D1F9226130400087EDB3 /* overview3_3.json in Resources */ = {isa = PBXBuildFile; fileRef = ADC8D1F8226130400087EDB3 /* overview3_3.json */; };
 		ADCD101F22441697006A9856 /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADCD101E22441697006A9856 /* NavigationViewController.swift */; };
+		ADD0623622649F4A00BF3CA7 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD0623522649F4A00BF3CA7 /* StringExtensions.swift */; };
 		ADDBBDC5224010010090E2AD /* ValueLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC4224010010090E2AD /* ValueLayer.swift */; };
 		ADDBBDC7224023F00090E2AD /* CALayer+Animations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */; };
 		ADDBBDC92241F2210090E2AD /* Date+Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */; };
@@ -138,6 +139,7 @@
 		ADC8D1F02260AD9B0087EDB3 /* LabelsProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelsProcessor.swift; sourceTree = "<group>"; };
 		ADC8D1F8226130400087EDB3 /* overview3_3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = overview3_3.json; sourceTree = "<group>"; };
 		ADCD101E22441697006A9856 /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
+		ADD0623522649F4A00BF3CA7 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		ADDBBDC4224010010090E2AD /* ValueLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueLayer.swift; sourceTree = "<group>"; };
 		ADDBBDC6224023F00090E2AD /* CALayer+Animations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Animations.swift"; sourceTree = "<group>"; };
 		ADDBBDC82241F2210090E2AD /* Date+Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatter.swift"; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 				ADB3E9F722441E2A007CC2F2 /* UITableViewCellExtenions.swift */,
 				ADB3E9F922441E4A007CC2F2 /* UITableViewExtenions.swift */,
 				AD71D8EE22627BA500701EC0 /* UIImageExtensions.swift */,
+				ADD0623522649F4A00BF3CA7 /* StringExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -534,6 +537,7 @@
 				AD9226CE2238C76E00A5B7D6 /* ColorSchemeProtocol.swift in Sources */,
 				AD17FF3B2244A9CC0073F0BB /* Updatable.swift in Sources */,
 				ADC8D1ED22608B440087EDB3 /* CalcOperation.swift in Sources */,
+				ADD0623622649F4A00BF3CA7 /* StringExtensions.swift in Sources */,
 				ADE577252236FE620006200D /* UIColorExtensions.swift in Sources */,
 				AD71D8F322630DC400701EC0 /* ChartLayer.swift in Sources */,
 				AD9226D02238CBA800A5B7D6 /* ChartModel.swift in Sources */,

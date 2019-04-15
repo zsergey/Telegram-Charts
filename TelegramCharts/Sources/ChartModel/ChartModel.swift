@@ -8,16 +8,17 @@
 
 import UIKit
 
-struct PointModel {
+struct PointModel: CustomStringConvertible {
     var value: Int
-    var targetValue: Int
-    var deltaToTargetValue: Int = 0
     let date: Date
     
     init(value: Int, date: Date) {
         self.value = value
-        self.targetValue = value
         self.date = date
+    }
+    
+    var description: String {
+        return "value: \(value)"
     }
 }
 
@@ -52,7 +53,8 @@ class ChartModel {
     var runValueAnimation: Bool = false
     var drawingStyle: DrawingStyleProtocol
     var data: [PointModel]
-    
+    var stackData: [String: [PointModel]] = [:]
+
     var opacity: Float {
         return isHidden ? 0 : 1
     }
