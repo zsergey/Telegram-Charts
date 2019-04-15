@@ -579,7 +579,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let globalSelectedIndex = dataSource.globalSelectedIndex else {
             return
         }
-        
+
+        CATransaction.setDisableActions(true)
+
         // Preparing some data.
         var countVisibleValues = 1 // for date
         var totalValue = 0
@@ -724,8 +726,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
         }
         
-        CATransaction.setDisableActions(true)
-
         // View with values.
         let topDate: CGFloat = 5
         let trailingDate: CGFloat = 10

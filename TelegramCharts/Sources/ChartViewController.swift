@@ -99,7 +99,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         let currentTime = link.timestamp
         
         let deltaTime = currentTime - lastTime
-        if deltaTime != 0, isDebug {
+        if deltaTime != 0 {
             currentFPS = Int(1 / deltaTime)
         }
 
@@ -112,7 +112,9 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @objc func update(link: CADisplayLink) {
-        calcPerformance(link)
+        if isDebug {
+            calcPerformance(link)
+        }
         tableView.visibleCells.forEach { ($0 as? ChartTableViewCell)?.update() }
     }
 
