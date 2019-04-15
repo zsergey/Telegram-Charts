@@ -440,7 +440,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     }
     
     func drawLabels(byScroll: Bool) {
-        
+        return
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else {

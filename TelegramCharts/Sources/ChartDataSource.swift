@@ -36,6 +36,11 @@ class ChartDataSource: Updatable {
     
     var selectedPeriod: String {
         let loopRange = intRange
+        guard maxRangePoints.count > 0,
+            loopRange.startIndex < maxRangePoints.count,
+            loopRange.endIndex - 1 < maxRangePoints.count else {
+            return ""
+        }
         let startDate = DateCache.shared.fullFormat(for: maxRangePoints[loopRange.startIndex].date)
         let endDate = DateCache.shared.fullFormat(for: maxRangePoints[loopRange.endIndex - 1].date)
         return startDate + " - " + endDate

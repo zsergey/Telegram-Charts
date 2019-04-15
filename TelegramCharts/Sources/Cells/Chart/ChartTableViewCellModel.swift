@@ -206,9 +206,9 @@ extension ChartTableViewCellModel: CellViewModelType {
                         changedIsHidden: Bool = false) {
 
         // TODO: поидее нужно сделать чтобы первый расчет был в бэкгроунде.
+        // Но не было времени протестировать.
         let callInBackground = false
         if callInBackground && view.isScrolling {
-            
             if let operation = operations[dataSource.uniqueId] {
                 operation.cancel()
             }
