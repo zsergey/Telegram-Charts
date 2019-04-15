@@ -33,12 +33,10 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Statistics" id="Fzy-ih-vEs">
-                        <barButtonItem key="leftBarButtonItem" style="plain" id="hBV-tq-N5F">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="66j-Z7-mnR">
-                                <rect key="frame" x="16" y="7" width="83" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                            </button>
+                        <barButtonItem key="leftBarButtonItem" title="Date On" id="QaU-12-KfD">
+                            <connections>
+                                <action selector="tapDateOnButton:" destination="BYZ-38-t0r" id="ZT2-90-ttc"/>
+                            </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Night Mode" id="4ca-2v-xhS">
                             <connections>
@@ -47,7 +45,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="buttonFPS" destination="66j-Z7-mnR" id="uqi-Eb-Qrs"/>
                         <outlet property="tableView" destination="cdQ-b2-keg" id="prQ-Dd-kfR"/>
                     </connections>
                 </viewController>

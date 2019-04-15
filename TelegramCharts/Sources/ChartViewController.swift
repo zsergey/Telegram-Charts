@@ -10,21 +10,22 @@ import UIKit
 
 class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
+    static var isDateOn = false
+    
     var displayCollection: ChartDisplayCollection!
-    @IBOutlet var buttonFPS: UIButton!
    
     var isDebug = false // TODO
 
     var currentFPS: Int = 0 {
         didSet {
-            let text = "\(currentFPS) fps"
-            if abs(oldValue - currentFPS) > 1 {
-                buttonFPS.setTitle(text, for: .normal)
-                buttonFPS.tintColor = currentFPS < 50 ? .red : .gray
-            }
-            if currentFPS < 59 {
-                print(text)
-            }
+//            let text = "\(currentFPS) fps"
+//            if abs(oldValue - currentFPS) > 1 {
+//                buttonFPS.setTitle(text, for: .normal)
+//                buttonFPS.tintColor = currentFPS < 50 ? .red : .gray
+//            }
+//            if currentFPS < 59 {
+//                print(text)
+//            }
         }
     }
     
@@ -60,7 +61,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        buttonFPS.setTitle("", for: .normal)
         navigationController?.navigationBar.isTranslucent = false
         
         let dataSource = ChartDataSourceFactory.make()
@@ -207,7 +207,17 @@ extension ChartViewController {
             }
         }
     }
-
+    
+    @IBAction func tapDateOnButton(_ sender: UIBarButtonItem) {
+        ChartViewController.isDateOn = !ChartViewController.isDateOn
+        let nextMode = ChartViewController.isDateOn ? "Dates Off" : "Dates On"
+        sender.title = nextMode
+        
+        if ChartViewController.isDateOn {
+            
+        }
+    }
+    
     @IBAction func tapChangeColorSchemeButton(_ sender: UIBarButtonItem) {
         guard !isChangingTheme else {
             return

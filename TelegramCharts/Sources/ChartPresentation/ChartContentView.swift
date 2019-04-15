@@ -366,7 +366,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
                 
                 let isZeroLine = index == gridValues.count - 1
-                var heightGrid: CGFloat = lineWidth
+                let heightGrid: CGFloat = lineWidth
                 let newValueLayer = gridLinesToRemove[key]![index]
                 let oldValueLayer = gridLines[key]![index]
 
@@ -435,7 +435,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
-            !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else {
+            !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0,
+            ChartViewController.isDateOn else {
             return
         }
         
