@@ -43,8 +43,8 @@ struct ChartModelFactory {
                         for index in 0..<countData {
                             if let date = dataX[index] as? Date,
                                 let value = dataY[index] as? Int {
-                                DateCache.shared.shortFormat(for: date)
-                                DateCache.shared.fullFormat(for: date)
+                                // DateCache.shared.shortFormat(for: date)
+                                // DateCache.shared.fullFormat(for: date)
                                 let pointModel = PointModel(value: value, date: date)
                                 pointModels.append(pointModel)
                             }
@@ -91,11 +91,16 @@ struct ChartModelFactory {
         for index in 0..<countCombinations {
             let mapKey = makeBits(index, n)
             
+            var hiddenData = [Bool]()
+            for index in 0..<chartModels.count {
+                hiddenData.append(mapKey[index].boolValue)
+            }
+            
             var allStackData: [PointModel]? = zeroStackData
             var lastVisibleIndex = 0
             for index in 0..<chartModels.count {
                 let chartModel = chartModels[index]
-                let isHidden = mapKey[index].boolValue
+                let isHidden = hiddenData[index]
                 if !isHidden {
                     lastVisibleIndex = index
                 }
@@ -118,13 +123,14 @@ struct ChartModelFactory {
             
             // Calc all procenteges for all states.
             if percentage {
+                
                 var stackDatas = [[PointModel]]()
                 
                 for indexData in 0..<countData {
                     
                     var totalValue = 0
                     for index in 0..<chartModels.count {
-                        let isHidden = mapKey[index].boolValue
+                        let isHidden = hiddenData[index]
                         let value = isHidden ? 0 : chartModels[index].data[indexData].value
                         totalValue += value
                     }
@@ -133,11 +139,10 @@ struct ChartModelFactory {
                     var prevoiusValue = 0
                     for index in 0..<chartModels.count {
                         if index >= stackDatas.count {
-                            stackDatas.append([PointModel]())
+                            let stackData = Array(repeating: zeroValue, count: countData)
+                            stackDatas.append(stackData)
                         }
-                        var stackData = stackDatas[index]
-                        
-                        let isHidden = mapKey[index].boolValue
+                        let isHidden = hiddenData[index]
                         var percentageValue = 0
                         let value = isHidden ? 0 : chartModels[index].data[indexData].value
                         if index == lastVisibleIndex {
@@ -149,8 +154,7 @@ struct ChartModelFactory {
                         
                         let stackValue = percentageValue == 0 ? 0 : percentageValue + prevoiusValue
                         prevoiusValue += percentageValue
-                        stackData.append(PointModel(value: stackValue, date: fakeDate))
-                        stackDatas[index] = stackData
+                        stackDatas[index][indexData] = PointModel(value: stackValue, date: fakeDate)
                     }
                 }
 
