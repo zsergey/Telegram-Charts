@@ -92,8 +92,13 @@ class ChartTableViewCell: UITableViewCell {
 
     func drawSelectedValuesIfNeeded() {
         if model?.chartDataSource.selectedIndex != nil {
-            chartView.drawSelectedValues(animated: false)
+            chartView.drawSelectedValues()
         }
+    }
+    
+    func drawViews() {
+        chartView.drawView()
+        previewChartView.drawView()
     }
         
     @IBAction func tapZoomOutButton(_ sender: Any) {

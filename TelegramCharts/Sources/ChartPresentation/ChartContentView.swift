@@ -189,10 +189,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             return
         }
 
-        if isJustReused {
-            drawHorizontalLines(animated: false)
-        }
-        self.drawCharts()
+        drawHorizontalLines(animated: false)
+        drawCharts()
         
         if !isScrolling {
             drawLabels(byScroll: false)
@@ -239,7 +237,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     if dataSource.needsAnimatePath {
                         chartLayer.changePath(to: path, animationDuration: UIView.animationDuration)
                         if dataSource.selectedIndex != nil {
-                            drawSelectedValues(animated: false)
+                            drawSelectedValues()
                         }
                     } else {
                         chartLayer.path = path
@@ -331,6 +329,19 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
         }
         
+        // ВГК
+        var colorLines = [UIColor]()
+        var wasGridLine = false
+        for i in 0..<dataSource.maxValues.count {
+            let chartModel = dataSource.chartModels[i]
+            if chartModel.isHidden {
+                colorLines.append(UIColor.clear)
+            } else {
+                colorLines.append(wasGridLine ? UIColor.clear : colorScheme.chart.grid)
+                wasGridLine = true
+            }
+        }
+
         for i in 0..<dataSource.maxValues.count {
             let chartModel = dataSource.chartModels[i]
             let key = dataSource.uniqueId + chartModel.name
@@ -427,7 +438,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     func drawLabels(byScroll: Bool) {
         
-        return
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else {
@@ -502,7 +512,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
         }
         if dataSource.selectedIndex != nil {
-            drawSelectedValues(animated: false)
+            drawSelectedValues()
         }
     }
     
@@ -532,7 +542,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if isUpdating {
             dataSource.selectedIndex = newSelectedIndex
             dataSource.globalSelectedIndex = newGlobalSelectedIndex
-            drawSelectedValues(animated: animated)
+            drawSelectedValues()
         }
     }
     
@@ -565,7 +575,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
     }
 
-    func drawSelectedValues(animated: Bool) {
+    func drawSelectedValues() {
 
         guard let dataSource = dataSource,
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0,
@@ -574,7 +584,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let globalSelectedIndex = dataSource.globalSelectedIndex else {
             return
         }
-
+        
         // Preparing some data.
         var countVisibleValues = 1 // for date
         var totalValue = 0
@@ -719,6 +729,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
         }
         
+        CATransaction.setDisableActions(true)
+
         // View with values.
         let topDate: CGFloat = 5
         let trailingDate: CGFloat = 10
@@ -738,10 +750,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
         if xRect > self.frame.size.width - rectWidth {
             xRect = xLine - rectWidth - dataSource.trailingSpace
-        }
-
-        if !animated {
-            CATransaction.setDisableActions(true)
         }
 
         let letterSpace: CGFloat = 2
@@ -878,9 +886,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         
         drawLabledValue(dataSource.chartModels.count, "All", totalValue, !hasAdditionalRow, self.colorScheme.dotInfo.text)
         
-        if !animated {
-            CATransaction.setDisableActions(false)
-        }
+        CATransaction.setDisableActions(false)
     }
     
     func prepareForReuse() {

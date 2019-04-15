@@ -424,10 +424,12 @@ class ChartDataSource: Updatable {
         findMaxRangePoints()
         calcConstants()
         
-        needsAnimatePath = changedIsHidden
         var animateMaxValue = animateMaxValue
-        if changedIsHidden {
-            animateMaxValue = false
+        if stacked || (name == "CALLS") {
+            needsAnimatePath = changedIsHidden
+            if changedIsHidden {
+                animateMaxValue = false
+            }
         }
         
         if shouldCalcMaxValue {

@@ -28,11 +28,13 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
     
     mutating func createPath(dataPoints: [CGPoint], lineGap: CGFloat,
                     viewSize: CGSize, isPreviewMode: Bool) -> CGPath? {
-        
-        return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
+        if isPreviewMode {
+            return createPathShort(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
+        } else {
+            return createPathStandard(dataPoints: dataPoints, lineGap: lineGap, viewSize: viewSize)
+        }
     }
 
-    
     private func createPathStandard(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil
@@ -42,7 +44,6 @@ struct StandardDrawingStyle: DrawingStyleProtocol {
         return path
     }
     
-    // TODO: наверное удалить вообще
     private mutating func createPathShort(dataPoints: [CGPoint], lineGap: CGFloat, viewSize: CGSize) -> CGPath? {
         guard dataPoints.count > 0 else {
             return nil

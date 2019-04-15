@@ -34,7 +34,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
             tableView.dataSource = self
             tableView.rowHeight = 0
             tableView.estimatedRowHeight = 0
-            tableView.scrollsToTop = false
         }
     }
     
@@ -129,6 +128,10 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
+    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+        scrollingFinished()
+    }
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         scrollingFinished()
     }
@@ -164,6 +167,9 @@ extension ChartViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let model = displayCollection.fetchModel(for: indexPath)
         model.setupDefault(on: cell)
+        if let cell = cell as? ChartTableViewCell {
+            cell.drawViews()
+        }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
