@@ -12,7 +12,9 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var displayCollection: ChartDisplayCollection!
     @IBOutlet var buttonFPS: UIButton!
-    
+   
+    var isDebug = false // TODO
+
     var currentFPS: Int = 0 {
         didSet {
             let text = "\(currentFPS) fps"
@@ -47,8 +49,6 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.tableView.separatorColor = self.colorScheme.separator
 
                 navigationBar?.barTintColor = self.colorScheme.background
-                // TODO:
-                // navigationBar?.tintColor = self.colorScheme.background
                 navigationBar?.titleTextAttributes = [.foregroundColor: self.colorScheme.title]
                 if self.needsLayoutNavigationBar {
                     navigationBar?.layoutIfNeeded()
@@ -60,6 +60,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        buttonFPS.setTitle("", for: .normal)
         navigationController?.navigationBar.isTranslucent = false
         
         let dataSource = ChartDataSourceFactory.make()
@@ -98,7 +99,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         let currentTime = link.timestamp
         
         let deltaTime = currentTime - lastTime
-        if deltaTime != 0 {
+        if deltaTime != 0, isDebug {
             currentFPS = Int(1 / deltaTime)
         }
 

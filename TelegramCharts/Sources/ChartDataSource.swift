@@ -485,7 +485,6 @@ class ChartDataSource: Updatable {
     }
 
     private func findMaxRangePoints() {
-        // TODO: спорный метод удалить
         var points: [PointModel] = []
         chartModels.forEach {
             if $0.data.count > points.count {

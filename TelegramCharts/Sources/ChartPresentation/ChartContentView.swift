@@ -14,9 +14,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         didSet {
             let isPreviewMode = dataSource?.isPreviewMode ?? false
             layer.cornerRadius = isPreviewMode ? SliderView.thumbCornerRadius : 0 // TODO: Performance
-            if isPreviewMode {
-                shadowImage.removeFromSuperview()
-            }
         }
     }
     
@@ -74,8 +71,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
     private var selectedBars: [CAShapeLayer]?
 
-    private var shadowImage = UIImageView(frame: .zero)
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -102,9 +97,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         layer.addSublayer(mainLayer)
         layer.addSublayer(gridLayer)
         layer.addSublayer(selectedValuesLayer)
-        //addSubview(shadowImage) // TODO
-                
-        updateFrameShadow()
         
         clipsToBounds = true
         
@@ -436,7 +428,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     func drawLabels(byScroll: Bool) {
         
         return
-        
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
             !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else {
@@ -495,7 +486,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         guard let dataSource = dataSource else {
             return
         }
-        // TODO: here you should update colors.
+
         for (_, layers) in gridLines {
             layers.forEach {
                 let lineColor = $0.lineValue == 0 ? colorScheme.chart.accentGrid: colorScheme.chart.grid
@@ -512,10 +503,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
         if dataSource.selectedIndex != nil {
             drawSelectedValues(animated: false)
-        }
-        
-        if !dataSource.isPreviewMode {
-            self.shadowImage.image = UIImage(size: self.shadowImage.frame.size, gradientColor: [colorScheme.chart.background, colorScheme.chart.background.withAlphaComponent(0)])
         }
     }
     
@@ -915,10 +902,5 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
 
         cleanSelectedValues()
-    }
-    
-    func updateFrameShadow() {
-        let shadowFrame = CGRect(x: 0, y: 0, width: self.frame.size.width, height: 20)
-        self.shadowImage.frame = shadowFrame
     }
 }
