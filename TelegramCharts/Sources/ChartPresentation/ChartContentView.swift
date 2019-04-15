@@ -332,19 +332,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
         }
         
-        // ВГК
-        var colorLines = [UIColor]()
-        var wasGridLine = false
-        for i in 0..<dataSource.maxValues.count {
-            let chartModel = dataSource.chartModels[i]
-            if chartModel.isHidden {
-                colorLines.append(UIColor.clear)
-            } else {
-                colorLines.append(wasGridLine ? UIColor.clear : colorScheme.chart.grid)
-                wasGridLine = true
-            }
-        }
-
         for i in 0..<dataSource.maxValues.count {
             let chartModel = dataSource.chartModels[i]
             let key = dataSource.uniqueId + chartModel.name
@@ -362,7 +349,6 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let minMaxGap = CGFloat(maxValue - dataSource.minValue) * dataSource.topHorizontalLine
             let newMinMaxGap = CGFloat(newMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
             
-            let heightGrid: CGFloat = lineWidth
             let widthGrid: CGFloat = self.frame.size.width
             
             var newGridLines = [ValueLayer]()
@@ -380,6 +366,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
                 
                 let isZeroLine = index == gridValues.count - 1
+                var heightGrid: CGFloat = lineWidth
                 let newValueLayer = gridLinesToRemove[key]![index]
                 let oldValueLayer = gridLines[key]![index]
 
@@ -413,7 +400,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                     // gridLayer.addSublayer(newValueLayer)
                     //newValueLayer.opacity = 1
                 }*/
-
+//                if dataSource.maxValues.count > 1 {
+//                    let color = chartModel.isHidden ? UIColor.clear : colorScheme.chart.grid
+//                    oldValueLayer.backgroundColor = UIColor.red.cgColor // color.cgColor
+//                    newValueLayer.backgroundColor = UIColor.red.cgColor //color.cgColor
+//                }
+                
                 let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
                 let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
                 CATransaction.setDisableActions(true)

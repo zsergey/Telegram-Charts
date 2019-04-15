@@ -99,6 +99,7 @@ class ChartTableViewCell: UITableViewCell {
     func drawViews() {
         chartView.drawView()
         previewChartView.drawView()
+        chartView.drawHorizontalLines(animated: false)
     }
         
     @IBAction func tapZoomOutButton(_ sender: Any) {
@@ -110,7 +111,6 @@ extension ChartTableViewCell: Updatable {
     func update() {
         chartView.update()
         previewChartView.update()
-        chartView.drawHorizontalLines(animated: false)
     }
 }
 
