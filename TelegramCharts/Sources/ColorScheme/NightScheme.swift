@@ -52,13 +52,12 @@ struct NightScheme: ColorSchemeProtocol {
                                text: UIColor(hex: "#5E6B7D")!)
 
         chart = ChartColor(background: UIColor(hex: "#242F3E")!,
-                           grid: UIColor(hex: "#141B22", alpha: 0.4)!,
-                           accentGrid: UIColor(hex: "#141B22")!,
+                           grid: UIColor(hex: "#8596AB", alpha: 0.2)!,
+                           accentGrid: UIColor(hex: "#8596AB", alpha: 0.2)!,
                            text: UIColor(hex: "#606D7C")!)
         
-        
-        slider = SliderColor(thumb: UIColor(hex: "#58626C")!,
-                             background: UIColor(hex: "#1D2A39", alpha: 0.8)!,
+        slider = SliderColor(thumb: UIColor(hex: "#56626D")!,
+                             background: UIColor(hex: "#18222D", alpha: 0.6)!,
                              arrow: UIColor(hex: "#FFFFFF")!)
         
         dotInfo = DotInfo(background: UIColor(hex: "#1D2836")!,

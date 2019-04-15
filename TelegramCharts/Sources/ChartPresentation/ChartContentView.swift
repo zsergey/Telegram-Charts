@@ -36,6 +36,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     
     static let labelWidth: CGFloat = 40
     
+    private let lineWidth: CGFloat = 0.8
+    
     private let dataLayer: CALayer = CALayer()
 
     private let mainLayer: CALayer = CALayer()
@@ -354,7 +356,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let minMaxGap = CGFloat(maxValue - dataSource.minValue) * dataSource.topHorizontalLine
             let newMinMaxGap = CGFloat(newMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
             
-            let heightGrid: CGFloat = 1
+            let heightGrid: CGFloat = lineWidth
             let widthGrid: CGFloat = self.frame.size.width
             
             var newGridLines = [ValueLayer]()
@@ -650,7 +652,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let lineLayer = isUpdating ? verticalLine! : CAShapeLayer()
             if !isUpdating {
                 lineLayer.fillColor = UIColor.clear.cgColor
-                lineLayer.lineWidth = 0.5
+                lineLayer.lineWidth = lineWidth
                 selectedValuesLayer.addSublayer(lineLayer)
             }
             path.move(to: CGPoint(x: xLine, y: topLine))

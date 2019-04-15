@@ -52,12 +52,12 @@ struct DayScheme: ColorSchemeProtocol {
                                text: UIColor(hex: "#6D6D72")!)
         
         chart = ChartColor(background: UIColor(hex: "#FEFEFE")!,
-                           grid: UIColor(hex: "#CFD1D2", alpha: 0.4)!,
-                           accentGrid: UIColor(hex: "#CFD1D2")!,
+                           grid: UIColor(hex: "#182D3B", alpha: 0.1)!,
+                           accentGrid: UIColor(hex: "#182D3B", alpha: 0.1)!,
                            text: UIColor(hex: "#999EA2")!)
         
-        slider = SliderColor(thumb: UIColor(hex: "#C3D1DF")!,
-                             background: UIColor(hex: "#F7F8FA", alpha: 0.8)!,
+        slider = SliderColor(thumb: UIColor(hex: "#C0D1E1")!,
+                             background: UIColor(hex: "#E2EEF9", alpha: 0.6)!,
                              arrow: UIColor(hex: "#FFFFFF")!)
 
         dotInfo = DotInfo(background: UIColor(hex: "#F4F4F9")!,

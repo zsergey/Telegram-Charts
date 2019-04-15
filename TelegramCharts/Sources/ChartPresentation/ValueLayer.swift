@@ -19,8 +19,6 @@ class ValueLayer: CALayer {
 
     var isZeroLine: Bool = false
 
-    static let lineWidth: CGFloat = 0.5
-    
     var lineValue: Int = 0 { didSet { setNeedsLayout() } }
     var lineColor: UIColor = .gray
     var textColor: UIColor = .black
