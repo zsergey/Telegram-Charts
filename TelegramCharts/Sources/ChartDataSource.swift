@@ -156,7 +156,10 @@ class ChartDataSource: Updatable {
         }
         return result
     }
-
+    
+    typealias RangePath = [Range<CGFloat>: CGPath]
+    var chachedPaths = [String: RangePath]()
+    
     typealias RangeMaxValue = [Range<CGFloat>: CGFloat]
     typealias RangeMaxValues = [Range<CGFloat>: [CGFloat]]
 
@@ -389,10 +392,19 @@ class ChartDataSource: Updatable {
                 }
             }
             
+            /*let cacheKey = uniqueId + chartModel.name + mapKey
+            if let rangePath = chachedPaths[cacheKey], let path = rangePath[range] {
+                paths[uniqueId + chartModel.name] = path
+            } else {*/
             if let path = chartModel.drawingStyle.createPath(dataPoints: points, lineGap: lineGap,
                                                              viewSize: viewDataSize, isPreviewMode: isPreviewMode) {
                 paths[uniqueId + chartModel.name] = path
             }
+            /*        let rangePath: RangePath = [range: path]
+             chachedPaths[cacheKey] = rangePath
+             }
+             }*/
+
 
             if isUpdatingPoints {
                 self.dataPoints?[index] = points
