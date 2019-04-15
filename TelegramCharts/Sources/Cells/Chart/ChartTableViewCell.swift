@@ -110,6 +110,7 @@ extension ChartTableViewCell: Updatable {
     func update() {
         chartView.update()
         previewChartView.update()
+        chartView.drawHorizontalLines(animated: false)
     }
 }
 

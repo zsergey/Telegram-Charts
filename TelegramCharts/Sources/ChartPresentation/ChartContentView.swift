@@ -188,8 +188,11 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let dataPoints = dataSource.dataPoints, dataPoints.count > 0 else {
             return
         }
-
-        drawHorizontalLines(animated: false)
+        
+        if isJustReused {
+            drawHorizontalLines(animated: false)
+        }
+        
         drawCharts()
         
         if !isScrolling {
