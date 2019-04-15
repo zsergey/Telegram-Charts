@@ -73,6 +73,8 @@ class ChartDataSource: Updatable {
         return result
     }
 
+    var needsAnimatePath: Bool = false
+    
     var isOneChartsVisible: Bool = false
 
     var isDetailedView: Bool = false
@@ -409,7 +411,13 @@ class ChartDataSource: Updatable {
                         changedIsHidden: Bool) {
         findMaxRangePoints()
         calcConstants()
-
+        
+        needsAnimatePath = changedIsHidden
+        var animateMaxValue = animateMaxValue
+        if changedIsHidden {
+            animateMaxValue = false
+        }
+        
         if shouldCalcMaxValue {
             calcMaxValue(animateMaxValue: animateMaxValue)
         }

@@ -224,10 +224,20 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 continue
             }
             
-            let path = dataSource.paths[key]
+            let path = dataSource.paths[key]!
 
             if let chartLayer = chartLines[key] {
-                chartLayer.path = path
+                if dataSource.percentage,
+                    inverseIndex == dataSource.chartModels.count - 1 {
+                    chartLayer.path = path
+                } else {
+                    if dataSource.needsAnimatePath {
+                        chartLayer.changePath(to: path, animationDuration: UIView.animationDuration)
+                    } else {
+                        chartLayer.path = path
+                    }
+                }
+                
                 CATransaction.setDisableActions(true)
                 if chartModel.opacity != chartLayer.opacity {
                     let toValue: Float = chartModel.opacity
