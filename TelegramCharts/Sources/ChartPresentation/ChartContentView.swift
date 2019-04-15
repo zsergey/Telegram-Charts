@@ -69,7 +69,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
     private var labelsTextLayers: [CATextLayer]?
 
     private var dotsTextLayers: [DotLayer]?
-    
+
+    private var selectedBars: [CAShapeLayer]?
+
     private var shadowImage = UIImageView(frame: .zero)
 
     override init(frame: CGRect) {
@@ -131,7 +133,11 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         guard let dataSource = dataSource else {
             return
         }
-        
+        let drawStackedCharts = {
+            if (dataSource.stacked && !dataSource.percentage) || dataSource.singleBar {
+                self.drawCharts()
+            }
+        }
         let location = recognizer.location(in: self)
         if let selectedValuesInfo = selectedValuesInfo {
             let frame = CGRect(x: selectedValuesInfo.frame.origin.x,
@@ -142,19 +148,24 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 location.y >= frame.origin.y, location.y <= frame.origin.y + frame.size.height {
                 dataSource.selectedIndex = nil
                 cleanSelectedValues()
+                drawStackedCharts()
                 return
             }
         }
         drawSelectedValuesIfNeeded(location: location, animated: true)
+        drawStackedCharts()
     }
 
     @objc private func handlePan(recognizer: UIPanGestureRecognizer) {
-        guard !isScrolling else {
+        guard let dataSource = dataSource, !isScrolling else {
             return
         }
         
         let location = recognizer.location(in: self)
         drawSelectedValuesIfNeeded(location: location, animated: true)
+        if (dataSource.stacked && !dataSource.percentage) || dataSource.singleBar {
+            self.drawCharts()
+        }
     }
     
     override func layoutSubviews() {
@@ -233,6 +244,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 } else {
                     if dataSource.needsAnimatePath {
                         chartLayer.changePath(to: path, animationDuration: UIView.animationDuration)
+                        if dataSource.stacked, dataSource.selectedIndex != nil {
+                            drawSelectedValues(animated: false)
+                        }
                     } else {
                         chartLayer.path = path
                     }
@@ -246,6 +260,14 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                                             animationDuration: UIView.animationDuration)
                 }
                 
+                if (dataSource.stacked && !dataSource.percentage) || dataSource.singleBar {
+                    if dataSource.selectedIndex == nil {
+                        chartLayer.fillColor = chartModel.color.cgColor
+                    } else {
+                        let whitedColor = chartModel.color.gradient(to: .white, step: 0.30)
+                        chartLayer.fillColor = whitedColor.cgColor
+                    }
+                }
             } else {
                 let chartLayer = ChartLayer()
                 var fillColor = UIColor.clear
@@ -533,6 +555,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         labelsTextLayers?.forEach { $0.removeFromSuperlayer() }
         precentegTextLayers?.forEach { $0.removeFromSuperlayer() }
         dotsTextLayers?.forEach { $0.removeFromSuperlayer() }
+        selectedBars?.forEach { $0.removeFromSuperlayer() }
         
         selectedValuesInfo = nil
         verticalLine = nil
@@ -541,7 +564,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         precentegTextLayers = nil
         labelsTextLayers = nil
         dotsTextLayers = nil
-
+        selectedBars = nil
+        
         selectedValuesLayer.sublayers?.forEach {
             $0.removeFromSuperlayer()
         }
@@ -612,7 +636,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
         let xValue = dataSource.deltaX + CGFloat(selectedIndex) * dataSource.lineGap - outerRadius / 2
         let xLine = xValue + outerRadius / 2
-
+        
         // Line.
         var topLine = -dataSource.topSpace + 12
         if dataSource.percentage {
@@ -670,6 +694,39 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 }
                 
                 dotIndex += 1
+            }
+        }
+        
+        // Bars.
+        if (dataSource.stacked && !dataSource.percentage) || dataSource.singleBar {
+            let isUpdating = selectedBars != nil
+            var newSelectedBars = isUpdating ? nil : [CAShapeLayer]()
+            
+            let range = 0..<dataSource.chartModels.count
+            for standartIndex in range {
+                var inverseIndex = range.endIndex - standartIndex - 1
+                inverseIndex = dataSource.stacked ? inverseIndex : standartIndex
+                let chartModel = dataSource.chartModels[inverseIndex]
+                let points = dataPoints[inverseIndex]
+                
+                let dataPoint = points[selectedIndex]
+                let heightBar = self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace - dataPoint.y
+                let rect = CGRect(x: dataPoint.x, y: dataPoint.y,
+                                  width: dataSource.lineGap, height: heightBar)
+                if isUpdating {
+                    let selectedBar = selectedBars![standartIndex]
+                    selectedBar.path = Painter.createRectPath(rect: rect).cgPath
+                } else {
+                    let selectedBar = Painter.createRect(rect: rect)
+                    selectedBar.fillColor = chartModel.color.cgColor
+                    selectedBar.lineWidth = 0
+                    selectedValuesLayer.addSublayer(selectedBar)
+                    newSelectedBars?.append(selectedBar)
+                }
+            }
+            
+            if !isUpdating {
+                selectedBars = newSelectedBars
             }
         }
         
