@@ -95,7 +95,7 @@ class ChartTableViewCell: UITableViewCell {
             chartView.drawSelectedValues(animated: false)
         }
     }
-    
+        
     @IBAction func tapZoomOutButton(_ sender: Any) {
     }
 }

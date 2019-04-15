@@ -225,7 +225,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let chartModel = dataSource.chartModels[inverseIndex]
             let key = dataSource.uniqueId + chartModel.name
             if isJustReused {
-                chartLines[key]?.opacity = 1
+                chartLines[key]?.opacity = chartModel.isHidden ? 0 : 1
                 continue
             }
             
@@ -238,7 +238,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 } else {
                     if dataSource.needsAnimatePath {
                         chartLayer.changePath(to: path, animationDuration: UIView.animationDuration)
-                        if dataSource.stacked, dataSource.selectedIndex != nil {
+                        if dataSource.selectedIndex != nil {
                             drawSelectedValues(animated: false)
                         }
                     } else {

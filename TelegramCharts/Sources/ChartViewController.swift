@@ -34,6 +34,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
             tableView.dataSource = self
             tableView.rowHeight = 0
             tableView.estimatedRowHeight = 0
+            tableView.scrollsToTop = false
         }
     }
     
