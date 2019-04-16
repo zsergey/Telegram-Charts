@@ -33,7 +33,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="Statistics" id="Fzy-ih-vEs">
-                        <barButtonItem key="leftBarButtonItem" title="Date On" id="QaU-12-KfD">
+                        <barButtonItem key="leftBarButtonItem" title="Dates On" id="QaU-12-KfD">
                             <connections>
                                 <action selector="tapDateOnButton:" destination="BYZ-38-t0r" id="ZT2-90-ttc"/>
                             </connections>

@@ -537,7 +537,13 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if newSelectedIndex >= dataSource.maxRangePoints.count {
             newSelectedIndex = dataSource.maxRangePoints.count - 1
         }
-        let newGlobalSelectedIndex = newSelectedIndex + dataSource.intRange.startIndex
+        var newGlobalSelectedIndex = newSelectedIndex + dataSource.intRange.startIndex
+        if newGlobalSelectedIndex < 0 {
+            newGlobalSelectedIndex = 0
+        }
+        if newGlobalSelectedIndex >= dataSource.maxRangePoints.count {
+            newGlobalSelectedIndex = dataSource.maxRangePoints.count - 1
+        }
         var isUpdating = dataSource.selectedIndex == nil
         if let selectedIndex = dataSource.selectedIndex,
             selectedIndex != newSelectedIndex {
@@ -713,20 +719,21 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 inverseIndex = dataSource.stacked ? inverseIndex : standartIndex
                 let chartModel = dataSource.chartModels[inverseIndex]
                 let points = dataPoints[inverseIndex]
-                
-                let dataPoint = points[selectedIndex]
-                let heightBar = self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace - dataPoint.y
-                let rect = CGRect(x: dataPoint.x, y: dataPoint.y,
-                                  width: dataSource.lineGap, height: heightBar)
-                if isUpdating {
-                    let selectedBar = selectedBars![standartIndex]
-                    selectedBar.path = Painter.createRectPath(rect: rect).cgPath
-                } else {
-                    let selectedBar = Painter.createRect(rect: rect)
-                    selectedBar.fillColor = chartModel.color.cgColor
-                    selectedBar.lineWidth = 0
-                    selectedValuesLayer.addSublayer(selectedBar)
-                    newSelectedBars?.append(selectedBar)
+                if selectedIndex < points.count {
+                    let dataPoint = points[selectedIndex]
+                    let heightBar = self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace - dataPoint.y
+                    let rect = CGRect(x: dataPoint.x, y: dataPoint.y,
+                                      width: dataSource.lineGap, height: heightBar)
+                    if isUpdating {
+                        let selectedBar = selectedBars![standartIndex]
+                        selectedBar.path = Painter.createRectPath(rect: rect).cgPath
+                    } else {
+                        let selectedBar = Painter.createRect(rect: rect)
+                        selectedBar.fillColor = chartModel.color.cgColor
+                        selectedBar.lineWidth = 0
+                        selectedValuesLayer.addSublayer(selectedBar)
+                        newSelectedBars?.append(selectedBar)
+                    }
                 }
             }
             
