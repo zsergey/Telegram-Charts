@@ -212,9 +212,14 @@ extension ChartViewController {
         ChartViewController.isDateOn = !ChartViewController.isDateOn
         let nextMode = ChartViewController.isDateOn ? "Dates Off" : "Dates On"
         sender.title = nextMode
-        
-        if ChartViewController.isDateOn {
-            
+        for cell in self.tableView.visibleCells {
+            if let cell = cell as? ChartTableViewCell {
+                if ChartViewController.isDateOn {
+                    cell.chartView.drawLabels(byScroll: false)
+                } else {
+                    cell.chartView.createLabels(needsHide: true)
+                }
+            }
         }
     }
     

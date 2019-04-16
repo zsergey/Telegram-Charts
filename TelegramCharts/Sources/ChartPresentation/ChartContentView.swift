@@ -431,15 +431,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
     }
     
-    func drawLabels(byScroll: Bool) {
-
+    func createLabels(needsHide: Bool) {
         guard let dataSource = dataSource,
-            dataSource.chartModels.count > 0,
-            !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0,
-            ChartViewController.isDateOn else {
-            return
+            dataSource.chartModels.count > 0 else {
+                return
         }
-        
+
         let isUpdating = labels != nil
         var newLabels = isUpdating ? nil : [TextLayer]()
         
@@ -454,6 +451,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                                      y: mainLayer.frame.size.height - dataSource.bottomSpace / 2 - 4,
                                      width: ChartContentView.labelWidth,
                                      height: 16)
+            if needsHide {
+                textLayer.opacity = 0
+            }
             if !isUpdating {
                 textLayer.foregroundColor = colorScheme.chart.text.cgColor
                 textLayer.backgroundColor = UIColor.clear.cgColor
@@ -468,10 +468,22 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 newLabels!.append(textLayer)
             }
         }
-
+        
         if !isUpdating {
             labels = newLabels
         }
+    }
+    
+    func drawLabels(byScroll: Bool) {
+
+        guard let dataSource = dataSource,
+            dataSource.chartModels.count > 0,
+            !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0,
+            ChartViewController.isDateOn else {
+            return
+        }
+        
+        createLabels(needsHide: false)
 
         var labelProcessor = LabelsProcessor(dataSource: dataSource, isScrolling: isScrolling, sliderDirection: sliderDirection,
                                              setFinishedSliderDirection: setFinishedSliderDirection, labels: labels, contentSize: frame.size)
