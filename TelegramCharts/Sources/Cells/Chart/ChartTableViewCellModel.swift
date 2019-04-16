@@ -174,6 +174,7 @@ extension ChartTableViewCellModel: CellViewModelType {
         cell.sliderView.setNeedsLayout()
         
         cell.sliderView.onChangeRange = { range, sliderWidth, startX, value in
+            self.chartDataSource.needsAnimatePath = false
             self.chartDataSource.range = range
             self.chartDataSource.sliderWidth = sliderWidth
             self.chartDataSource.startX = startX
@@ -184,10 +185,12 @@ extension ChartTableViewCellModel: CellViewModelType {
             self.calcProperties(of: self.chartDataSource, for: cell.chartView, animateMaxValue: value)
         }
         cell.sliderView.onBeganTouch = { sliderDirection in
+            self.chartDataSource.needsAnimatePath = false
             cell.chartView.sliderDirection = sliderDirection
             cell.chartView.drawView()
         }
         cell.sliderView.onEndTouch = { sliderDirection in
+            self.chartDataSource.needsAnimatePath = false
             cell.chartView.sliderDirection = sliderDirection
             cell.chartView.drawView()
             

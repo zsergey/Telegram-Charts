@@ -430,6 +430,7 @@ class ChartDataSource: Updatable {
         calcConstants()
         
         var animateMaxValue = animateMaxValue
+        needsAnimatePath = false
         if stacked || (name == "CALLS") {
             needsAnimatePath = changedIsHidden
             if changedIsHidden {

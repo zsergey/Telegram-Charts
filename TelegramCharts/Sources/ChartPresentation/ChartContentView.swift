@@ -231,7 +231,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
             
             let path = dataSource.paths[key]!
-
+            
             if let chartLayer = chartLines[key] {
                 if dataSource.percentage,
                     inverseIndex == dataSource.chartModels.count - 1 {
