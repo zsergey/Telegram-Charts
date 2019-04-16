@@ -534,9 +534,14 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if newSelectedIndex < 0 {
             newSelectedIndex = 0
         }
-        if newSelectedIndex >= dataSource.maxRangePoints.count {
-            newSelectedIndex = dataSource.maxRangePoints.count - 1
+        
+        // Check selected index.
+        for index in 0..<dataSource.chartModels.count {
+            guard newSelectedIndex < dataPoints[index].count else {
+                return
+            }
         }
+
         var newGlobalSelectedIndex = newSelectedIndex + dataSource.intRange.startIndex
         if newGlobalSelectedIndex < 0 {
             newGlobalSelectedIndex = 0
@@ -544,6 +549,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if newGlobalSelectedIndex >= dataSource.maxRangePoints.count {
             newGlobalSelectedIndex = dataSource.maxRangePoints.count - 1
         }
+        
         var isUpdating = dataSource.selectedIndex == nil
         if let selectedIndex = dataSource.selectedIndex,
             selectedIndex != newSelectedIndex {
@@ -593,6 +599,13 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let selectedIndex = dataSource.selectedIndex,
             let globalSelectedIndex = dataSource.globalSelectedIndex else {
             return
+        }
+        
+        // Check selected index.
+        for index in 0..<dataSource.chartModels.count {
+            guard selectedIndex < dataPoints[index].count else {
+                return
+            }
         }
 
         CATransaction.setDisableActions(true)
@@ -719,21 +732,20 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 inverseIndex = dataSource.stacked ? inverseIndex : standartIndex
                 let chartModel = dataSource.chartModels[inverseIndex]
                 let points = dataPoints[inverseIndex]
-                if selectedIndex < points.count {
-                    let dataPoint = points[selectedIndex]
-                    let heightBar = self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace - dataPoint.y
-                    let rect = CGRect(x: dataPoint.x, y: dataPoint.y,
-                                      width: dataSource.lineGap, height: heightBar)
-                    if isUpdating {
-                        let selectedBar = selectedBars![standartIndex]
-                        selectedBar.path = Painter.createRectPath(rect: rect).cgPath
-                    } else {
-                        let selectedBar = Painter.createRect(rect: rect)
-                        selectedBar.fillColor = chartModel.color.cgColor
-                        selectedBar.lineWidth = 0
-                        selectedValuesLayer.addSublayer(selectedBar)
-                        newSelectedBars?.append(selectedBar)
-                    }
+
+                let dataPoint = points[selectedIndex]
+                let heightBar = self.frame.size.height - dataSource.topSpace - dataSource.bottomSpace - dataPoint.y
+                let rect = CGRect(x: dataPoint.x, y: dataPoint.y,
+                                  width: dataSource.lineGap, height: heightBar)
+                if isUpdating {
+                    let selectedBar = selectedBars![standartIndex]
+                    selectedBar.path = Painter.createRectPath(rect: rect).cgPath
+                } else {
+                    let selectedBar = Painter.createRect(rect: rect)
+                    selectedBar.fillColor = chartModel.color.cgColor
+                    selectedBar.lineWidth = 0
+                    selectedValuesLayer.addSublayer(selectedBar)
+                    newSelectedBars?.append(selectedBar)
                 }
             }
             
