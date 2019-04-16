@@ -767,11 +767,10 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         textLayer.string = "0"
         let heightForOneLine: CGFloat = textLayer.preferredFrameSize().height
         
-        var xRect = xLine - rectWidth / 2
-        if xRect < 0 {
-            xRect = xLine + dataSource.trailingSpace
-        }
-        if xRect > self.frame.size.width - rectWidth {
+        var xRect = xLine + dataSource.leadingSpace
+        
+        if xRect > self.frame.size.width - rectWidth - dataSource.leadingSpace {
+            CATransaction.setDisableActions(false)
             xRect = xLine - rectWidth - dataSource.trailingSpace
         }
 
