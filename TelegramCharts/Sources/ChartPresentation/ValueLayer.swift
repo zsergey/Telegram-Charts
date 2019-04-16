@@ -58,8 +58,10 @@ class ValueLayer: CALayer {
         if let textLayer = textLayer {
             if lineValue == 0, !isZeroLine {
                 textLayer.string = ""
+                backgroundColor = UIColor.clear.cgColor
             } else {
                 textLayer.string = lineValue.format
+                backgroundColor = lineColor.cgColor
             }
         } else {
             let textLayer = Painter.createText(textColor: textColor)
