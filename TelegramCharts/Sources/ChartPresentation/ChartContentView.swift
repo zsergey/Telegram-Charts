@@ -344,10 +344,11 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
             
             let maxValue = dataSource.maxValues[i]
+            let minValue = dataSource.minValues[i]
             let newMaxValue = dataSource.targetMaxValues[i]
             
-            let minMaxGap = CGFloat(maxValue - dataSource.minValue) * dataSource.topHorizontalLine
-            let newMinMaxGap = CGFloat(newMaxValue - dataSource.minValue) * dataSource.topHorizontalLine
+            let minMaxGap = CGFloat(maxValue - minValue) * dataSource.topHorizontalLine
+            let newMinMaxGap = CGFloat(newMaxValue - minValue) * dataSource.topHorizontalLine
             
             let widthGrid: CGFloat = self.frame.size.width
             
@@ -362,8 +363,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 if animated {
                     duration = value == 1 ? 0 : UIView.animationDuration
                 }
-                let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap)
-                let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap)
+                let lineValue = dataSource.calcLineValue(for: value, with: minMaxGap, minValue: minValue)
+                let newLineValue = dataSource.calcLineValue(for: value, with: newMinMaxGap, minValue: minValue)
                 
                 let isZeroLine = index == gridValues.count - 1
                 let heightGrid: CGFloat = lineWidth
@@ -376,9 +377,9 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 newValueLayer.alignment = i == 0 ? .left : .right
                 newValueLayer.contentBackground = colorScheme.chart.background
                 
-                let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap)
+                let fromNewHeight = dataSource.calcHeight(for: newLineValue, with: minMaxGap, minValue: minValue)
                 let fromNewFrame = CGRect(x: dataSource.trailingSpace, y: fromNewHeight, width: frame.size.width - dataSource.trailingSpace - dataSource.leadingSpace, height: heightGrid)
-                let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap) + heightGrid / 2
+                let toNewHeight = dataSource.calcHeight(for: newLineValue, with: newMinMaxGap, minValue: minValue) + heightGrid / 2
                 let toNewPoint = CGPoint(x: widthGrid / 2, y: toNewHeight)
                 newValueLayer.lineColor = isZeroLine ? colorScheme.chart.accentGrid : colorScheme.chart.grid
                 newValueLayer.textColor = dataSource.yScaled ? chartModel.color : colorScheme.chart.text
@@ -406,7 +407,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 //                    newValueLayer.backgroundColor = UIColor.red.cgColor //color.cgColor
 //                }
                 
-                let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap) + heightGrid / 2
+                let toHeight = dataSource.calcHeight(for: lineValue, with: newMinMaxGap, minValue: minValue) + heightGrid / 2
                 let toPoint = CGPoint(x: widthGrid / 2, y: toHeight)
                 CATransaction.setDisableActions(true)
                 oldValueLayer.moveTo(point: toPoint, animationDuration: duration)
