@@ -18,6 +18,7 @@ class ValueLayer: CALayer {
     var fixedTextColor: Bool = false
 
     var isZeroLine: Bool = false
+    var isHiddenLine: Bool = false
 
     var lineValue: Int = 0 { didSet { setNeedsLayout() } }
     var lineColor: UIColor = .gray
@@ -56,7 +57,7 @@ class ValueLayer: CALayer {
         backgroundColor = lineColor.cgColor
 
         if let textLayer = textLayer {
-            if lineValue == 0, !isZeroLine {
+            if (lineValue == 0 && !isZeroLine) || isHiddenLine {
                 textLayer.string = ""
                 backgroundColor = UIColor.clear.cgColor
             } else {

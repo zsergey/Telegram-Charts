@@ -512,7 +512,7 @@ class ChartDataSource: Updatable {
                 deltaToTargetMaxValues[index] = newMaxValues[index] - maxValues[index]
                 deltaToTargetMinValues[index] = newMinValues[index] - minValues[index]
             }
-            
+
             frameAnimation = 0
             runMaxValueAnimation = true
             onSetNewTargetMaxValue?()

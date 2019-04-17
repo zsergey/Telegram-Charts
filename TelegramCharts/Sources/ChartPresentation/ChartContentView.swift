@@ -373,7 +373,10 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
                 newValueLayer.fixedTextColor = dataSource.yScaled
                 newValueLayer.isZeroLine = isZeroLine
-                    
+                if dataSource.maxValues.count > 1 {
+                    newValueLayer.isHiddenLine = chartModel.isHidden
+                }
+                
                 newValueLayer.alignment = i == 0 ? .left : .right
                 newValueLayer.contentBackground = colorScheme.chart.background
                 
