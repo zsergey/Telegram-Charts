@@ -344,7 +344,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             }
             
             let maxValue = dataSource.maxValues[i]
-            let minValue = dataSource.minValues[i]
+            let minValue = dataSource.targetMinValues[i]
             let newMaxValue = dataSource.targetMaxValues[i]
             
             let minMaxGap = CGFloat(maxValue - minValue) * dataSource.topHorizontalLine
