@@ -217,7 +217,7 @@ extension ChartViewController {
                 if ChartViewController.isDateOn {
                     cell.chartView.drawLabels(byScroll: false)
                 } else {
-                    cell.chartView.createLabels(needsHide: true)
+                    cell.chartView.createLabelsIfNeeded(needsHide: true)
                 }
             }
         }

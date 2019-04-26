@@ -71,6 +71,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
     private var selectedBars: [CAShapeLayer]?
 
+    private var labelProcessor: NewLabelsProcessor!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -109,6 +111,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         panGesture.minimumNumberOfTouches = 1
         panGesture.delegate = self
         addGestureRecognizer(panGesture)
+        
+        labelProcessor = NewLabelsProcessor(contentSize: frame.size)
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -180,6 +184,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                                       width: self.frame.width,
                                       height: self.mainLayer.frame.height - dataSource.topSpace - dataSource.bottomSpace)
         self.selectedValuesLayer.frame = self.gridLayer.frame
+        
+        self.labelProcessor.contentSize = frame.size
     }
     
     func drawView() {
@@ -435,7 +441,10 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         }
     }
     
-    func createLabels(needsHide: Bool) {
+    func createLabelsIfNeeded(needsHide: Bool) {
+        print("createLabelsIfNeeded")
+        // Нужно определить в какой момент искать статичную лейблу,
+        // а то этот метод вызывается несколько раз
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0 else {
                 return
@@ -448,6 +457,8 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             let textLayer = isUpdating ? labels![index] : TextLayer()
             
             let x = dataSource.trailingSpace + (CGFloat(index) - dataSource.range.lowerBound) * dataSource.lineGap - ChartContentView.labelWidth / 2
+            
+            print("x = \(x)")
             
             // Changing only frame when is updating.
             CATransaction.setDisableActions(true)
@@ -482,15 +493,50 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
 
         guard let dataSource = dataSource,
             dataSource.chartModels.count > 0,
-            !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0,
-            ChartViewController.isDateOn else {
+            !dataSource.isPreviewMode, dataSource.maxRangePoints.count > 0 else { // TODO ChartViewController.isDateOn
             return
         }
         
-        createLabels(needsHide: false)
+        createLabelsIfNeeded(needsHide: false)
+        
+        guard let labels = labels else {
+            return
+        }
+        
+        if labelProcessor.globalStaticLabel == nil {
+            labelProcessor.globalStaticLabel = labelProcessor.findStaticLabelRight(onlyVisible: false, in: labels)
+            
+            print("globalStaticLabel \(labelProcessor.globalStaticLabel)")
+        }
+        
+        if sliderDirection == .left || sliderDirection == .right || sliderDirection == .center {
+            let isFirstCall = sliderDirection == .left || sliderDirection == .right
+            labelProcessor.processLabels(from: labels, lineGap: dataSource.lineGap,
+                                         isFirstCall: isFirstCall, staticLabel: labelProcessor.globalStaticLabel,
+                                         lookToRight: false)
+        }
+        
+        if sliderDirection == .finished {
+            for label in labelProcessor.labelsToHide {
+                label.changeOpacity(from: label.opacity, to: 0,
+                                    animationDuration: UIView.animationDuration)
+            }
+            for label in labelProcessor.labelsToShow {
+                label.changeOpacity(from: label.opacity, to: 1,
+                                    animationDuration: UIView.animationDuration)
+            }
+        }
 
-        var labelProcessor = LabelsProcessor(dataSource: dataSource, isScrolling: isScrolling, sliderDirection: sliderDirection,
-                                             setFinishedSliderDirection: setFinishedSliderDirection, labels: labels, contentSize: frame.size)
+        print("countCalls \(labelProcessor.countCalls)")
+
+
+        /*
+        var labelProcessor = NewLabelsProcessor(dataSource: dataSource,
+                                                isScrolling: isScrolling,
+                                                sliderDirection: sliderDirection,
+                                                setFinishedSliderDirection: setFinishedSliderDirection,
+                                                contentSize: frame.size)
+
         labelProcessor.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
         if byScroll {
             labels?.forEach { label in
@@ -501,14 +547,15 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
                 }
             }
         }
-        /*
             self.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
             if self.setFinishedSliderDirection {
                 self.sliderDirection = .finished
                 self.hideWrongLabelsUseSliderDirection(byScroll: byScroll)
                 self.setFinishedSliderDirection = false
             }
-        }*/
+        }
+         */
+        
     }
     
     
