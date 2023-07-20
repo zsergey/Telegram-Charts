@@ -135,7 +135,7 @@ class CheckButton: UIControl {
 
     func commonInit() {
         self.addSubview(self.titleLabel)
-        font = UIFont(name: titleLabel.font.fontName, size: 13)
+        font = UIFont.systemFont(ofSize: 13)
         self.addSubview(self.imageView)
         addTarget(self, action: #selector(touchDownButton(_:)), for: .touchDown)
         addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
@@ -240,7 +240,7 @@ class CheckButton: UIControl {
     }
     
     func updateFrame() {
-        let size = title.size(withAttributes: [.font: titleLabel.font])
+        let size = title.size(withAttributes: [.font: UIFont.systemFont(ofSize: 13)])
         let newFrame = CGRect(x: frame.origin.x,
                               y: frame.origin.y,
                               width: size.width + space + textOffset,

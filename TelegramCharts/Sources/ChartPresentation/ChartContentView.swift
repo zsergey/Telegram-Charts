@@ -546,9 +546,12 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
             return
         }
         
-        var newSelectedIndex = Int((location.x - dataSource.deltaX) / dataSource.lineGap)
-        if newSelectedIndex < 0 {
-            newSelectedIndex = 0
+        var newSelectedIndex = 0
+        if dataSource.lineGap > 0 {
+            newSelectedIndex = Int((location.x - dataSource.deltaX) / dataSource.lineGap)
+            if newSelectedIndex < 0 {
+                newSelectedIndex = 0
+            }
         }
         
         // Check selected index.
@@ -707,7 +710,7 @@ class ChartContentView: UIView, Reusable, Updatable, UIGestureRecognizerDelegate
         if !dataSource.stacked, !dataSource.singleBar {
             for index in 0..<dataSource.chartModels.count {
                 let chartModel = dataSource.chartModels[index]
-                var points = dataPoints[index]
+                let points = dataPoints[index]
                 
                 let dataPoint = points[selectedIndex]
                 let yValue = dataPoint.y - outerRadius / 2

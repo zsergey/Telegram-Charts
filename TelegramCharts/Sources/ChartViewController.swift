@@ -10,6 +10,8 @@ import UIKit
 
 class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
     
+    @IBOutlet weak var dateOnButton: UIBarButtonItem!
+    
     static var isDateOn = false
     
     var displayCollection: ChartDisplayCollection!
@@ -62,6 +64,7 @@ class ChartViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         
         navigationController?.navigationBar.isTranslucent = false
+        dateOnButton.isEnabled = false
         
         let dataSource = ChartDataSourceFactory.make()
         self.displayCollection = self.createDisplayCollection(dataSource: dataSource)
@@ -189,6 +192,10 @@ extension ChartViewController: UITableViewDataSource {
         let model = displayCollection.fetchModel(for: indexPath)
         let cell = tableView.dequeueReusableCell(for: indexPath, with: model)
         cell.separatorInset = displayCollection.separatorInset(for: indexPath, view: view)
+        model.setupDefault(on: cell)
+        if let cell = cell as? ChartTableViewCell {
+            cell.drawViews()
+        }
         return cell
     }
 }

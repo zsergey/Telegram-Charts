@@ -34,7 +34,7 @@ class ChartTableViewCell: UITableViewCell {
         sliderView.prepareForReuse()
         
         filterButtons.forEach { $0.removeFromSuperview() }
-        filterButtons.removeAll()
+        filterButtons = []
     }
         
     func hideViewsIfNeeded(animated: Bool) {
@@ -70,8 +70,17 @@ class ChartTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        UIView.performWithoutAnimation {
+            self.setupFilterButtons()
+        }
+    }
+    
+    func setupFilterButtons() {
         if let model = model {
             
+            filterButtons.forEach { $0.removeFromSuperview() }
+            filterButtons = []
+
             model.setupFilterButtons(on: self)
             
             if model.chartDataSource.viewSize != chartView.frame.size ||
